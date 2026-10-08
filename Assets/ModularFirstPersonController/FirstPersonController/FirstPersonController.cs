@@ -21,7 +21,7 @@ using UnityEditor;
 
 public class FirstPersonController : MonoBehaviour
 {
-    private Rigidbody rb;
+    private Rigidbody rigibody;
 
     public Camera playerCamera;
 
@@ -112,7 +112,7 @@ public class FirstPersonController : MonoBehaviour
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
+        rigibody = GetComponent<Rigidbody>();
 
         crosshairObject = GetComponentInChildren<Image>();
 
@@ -300,7 +300,7 @@ public class FirstPersonController : MonoBehaviour
             {
                 Crouch();
             }
-            
+
             if(InputManagerSingleton.PlayerCrouch && holdToCrouch)
             {
                 isCrouched = false;
@@ -345,7 +345,7 @@ public class FirstPersonController : MonoBehaviour
                 inputVelocity = transform.TransformDirection(inputVelocity) * sprintSpeed;
 
                 // Apply a force that attempts to reach our target velocity
-                Vector3 velocity = rb.linearVelocity;
+                Vector3 velocity = rigibody.linearVelocity;
                 Vector3 velocityChange = (inputVelocity - velocity);
                 velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
                 velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
@@ -368,7 +368,7 @@ public class FirstPersonController : MonoBehaviour
                     }
                 }
 
-                rb.AddForce(velocityChange, ForceMode.VelocityChange);
+                rigibody.AddForce(velocityChange, ForceMode.VelocityChange);
             }
             // All movement calculations while walking
             else
@@ -383,13 +383,13 @@ public class FirstPersonController : MonoBehaviour
                 inputVelocity = transform.TransformDirection(inputVelocity) * walkSpeed;
 
                 // Apply a force that attempts to reach our target velocity
-                Vector3 velocity = rb.linearVelocity;
+                Vector3 velocity = rigibody.linearVelocity;
                 Vector3 velocityChange = (inputVelocity - velocity);
                 velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
                 velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
                 velocityChange.y = 0;
 
-                rb.AddForce(velocityChange, ForceMode.VelocityChange);
+                rigibody.AddForce(velocityChange, ForceMode.VelocityChange);
             }
         }
     }
@@ -417,7 +417,7 @@ public class FirstPersonController : MonoBehaviour
         // Adds force to the player rigidbody to jump
         if (isGrounded)
         {
-            rb.AddForce(0f, jumpPower, 0f, ForceMode.Impulse);
+            rigibody.AddForce(0f, jumpPower, 0f, ForceMode.Impulse);
             isGrounded = false;
             enableJump = false;
             Task.Delay(5500).ContinueWith(t => enableJump = true);
