@@ -10,6 +10,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using Assets;
+using System.Threading.Tasks;
+
 
 
 #if UNITY_EDITOR
@@ -25,10 +27,10 @@ public class FirstPersonController : MonoBehaviour
 
     public Camera playerCamera;
 
-    public float fov = 60f;
+    public float fov = 90f;
     public bool invertCamera = false;
     public bool cameraCanMove = true;
-    public float mouseSensitivity = 2f;
+    public float mouseSensitivity = 0.5f;
     public float maxLookAngle = 50f;
 
     // Crosshair
@@ -446,6 +448,8 @@ public class FirstPersonController : MonoBehaviour
         {
             rb.AddForce(0f, jumpPower, 0f, ForceMode.Impulse);
             isGrounded = false;
+            enableJump = false;
+            Task.Delay(5500).ContinueWith(t => enableJump = true);
         }
 
         // When crouched and using toggle system, will uncrouch for a jump
