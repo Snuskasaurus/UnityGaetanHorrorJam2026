@@ -23,8 +23,6 @@ public class FirstPersonController : MonoBehaviour
 {
     private Rigidbody rb;
 
-    #region Camera Movement Variables
-
     public Camera playerCamera;
 
     public float fov = 90f;
@@ -44,8 +42,6 @@ public class FirstPersonController : MonoBehaviour
     private float pitch = 0.0f;
     private Image crosshairObject;
 
-    #region Camera Zoom Variables
-
     public bool enableZoom = true;
     public bool holdToZoom = false;
     public KeyCode zoomKey = KeyCode.Mouse1;
@@ -55,19 +51,12 @@ public class FirstPersonController : MonoBehaviour
     // Internal Variables
     private bool isZoomed = false;
 
-    #endregion
-    #endregion
-
-    #region Movement Variables
-
     public bool playerCanMove = true;
     public float walkSpeed = 5f;
     public float maxVelocityChange = 10f;
 
     // Internal Variables
     private bool isWalking = false;
-
-    #region Sprint
 
     public bool enableSprint = true;
     public bool unlimitedSprint = false;
@@ -95,20 +84,12 @@ public class FirstPersonController : MonoBehaviour
     private bool isSprintCooldown = false;
     private float sprintCooldownReset;
 
-    #endregion
-
-    #region Jump
-
     public bool enableJump = true;
     public KeyCode jumpKey = KeyCode.Space;
     public float jumpPower = 5f;
 
     // Internal Variables
     private bool isGrounded = false;
-
-    #endregion
-
-    #region Crouch
 
     public bool enableCrouch = true;
     public bool holdToCrouch = true;
@@ -120,11 +101,6 @@ public class FirstPersonController : MonoBehaviour
     private bool isCrouched = false;
     private Vector3 originalScale;
 
-    #endregion
-    #endregion
-
-    #region Head Bob
-
     public bool enableHeadBob = true;
     public Transform joint;
     public float bobSpeed = 10f;
@@ -133,8 +109,6 @@ public class FirstPersonController : MonoBehaviour
     // Internal Variables
     private Vector3 jointOriginalPos;
     private float timer = 0;
-
-    #endregion
 
     private void Awake()
     {
@@ -171,8 +145,6 @@ public class FirstPersonController : MonoBehaviour
             crosshairObject.gameObject.SetActive(false);
         }
 
-        #region Sprint Bar
-
         sprintBarCG = GetComponentInChildren<CanvasGroup>();
 
         if(useSprintBar)
@@ -200,7 +172,6 @@ public class FirstPersonController : MonoBehaviour
             sprintBar.gameObject.SetActive(false);
         }
 
-        #endregion
     }
 
     float camRotation;
@@ -538,8 +509,6 @@ public class FirstPersonController : MonoBehaviour
         GUILayout.Label("version 1.0.1", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Normal, fontSize = 12 });
         EditorGUILayout.Space();
 
-        #region Camera Setup
-
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         GUILayout.Label("Camera Setup", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold, fontSize = 13 }, GUILayout.ExpandWidth(true));
         EditorGUILayout.Space();
@@ -575,8 +544,6 @@ public class FirstPersonController : MonoBehaviour
 
         EditorGUILayout.Space();
 
-        #region Camera Zoom Setup
-
         GUILayout.Label("Zoom", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold, fontSize = 13 }, GUILayout.ExpandWidth(true));
 
         fpc.enableZoom = EditorGUILayout.ToggleLeft(new GUIContent("Enable Zoom", "Determines if the player is able to zoom in while playing."), fpc.enableZoom);
@@ -587,12 +554,6 @@ public class FirstPersonController : MonoBehaviour
         fpc.zoomFOV = EditorGUILayout.Slider(new GUIContent("Zoom FOV", "Determines the field of view the camera zooms to."), fpc.zoomFOV, .1f, fpc.fov);
         fpc.zoomStepTime = EditorGUILayout.Slider(new GUIContent("Step Time", "Determines how fast the FOV transitions while zooming in."), fpc.zoomStepTime, .1f, 10f);
         GUI.enabled = true;
-
-        #endregion
-
-        #endregion
-
-        #region Movement Setup
 
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         GUILayout.Label("Movement Setup", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold, fontSize = 13 }, GUILayout.ExpandWidth(true));
@@ -605,8 +566,6 @@ public class FirstPersonController : MonoBehaviour
         GUI.enabled = true;
 
         EditorGUILayout.Space();
-
-        #region Sprint
 
         GUILayout.Label("Sprint", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold, fontSize = 13 }, GUILayout.ExpandWidth(true));
 
@@ -660,10 +619,6 @@ public class FirstPersonController : MonoBehaviour
 
         EditorGUILayout.Space();
 
-        #endregion
-
-        #region Jump
-
         GUILayout.Label("Jump", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold, fontSize = 13 }, GUILayout.ExpandWidth(true));
 
         fpc.enableJump = EditorGUILayout.ToggleLeft(new GUIContent("Enable Jump", "Determines if the player is allowed to jump."), fpc.enableJump);
@@ -675,10 +630,6 @@ public class FirstPersonController : MonoBehaviour
 
         EditorGUILayout.Space();
 
-        #endregion
-
-        #region Crouch
-
         GUILayout.Label("Crouch", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold, fontSize = 13 }, GUILayout.ExpandWidth(true));
 
         fpc.enableCrouch = EditorGUILayout.ToggleLeft(new GUIContent("Enable Crouch", "Determines if the player is allowed to crouch."), fpc.enableCrouch);
@@ -689,12 +640,6 @@ public class FirstPersonController : MonoBehaviour
         fpc.crouchHeight = EditorGUILayout.Slider(new GUIContent("Crouch Height", "Determines the y scale of the player object when crouched."), fpc.crouchHeight, .1f, 1);
         fpc.speedReduction = EditorGUILayout.Slider(new GUIContent("Speed Reduction", "Determines the percent 'Walk Speed' is reduced by. 1 being no reduction, and .5 being half."), fpc.speedReduction, .1f, 1);
         GUI.enabled = true;
-
-        #endregion
-
-        #endregion
-
-        #region Head Bob
 
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
@@ -710,7 +655,6 @@ public class FirstPersonController : MonoBehaviour
         fpc.bobAmount = EditorGUILayout.Vector3Field(new GUIContent("Bob Amount", "Determines the amount the joint moves in both directions on every axes."), fpc.bobAmount);
         GUI.enabled = true;
 
-        #endregion
 
         //Sets any changes from the prefab
         if(GUI.changed)
