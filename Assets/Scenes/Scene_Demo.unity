@@ -1270,10 +1270,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4dc1ce92b8cb1749ac5f3089644b34e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CrawlerManager
-  count: 20000
-  mesh: {fileID: 680470266113572073, guid: 72c129353dbd5564ba3a7f9841ef6591, type: 3}
-  material: {fileID: 2100000, guid: 1e788f16c70c4c04086a751cf19517f5, type: 2}
-  scaleFactor: 10
+  count: 5000
+  spawningRadius: 10
   turnSpeed: 360
   wanderRadius: 5
   arriveThreshold: 0.05
@@ -1286,6 +1284,9 @@ MonoBehaviour:
   minFleeingSpeed: 4
   maxFleeingSpeed: 5
   fleringRadiusTransitionDuration: 0.4
+  mesh: {fileID: 680470266113572073, guid: 72c129353dbd5564ba3a7f9841ef6591, type: 3}
+  material: {fileID: 2100000, guid: 1e788f16c70c4c04086a751cf19517f5, type: 2}
+  scaleFactor: 10
   FirstPersonController: {fileID: 1034941807}
 --- !u!4 &508554642
 Transform:
@@ -1296,7 +1297,7 @@ Transform:
   m_GameObject: {fileID: 508554640}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.23, y: 1.17, z: 9.28}
+  m_LocalPosition: {x: -10.77, y: 1.17, z: -5.67}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

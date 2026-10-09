@@ -11,12 +11,9 @@ using Random = UnityEngine.Random;
 
 public class CrawlerManager : MonoBehaviour
 {
+    [Header("Spawn")]
     [SerializeField] public int count = 6000;
-
-    [Header("Graphic")]
-    [SerializeField] Mesh mesh;
-    [SerializeField] Material material;
-    [SerializeField] float scaleFactor = 0.1f;
+    [SerializeField] float spawningRadius = 36f;
 
     [Header("Wandering")]
     [SerializeField] float turnSpeed = 360f;
@@ -33,6 +30,11 @@ public class CrawlerManager : MonoBehaviour
     [SerializeField] float minFleeingSpeed = 2.8f;
     [SerializeField] float maxFleeingSpeed = 3.1f;
     [SerializeField] float fleringRadiusTransitionDuration = 0.4f;
+
+    [Header("Graphic")]
+    [SerializeField] Mesh mesh;
+    [SerializeField] Material material;
+    [SerializeField] float scaleFactor = 0.1f;
 
     [Header("References")]
     [SerializeField] FirstPersonController FirstPersonController;
@@ -100,6 +102,22 @@ public class CrawlerManager : MonoBehaviour
         crawlerMatrices[crawlerIndex] = Matrix4x4.TRS(crawlerPositions[crawlerIndex], crawlerRotations[crawlerIndex], crawlerScales[crawlerIndex]);
     }
 
+    void InitializeCrawlers()
+    {
+        Vector3 actorPosition = FirstPersonController.transform.position;
+        for (int i = 0; i < count; i++)
+        {
+            Vector2 RandomPositionInRadius = Random.insideUnitCircle * spawningRadius;
+            Vector3 randomPosition = actorPosition + new Vector3(RandomPositionInRadius.x, 0.0f, RandomPositionInRadius.y);
+            crawlerPositions[i] = GetClosestPointInNavMesh(randomPosition);
+            crawlerPositionTargets[i] = PickNewTarget_Random(crawlerPositions[i]);
+            SetCrawlerWalkSpeed(i);
+            crawlerRotations[i] = Quaternion.identity;
+            crawlerScales[i] = Vector3.one * scaleFactor;
+            FillMatrixFromIndex(i);
+        }
+    }
+
     void Start()
     {
         if (!enabled)
@@ -120,16 +138,7 @@ public class CrawlerManager : MonoBehaviour
         crawlerScales = new Vector3[count];
         crawlerMatrices = new Matrix4x4[count];
 
-        for (int i = 0; i < count; i++)
-        {
-            Vector3 randomPosition = Random.insideUnitSphere * 50f;
-            crawlerPositions[i] = GetClosestPointInNavMesh(randomPosition);
-            crawlerPositionTargets[i] = PickNewTarget_Random(crawlerPositions[i]);
-            SetCrawlerWalkSpeed(i);
-            crawlerRotations[i] = Quaternion.identity;
-            crawlerScales[i] = Vector3.one * scaleFactor;
-            FillMatrixFromIndex(i);
-        }
+        InitializeCrawlers();
 
         kdTree = new KDTree(crawlerPositions, MAX_INSTANCE_COUNT_BY_KD_TREE);
     }
