@@ -1273,8 +1273,8 @@ MonoBehaviour:
   enabled: 1
   count: 3000
   mesh: {fileID: 2368057514719792051, guid: 72c129353dbd5564ba3a7f9841ef6591, type: 3}
-  material: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
-  scaleFactor: 0.1
+  material: {fileID: 2100000, guid: 7492e75be9564b348a6641fc2d8abf5c, type: 2}
+  scaleFactor: 10
   turnSpeed: 360
   wanderRadius: 5
   arriveThreshold: 0.05

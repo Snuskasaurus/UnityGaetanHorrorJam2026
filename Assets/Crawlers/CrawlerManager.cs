@@ -176,8 +176,8 @@ public class CrawlerManager : MonoBehaviour
             Vector3 flatDirection = new Vector3(toTarget.x, 0f, toTarget.z);
             if (flatDirection.sqrMagnitude > 0.0001f)
             {
-                Quaternion desired = Quaternion.LookRotation(flatDirection);
-                crawlerRotations[i] = Quaternion.RotateTowards(crawlerRotations[i], desired, turnSpeed * dt);
+                //Quaternion desired = Quaternion.LookRotation(flatDirection);
+                //crawlerRotations[i] = Quaternion.RotateTowards(crawlerRotations[i], desired, turnSpeed * dt);
             }
 
             FillMatrixFromIndex(i);
