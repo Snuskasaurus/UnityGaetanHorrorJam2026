@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 2aa9343f48b2870438469b670a31f109
+guid: 192bd69b6f58d174f804fb84acf33bc9
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -71,19 +71,6 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 64
-    resizeAlgorithm: 1
-    textureFormat: 3
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -96,7 +83,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: WindowsStoreApps
+    buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
