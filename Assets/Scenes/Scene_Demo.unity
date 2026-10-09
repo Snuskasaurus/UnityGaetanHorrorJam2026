@@ -1270,7 +1270,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4dc1ce92b8cb1749ac5f3089644b34e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CrawlerManager
-  count: 5000
+  count: 20000
   spawningRadius: 10
   turnSpeed: 360
   wanderRadius: 5
