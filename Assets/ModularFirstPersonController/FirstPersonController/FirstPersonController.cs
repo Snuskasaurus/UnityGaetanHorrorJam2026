@@ -11,6 +11,8 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using Assets;
 using System.Threading.Tasks;
+using UnityEngine.UIElements.Experimental;
+
 
 
 
@@ -66,6 +68,10 @@ public class FirstPersonController : MonoBehaviour
 
     // Internal Variables
     private bool isWalking = false;
+    private float walkSpeedProgress = 0f;
+    private float walkEasingDuration = 1f;
+
+    private Vector3 linearVelocity;
 
     #region Sprint
 
@@ -370,74 +376,44 @@ public class FirstPersonController : MonoBehaviour
         }
     }
 
+    private Vector3 lastInputVelocity;
+
     void FixedUpdate()
     {
         if (playerCanMove)
         {
+
             // Calculate how fast we should be moving
             Vector3 inputVelocity = new Vector3(InputManagerSingleton.PlayerMove.ReadValue<Vector2>().x, 0, InputManagerSingleton.PlayerMove.ReadValue<Vector2>().y);
-
+            
             // Checks if player is walking and isGrounded
             // Will allow head bob
+            float speedFactor = 1f;
             if (inputVelocity.x != 0 || inputVelocity.z != 0 && isGrounded)
             {
+                lastInputVelocity = inputVelocity;
                 isWalking = true;
+                walkSpeedProgress = Mathf.Clamp01(walkSpeedProgress + Time.deltaTime / walkEasingDuration);
+                speedFactor = Easing.OutCubic(walkSpeedProgress);
             }
             else
             {
+                inputVelocity = lastInputVelocity;
                 isWalking = false;
+                walkSpeedProgress = Mathf.Clamp01(walkSpeedProgress - Time.deltaTime / (walkEasingDuration * (isGrounded ? 1f : 4f)));
+                speedFactor = Easing.InCubic(walkSpeedProgress);
             }
+            Debug.Log($"Input Velocity: {inputVelocity}, Walk Speed Progress: {walkSpeedProgress}, Easing: {Easing.InCubic(walkSpeedProgress)}");
+            float speed = isSprinting ? sprintSpeed : walkSpeed;
+            inputVelocity = transform.TransformDirection(inputVelocity) * speed * speedFactor;
+            // Apply a force that attempts to reach our target velocity
+            Vector3 velocity = rb.linearVelocity;
+            Vector3 velocityChange = (inputVelocity - velocity) ;
+            velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
+            velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
+            velocityChange.y = 0;
 
-            // All movement calculations shile sprint is active
-            if (enableSprint && isSprinting && sprintRemaining > 0f && !isSprintCooldown)
-            {
-                inputVelocity = transform.TransformDirection(inputVelocity) * sprintSpeed;
-
-                // Apply a force that attempts to reach our target velocity
-                Vector3 velocity = rb.linearVelocity;
-                Vector3 velocityChange = (inputVelocity - velocity);
-                velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
-                velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
-                velocityChange.y = 0;
-
-                // Player is only moving when valocity change != 0
-                // Makes sure fov change only happens during movement
-                if (velocityChange.x != 0 || velocityChange.z != 0)
-                {
-                    if (isCrouched)
-                    {
-                        Crouch();
-                    }
-
-                    if (hideBarWhenFull && !unlimitedSprint)
-                    {
-                        sprintBarCG.alpha += 5 * Time.deltaTime;
-                    }
-                }
-
-                rb.AddForce(velocityChange, ForceMode.VelocityChange);
-            }
-            // All movement calculations while walking
-            else
-            {
-                isSprinting = false;
-
-                if (hideBarWhenFull && sprintRemaining == sprintDuration)
-                {
-                    sprintBarCG.alpha -= 3 * Time.deltaTime;
-                }
-
-                inputVelocity = transform.TransformDirection(inputVelocity) * walkSpeed;
-
-                // Apply a force that attempts to reach our target velocity
-                Vector3 velocity = rb.linearVelocity;
-                Vector3 velocityChange = (inputVelocity - velocity);
-                velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
-                velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
-                velocityChange.y = 0;
-
-                rb.AddForce(velocityChange, ForceMode.VelocityChange);
-            }
+            rb.AddForce(velocityChange, ForceMode.VelocityChange);
         }
     }
 
