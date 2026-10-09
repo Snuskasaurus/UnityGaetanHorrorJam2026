@@ -152,9 +152,9 @@ public class CrawlerManager : MonoBehaviour
         kdQuery.Radius(kdTree, actorPosition, fleeingRadius, kdResults);
         for (int i = 0; i < kdResults.Count; i++)
         {
-            int idx = kdResults[i];
-            crawlerPositionTargets[idx] = PickNewTarget_AwayFromPosition(crawlerPositions[idx], actorPosition);
-            SetCrawlerFleeSpeed(i);
+            int crawlerIndex = kdResults[i];
+            crawlerPositionTargets[crawlerIndex] = PickNewTarget_AwayFromPosition(crawlerPositions[crawlerIndex], actorPosition);
+            SetCrawlerFleeSpeed(crawlerIndex);
         }
 
         float dt = Time.deltaTime;
