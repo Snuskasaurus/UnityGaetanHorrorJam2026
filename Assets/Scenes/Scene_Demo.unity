@@ -1271,9 +1271,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CrawlerManager
   enabled: 1
-  count: 3000
+  count: 10000
   mesh: {fileID: 2368057514719792051, guid: 64dcb0ce50394f9468aa31a0d5f88bd9, type: 3}
-  material: {fileID: 2100000, guid: 7492e75be9564b348a6641fc2d8abf5c, type: 2}
+  material: {fileID: 2100000, guid: 1e788f16c70c4c04086a751cf19517f5, type: 2}
   scaleFactor: 10
   turnSpeed: 360
   wanderRadius: 5
