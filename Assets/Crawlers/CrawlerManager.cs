@@ -1,53 +1,66 @@
+using System;
 using System.Collections.Generic;
 using DataStructures.ViliWonka.KDTree;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering;
+using UnityEngine.Serialization;
+using UnityEngine.UIElements.Experimental;
+using Random = UnityEngine.Random;
 
 public class CrawlerManager : MonoBehaviour
 {
-    public bool enabled = true;
-    public int count = 6000;
+    [SerializeField] public int count = 6000;
 
     [Header("Graphic")]
-    public Mesh mesh;
-    public Material material;
-    public float scaleFactor = 0.1f;
+    [SerializeField] Mesh mesh;
+    [SerializeField] Material material;
+    [SerializeField] float scaleFactor = 0.1f;
 
-    [Header("Movement")]
-    public float turnSpeed = 360f;
-    public float wanderRadius = 5f;
-    public float arriveThreshold = 0.05f;
-    public float fleeingRadius = 10.0f;
-    public float fleeingDistance = 10.0f;
-
-    [Header("Movement Speeds")]
-    public float minWalkSpeed = 1.5f;
-    public float maxWalkSpeed = 1.8f;
-    public float minFleeSpeed = 2.8f;
-    public float maxFleeSpeed = 3.1f;
+    [Header("Wandering")]
+    [SerializeField] float turnSpeed = 360f;
+    [SerializeField] float wanderRadius = 5f;
+    [SerializeField] float arriveThreshold = 0.05f;
+    [SerializeField] float minWalkSpeed = 1.5f;
+    [SerializeField] float maxWalkSpeed = 1.8f;
+    
+    [Header("Fleeing")]
+    [SerializeField] float fleeingRadiusStatic = 1.0f;
+    [SerializeField] float fleeingRadiusWalking = 4.0f;
+    [SerializeField] float fleeingRadiusSprinting = 10.0f;
+    [SerializeField] float fleeingDistance = 10.0f;
+    [SerializeField] float minFleeingSpeed = 2.8f;
+    [SerializeField] float maxFleeingSpeed = 3.1f;
+    [SerializeField] float fleringRadiusTransitionDuration = 0.4f;
 
     [Header("References")]
-    public FirstPersonController FirstPersonController;
+    [SerializeField] FirstPersonController FirstPersonController;
 
-    private const int MAX_INSTANCE_COUNT_BY_GPU_CALL = 1023;
-    private const int MAX_INSTANCE_COUNT_BY_KD_TREE = 1023;
+    const int MAX_INSTANCE_COUNT_BY_GPU_CALL = 1023;
+    const int MAX_INSTANCE_COUNT_BY_KD_TREE = 1023;
 
-    private Vector3[] crawlerPositions;
-    private Vector3[] crawlerPositionTargets;
-    private float[] crawlerSpeeds;
-    private Quaternion[] crawlerRotations;
-    private Vector3[] crawlerScales;
-    private Matrix4x4[] crawlerMatrices;
-    private RenderParams renderParams;
+    float fleeingRadiusFrom = 0.0f;
+    float fleeingRadiusTo = 0.0f;
+    float radiusTransitionT = 1.0f;
+
+    Vector3[] crawlerPositions;
+    Vector3[] crawlerPositionTargets;
+    float[] crawlerSpeeds;
+    Quaternion[] crawlerRotations;
+    Vector3[] crawlerScales;
+    Matrix4x4[] crawlerMatrices;
+    RenderParams renderParams;
+
+    private float fleeingRadius = 0;
 
     KDTree kdTree;
-    KDQuery kdQuery = new KDQuery();
-    List<int> kdResults = new List<int>();
+    KDQuery kdTreeQuery = new KDQuery();
+    List<int> kdTreeResults = new List<int>();
 
-    private Vector3 GetClosestPointInNavMesh(Vector3 source, float maxDistance = 100f)
+    private Vector3 GetClosestPointInNavMesh(Vector3 source)
     {
-        if (NavMesh.SamplePosition(source, out NavMeshHit hit, maxDistance, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(source, out NavMeshHit hit, 999999.0f, NavMesh.AllAreas))
         {
             return hit.position;
         }
@@ -60,11 +73,7 @@ public class CrawlerManager : MonoBehaviour
         Vector2 offset = Random.insideUnitCircle * wanderRadius;
         Vector3 candidate = crawlerPosition + new Vector3(offset.x, 0f, offset.y);
 
-        if (NavMesh.SamplePosition(candidate, out NavMeshHit hit, wanderRadius, NavMesh.AllAreas))
-        {
-            return hit.position;
-        }
-        return crawlerPosition;
+        return GetClosestPointInNavMesh(candidate);
     }
 
     private Vector3 PickNewTarget_AwayFromPosition(Vector3 crawlerPosition, Vector3 position)
@@ -73,11 +82,7 @@ public class CrawlerManager : MonoBehaviour
         Vector3 awayVector = crawlerPositionToPosition.normalized;
         Vector3 candidate = crawlerPosition + awayVector * fleeingDistance;
 
-        if (NavMesh.SamplePosition(candidate, out NavMeshHit hit, wanderRadius, NavMesh.AllAreas))
-        {
-            return hit.position;
-        }
-        return position;
+        return GetClosestPointInNavMesh(candidate);
     }
 
     private void SetCrawlerWalkSpeed(int crawlerIndex)
@@ -87,7 +92,7 @@ public class CrawlerManager : MonoBehaviour
 
     private void SetCrawlerFleeSpeed(int crawlerIndex)
     {
-        crawlerSpeeds[crawlerIndex] = Random.Range(minFleeSpeed, maxFleeSpeed);
+        crawlerSpeeds[crawlerIndex] = Random.Range(minFleeingSpeed, maxFleeingSpeed);
     }
 
     private void FillMatrixFromIndex(int crawlerIndex)
@@ -125,11 +130,12 @@ public class CrawlerManager : MonoBehaviour
             crawlerScales[i] = Vector3.one * scaleFactor;
             FillMatrixFromIndex(i);
         }
+
+        kdTree = new KDTree(crawlerPositions, MAX_INSTANCE_COUNT_BY_KD_TREE);
     }
 
     private void RebuildKDTree()
     {
-        kdTree = new KDTree(crawlerPositions, MAX_INSTANCE_COUNT_BY_KD_TREE);
         for(int i = 0; i < kdTree.Count; i++) 
         {
             kdTree.Points[i] = crawlerPositions[i];
@@ -137,26 +143,65 @@ public class CrawlerManager : MonoBehaviour
         kdTree.Rebuild();
     }
 
-    void Update()
+    private void UpdateFleeingRadius()
+    {
+        // Sprinting first: if IsWalking() is also true while sprinting, the old order never reached the sprint branch
+        float target;
+        if (FirstPersonController.IsSprinting())
+            target = fleeingRadiusSprinting;
+        else if (FirstPersonController.IsWalking())
+            target = fleeingRadiusWalking;
+        else
+            target = fleeingRadiusStatic;
+
+        if (!Mathf.Approximately(target, fleeingRadiusTo))
+        {
+            fleeingRadiusFrom = fleeingRadius;
+            fleeingRadiusTo = target;
+            radiusTransitionT = 0f;
+        }
+
+        if (radiusTransitionT < 1f)
+        {
+            radiusTransitionT = Mathf.Min(1f, radiusTransitionT + Time.deltaTime / fleringRadiusTransitionDuration);
+            fleeingRadius = Mathf.Lerp(fleeingRadiusFrom, fleeingRadiusTo, Easing.OutCirc(radiusTransitionT));
+        }
+    }
+
+    private void FixedUpdate()
     {
         if (!enabled)
         {
             return;
         }
 
+        UpdateFleeingRadius();
+
         RebuildKDTree();
 
         Vector3 actorPosition = FirstPersonController.transform.position;
 
-        kdResults.Clear();
-        kdQuery.Radius(kdTree, actorPosition, fleeingRadius, kdResults);
-        for (int i = 0; i < kdResults.Count; i++)
+        float sqrfleeingRadius = fleeingRadius * fleeingRadius;
+
+        kdTreeResults.Clear();
+        kdTreeQuery.Radius(kdTree, actorPosition, fleeingRadius, kdTreeResults);
+        for (int i = 0; i < kdTreeResults.Count; i++)
         {
-            int crawlerIndex = kdResults[i];
-            crawlerPositionTargets[crawlerIndex] = PickNewTarget_AwayFromPosition(crawlerPositions[crawlerIndex], actorPosition);
+            int crawlerIndex = kdTreeResults[i];
+            ref Vector3 crawlerPosition = ref crawlerPositions[crawlerIndex];
+
+            float sqrDistance = (crawlerPosition - actorPosition).sqrMagnitude;
+            float randomPercentage = Random.Range(0.2f, 1.0f);
+            if (sqrDistance > sqrfleeingRadius * randomPercentage)
+                continue;
+
+            crawlerPositionTargets[crawlerIndex] = PickNewTarget_AwayFromPosition(crawlerPosition, actorPosition);
             SetCrawlerFleeSpeed(crawlerIndex);
         }
+    }
 
+    private void Update()
+    {
         float dt = Time.deltaTime;
         float sqrThreshold = arriveThreshold * arriveThreshold;
 
@@ -182,7 +227,6 @@ public class CrawlerManager : MonoBehaviour
 
             FillMatrixFromIndex(i);
         }
-
 
         for (int i = 0; i < count; i += MAX_INSTANCE_COUNT_BY_GPU_CALL)
         {
