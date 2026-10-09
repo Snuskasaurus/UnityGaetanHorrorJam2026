@@ -1271,7 +1271,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CrawlerManager
   enabled: 1
-  count: 10000
+  count: 20000
   mesh: {fileID: 680470266113572073, guid: 72c129353dbd5564ba3a7f9841ef6591, type: 3}
   material: {fileID: 2100000, guid: 1e788f16c70c4c04086a751cf19517f5, type: 2}
   scaleFactor: 10
@@ -1280,8 +1280,8 @@ MonoBehaviour:
   arriveThreshold: 0.05
   fleeingRadius: 3
   fleeingDistance: 6
-  minWalkSpeed: 1.5
-  maxWalkSpeed: 1.8
+  minWalkSpeed: 3
+  maxWalkSpeed: 2.5
   minFleeSpeed: 5
   maxFleeSpeed: 15
   FirstPersonController: {fileID: 1034941807}
