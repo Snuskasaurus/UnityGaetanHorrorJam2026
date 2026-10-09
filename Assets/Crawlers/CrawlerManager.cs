@@ -121,7 +121,7 @@ public class CrawlerManager : MonoBehaviour
             crawlerPositions[i] = GetClosestPointInNavMesh(randomPosition);
             crawlerPositionTargets[i] = PickNewTarget_Random(crawlerPositions[i]);
             SetCrawlerWalkSpeed(i);
-            crawlerRotations[i] = Random.rotation;
+            crawlerRotations[i] = Quaternion.identity;
             crawlerScales[i] = Vector3.one * scaleFactor;
             FillMatrixFromIndex(i);
         }
@@ -176,8 +176,8 @@ public class CrawlerManager : MonoBehaviour
             Vector3 flatDirection = new Vector3(toTarget.x, 0f, toTarget.z);
             if (flatDirection.sqrMagnitude > 0.0001f)
             {
-                //Quaternion desired = Quaternion.LookRotation(flatDirection);
-                //crawlerRotations[i] = Quaternion.RotateTowards(crawlerRotations[i], desired, turnSpeed * dt);
+                Quaternion desired = Quaternion.LookRotation(flatDirection);
+                crawlerRotations[i] = Quaternion.RotateTowards(crawlerRotations[i], desired, turnSpeed * dt);
             }
 
             FillMatrixFromIndex(i);
