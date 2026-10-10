@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8973718623070916966
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4018489788031124524}
+  - component: {fileID: 7597826966781834038}
+  m_Layer: 0
+  m_Name: CrawlerManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4018489788031124524
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8973718623070916966}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -10.77, y: 1.17, z: -5.67}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7597826966781834038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8973718623070916966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4dc1ce92b8cb1749ac5f3089644b34e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CrawlerManager
+  crawlerCount: 20000
+  spawnRadius: 36
+  despawnRadius: 200
+  turnSpeed: 360
+  wanderRadius: 5
+  arriveThreshold: 0.05
+  minWalkSpeed: 2
+  maxWalkSpeed: 3
+  fleeingRadiusStatic: 1
+  fleeingRadiusWalking: 4
+  fleeingRadiusSprinting: 10
+  fleeingDistance: 10
+  minFleeingSpeed: 4
+  maxFleeingSpeed: 5
+  fleeingRadiusTransitionDuration: 0.4
+  fleeingCooldown: 1
+  mesh: {fileID: 680470266113572073, guid: 72c129353dbd5564ba3a7f9841ef6591, type: 3}
+  material: {fileID: 2100000, guid: 1e788f16c70c4c04086a751cf19517f5, type: 2}
+  scaleFactor: 10
+  FirstPersonController: {fileID: 0}
