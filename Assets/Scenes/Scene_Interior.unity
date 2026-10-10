@@ -164,7 +164,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.033333335
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: 37b96b1478de22e4b9f3523f6eb8a4f6, type: 2}
   m_BuildHeightMesh: 0
@@ -1109,16 +1109,32 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7597826966781834038, guid: 7303803b6e47a7d41970a8f55c49bd73, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7597826966781834038, guid: 7303803b6e47a7d41970a8f55c49bd73, type: 3}
+      propertyPath: spawnRadius
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 7597826966781834038, guid: 7303803b6e47a7d41970a8f55c49bd73, type: 3}
       propertyPath: crawlerCount
-      value: 2000
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7597826966781834038, guid: 7303803b6e47a7d41970a8f55c49bd73, type: 3}
+      propertyPath: despawnRadius
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 7597826966781834038, guid: 7303803b6e47a7d41970a8f55c49bd73, type: 3}
+      propertyPath: fleeingRadiusWalking
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7597826966781834038, guid: 7303803b6e47a7d41970a8f55c49bd73, type: 3}
       propertyPath: FirstPersonController
       value: 
       objectReference: {fileID: 1363960196}
+    - target: {fileID: 7597826966781834038, guid: 7303803b6e47a7d41970a8f55c49bd73, type: 3}
+      propertyPath: fleeingRadiusSprinting
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 8973718623070916966, guid: 7303803b6e47a7d41970a8f55c49bd73, type: 3}
       propertyPath: m_Name
       value: CrawlerManager
