@@ -403,7 +403,6 @@ public class FirstPersonController : MonoBehaviour
                 walkSpeedProgress = Mathf.Clamp01(walkSpeedProgress - Time.deltaTime / (walkEasingDuration * (isGrounded ? 1f : 4f)));
                 speedFactor = Easing.InCubic(walkSpeedProgress);
             }
-            Debug.Log($"Input Velocity: {inputVelocity}, Walk Speed Progress: {walkSpeedProgress}, Easing: {Easing.InCubic(walkSpeedProgress)}");
             float speed = isSprinting ? sprintSpeed : walkSpeed;
             inputVelocity = transform.TransformDirection(inputVelocity) * speed * speedFactor;
             // Apply a force that attempts to reach our target velocity
