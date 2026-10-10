@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3464971463105650121}
   - component: {fileID: 3460782842945482021}
   m_Layer: 0
-  m_Name: Pickup
+  m_Name: PrefabInteract
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
