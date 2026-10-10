@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-
+using UnityEngine.SceneManagement;
 
 public class MenuPrincipal : MonoBehaviour
 {
@@ -8,6 +8,13 @@ public class MenuPrincipal : MonoBehaviour
     [SerializeField] private Transform cameraMenu;
     [SerializeField] private Transform cibleJouer;
     [SerializeField] private Transform cibleQuitter;
+    [Header("Ecran de chargement")]
+
+    [SerializeField] private GameObject panelChargement;
+
+    [SerializeField] private RectTransform personnageCourse;
+    [SerializeField] private RectTransform pointDepart;
+    [SerializeField] private RectTransform pointArrivee;
 
     [Header("Reglage")]
 
@@ -56,6 +63,15 @@ public class MenuPrincipal : MonoBehaviour
     }
     public void Jouer()
     {
-        StartCoroutine(DeplacerCamera(cibleJouer));
+       StartCoroutine(JouerEtCharger());
+    }
+
+    private IEnumerator JouerEtCharger()
+    {
+        yield return StartCoroutine(DeplacerCamera(cibleJouer));
+
+        panelChargement.SetActive(true);
+
+        personnageCourse.position = pointDepart.position;
     }
 }
