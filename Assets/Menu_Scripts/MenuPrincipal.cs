@@ -12,6 +12,8 @@ public class MenuPrincipal : MonoBehaviour
     [Header("Reglage")]
 
     [SerializeField] private float dureeDeplacement = 2f; //duree de deplacement de la camera
+    [SerializeField] private AnimationCurve courbeMouvement =
+    AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
 
     private IEnumerator DeplacerCamera(Transform destination)
     {
@@ -25,19 +27,22 @@ public class MenuPrincipal : MonoBehaviour
             temps += Time.deltaTime;
 
             float progression = temps / dureeDeplacement;
+            float progresLisse = courbeMouvement.Evaluate(
+                Mathf.Clamp01(progression)
+            );
             
             //Position
             cameraMenu.position = Vector3.Lerp(
                 positionDepart,
                 destination.position,
-                progression
+                progresLisse
             );
 
             //Rotation
             cameraMenu.rotation = Quaternion.Slerp(
                 rotationDepart,
                 destination.rotation,
-                progression
+                progresLisse
             );
 
             yield return null;
