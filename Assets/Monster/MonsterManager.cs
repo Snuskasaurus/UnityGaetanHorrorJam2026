@@ -51,7 +51,7 @@ public class MonsterManager : MonoBehaviour
         monsterController = Common.FindTypeInScene<MonsterController>();
         monsterNavMeshAgent = Common.FindTypeInScene<UnityEngine.AI.NavMeshAgent>();
 
-        ChangeBehaviourState(MonsterBehaviourState.Wandering);
+        ChangeBehaviourState(DefaultBehaviour);
 
         Debug.Assert(radiusDetectionPlayer <= radiusLoosingPlayer);
     }
@@ -226,7 +226,7 @@ public class MonsterManager : MonoBehaviour
         }
     }
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR
 
     private Material debugLineMaterial;
     private GUIStyle debugLabelStyle;

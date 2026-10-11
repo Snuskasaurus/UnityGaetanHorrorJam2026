@@ -30,9 +30,8 @@ public class MovementController : MonoBehaviour
     private float crouchSpeed = 2.5f;
 
     // Events
-    public event System.Action<OnMovementStateChangedEventArgs> OnMovementStateChanged;
-    public event System.Action<AirborneState> OnAirborneStateChanged;
-
+    //public event System.Action<OnMovementStateChangedEventArgs> OnMovementStateChanged;
+    //public event System.Action<AirborneState> OnAirborneStateChanged;
 
     // Prrivate variables
     private float moveProgress = 0f;

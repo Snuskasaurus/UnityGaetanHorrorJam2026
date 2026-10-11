@@ -638,33 +638,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: PrefabInteract
       objectReference: {fileID: 0}
-    - target: {fileID: 3460782842945482021, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
-      propertyPath: InteractName
-      value: le trou du cul de francis
-      objectReference: {fileID: 0}
-    - target: {fileID: 3464971463105650121, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
-      propertyPath: m_Size.x
-      value: 3.8664184
-      objectReference: {fileID: 0}
-    - target: {fileID: 3464971463105650121, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
-      propertyPath: m_Size.y
-      value: 2.2359872
-      objectReference: {fileID: 0}
-    - target: {fileID: 3464971463105650121, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
-      propertyPath: m_Size.z
-      value: 3.1369257
-      objectReference: {fileID: 0}
-    - target: {fileID: 3464971463105650121, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
-      propertyPath: m_Center.x
-      value: 0.4398849
-      objectReference: {fileID: 0}
-    - target: {fileID: 3464971463105650121, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
-      propertyPath: m_Center.y
-      value: 0.069732666
-      objectReference: {fileID: 0}
-    - target: {fileID: 3464971463105650121, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
-      propertyPath: m_Center.z
-      value: 0.98672366
+    - target: {fileID: 826101648614673857, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6447053228965852931, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
       propertyPath: m_LocalPosition.x
@@ -856,10 +832,6 @@ PrefabInstance:
     - target: {fileID: 1442702917518248269, guid: a63271d5d14b03b4f9d4786b8de0cc0a, type: 3}
       propertyPath: m_Name
       value: Monster
-      objectReference: {fileID: 0}
-    - target: {fileID: 1510977085931473372, guid: a63271d5d14b03b4f9d4786b8de0cc0a, type: 3}
-      propertyPath: m_Speed
-      value: 2.1
       objectReference: {fileID: 0}
     - target: {fileID: 8501803517020677049, guid: a63271d5d14b03b4f9d4786b8de0cc0a, type: 3}
       propertyPath: m_LocalPosition.x
