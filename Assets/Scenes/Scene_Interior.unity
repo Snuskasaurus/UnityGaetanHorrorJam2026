@@ -14,23 +14,23 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
-  m_Fog: 1
-  m_FogColor: {r: 0.11320752, g: 0.033641856, b: 0.033641856, a: 1}
-  m_FogMode: 3
+  m_Fog: 0
+  m_FogColor: {r: 0, g: 0, b: 0, a: 1}
+  m_FogMode: 1
   m_FogDensity: 0.281
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.254717, g: 0.14013492, b: 0.13336597, a: 1}
+  m_AmbientSkyColor: {r: 0.014150947, g: 0.0014749538, b: 0.00060074753, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
-  m_HaloStrength: 0.5
+  m_HaloStrength: 0.42
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
-  m_HaloTexture: {fileID: 0}
+  m_HaloTexture: {fileID: 2800000, guid: be4ce60e2c9768c44b9b10b9c5258045, type: 3}
   m_SpotCookie: {fileID: 10001, guid: 0000000000000000e000000000000000, type: 0}
   m_DefaultReflectionMode: 1
   m_DefaultReflectionResolution: 128
@@ -553,6 +553,91 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7c6065c5596cb6d4eba9fd6a0f1babbd, type: 3}
   m_PrefabInstance: {fileID: 1344945728}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1367094453
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 826101648614673857, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
+      propertyPath: m_Name
+      value: PrefabInteract
+      objectReference: {fileID: 0}
+    - target: {fileID: 3460782842945482021, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
+      propertyPath: InteractName
+      value: le trou du cul de francis
+      objectReference: {fileID: 0}
+    - target: {fileID: 3464971463105650121, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
+      propertyPath: m_Size.x
+      value: 3.8664184
+      objectReference: {fileID: 0}
+    - target: {fileID: 3464971463105650121, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
+      propertyPath: m_Size.y
+      value: 2.2359872
+      objectReference: {fileID: 0}
+    - target: {fileID: 3464971463105650121, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
+      propertyPath: m_Size.z
+      value: 3.1369257
+      objectReference: {fileID: 0}
+    - target: {fileID: 3464971463105650121, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
+      propertyPath: m_Center.x
+      value: 0.4398849
+      objectReference: {fileID: 0}
+    - target: {fileID: 3464971463105650121, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
+      propertyPath: m_Center.y
+      value: 0.069732666
+      objectReference: {fileID: 0}
+    - target: {fileID: 3464971463105650121, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
+      propertyPath: m_Center.z
+      value: 0.98672366
+      objectReference: {fileID: 0}
+    - target: {fileID: 6447053228965852931, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 6.63
+      objectReference: {fileID: 0}
+    - target: {fileID: 6447053228965852931, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.799
+      objectReference: {fileID: 0}
+    - target: {fileID: 6447053228965852931, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 13.46
+      objectReference: {fileID: 0}
+    - target: {fileID: 6447053228965852931, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.008477643
+      objectReference: {fileID: 0}
+    - target: {fileID: 6447053228965852931, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6447053228965852931, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.99996406
+      objectReference: {fileID: 0}
+    - target: {fileID: 6447053228965852931, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6447053228965852931, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6447053228965852931, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -179.029
+      objectReference: {fileID: 0}
+    - target: {fileID: 6447053228965852931, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6868e46a3cb50b14794b93ca5f83e572, type: 3}
 --- !u!1001 &1575416016
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -851,10 +936,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6054794947889424220, guid: d4c17d0972f28db47814289039b795c7, type: 3}
-      propertyPath: scaleFactor
-      value: 5
-      objectReference: {fileID: 0}
     - target: {fileID: 8620545074872585030, guid: d4c17d0972f28db47814289039b795c7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.52
@@ -899,10 +980,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Game
       objectReference: {fileID: 0}
-    - target: {fileID: 8876994351575462233, guid: d4c17d0972f28db47814289039b795c7, type: 3}
-      propertyPath: m_NavMeshData
-      value: 
-      objectReference: {fileID: 23800000, guid: facdeb099d553694d9933266a319b8a5, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -914,3 +991,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 1871352451}
   - {fileID: 1808563591}
+  - {fileID: 1367094453}
