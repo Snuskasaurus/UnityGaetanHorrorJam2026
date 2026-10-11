@@ -37,8 +37,8 @@ public class CrawlerManager : MonoBehaviour
     [SerializeField] Material material;
     [SerializeField] float scaleFactor = 0.1f;
 
-    [Header("References")]
-    [SerializeField] FirstPersonController FirstPersonController;
+    // References
+    PlayerController playerController;
 
     const int MAX_INSTANCE_COUNT_BY_GPU_CALL = 1023;
     const int MAX_INSTANCE_COUNT_BY_KD_TREE = 1023;
@@ -128,6 +128,8 @@ public class CrawlerManager : MonoBehaviour
 
     void Start()
     {
+        playerController = Common.FindTypeInScene<PlayerController>();
+
         renderParams = new RenderParams(material)
         {
             shadowCastingMode = ShadowCastingMode.Off,
@@ -143,7 +145,7 @@ public class CrawlerManager : MonoBehaviour
         crawlerBoolCache = new bool[crawlerCount];
         crawlerTimeSinceLastFleeing = new float[crawlerCount];
 
-        Vector3 actorPosition = FirstPersonController.transform.position;
+        Vector3 actorPosition = playerController.transform.position;
         for (int i = 0; i < crawlerCount; i++)
         {
             InitializeCrawler(i, actorPosition);
@@ -164,17 +166,20 @@ public class CrawlerManager : MonoBehaviour
     private void UpdateFleeingRadius()
     {
         float target;
-        if (FirstPersonController.IsSprinting())
+        switch (playerController.CurrentMovementState)
         {
-            target = fleeingRadiusSprinting;
-        }
-        else if (FirstPersonController.IsWalking())
-        {
-            target = fleeingRadiusWalking;
-        }
-        else
-        {
-            target = fleeingRadiusStatic;
+            case MovementState.Crouching:
+                target = fleeingRadiusStatic;
+                break;
+            case MovementState.Walking:
+                target = fleeingRadiusWalking;
+                break;
+            case MovementState.Running:
+                target = fleeingRadiusSprinting;
+                break;
+            default:
+                target = fleeingRadiusStatic;
+                break;
         }
 
         if (!Mathf.Approximately(target, fleeingRadiusTo))
@@ -194,7 +199,7 @@ public class CrawlerManager : MonoBehaviour
     private void ReplaceFarCrawlers()
     {
         Array.Fill(crawlerBoolCache, false);
-        Vector3 actorPosition = FirstPersonController.transform.position;
+        Vector3 actorPosition = playerController.transform.position;
         kdTreeQuery.Radius(kdTree, actorPosition, despawnRadius, kdTreeResults);
         for (int i = 0; i < kdTreeResults.Count; i++)
         {
@@ -224,7 +229,7 @@ public class CrawlerManager : MonoBehaviour
     {
         using var ProfilerMarker = ProfilerMarker_HandleFleeingCrawlers.Auto();
 
-        Vector3 actorPosition = FirstPersonController.transform.position;
+        Vector3 actorPosition = playerController.transform.position;
         float sqrFleeingRadius = fleeingRadius * fleeingRadius;
 
         float currentTime = Time.unscaledTime;

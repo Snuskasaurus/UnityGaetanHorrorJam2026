@@ -6,7 +6,7 @@ public class InteractComponent : MonoBehaviour
     [Header("Selection")]
     [SerializeField] string InteractName;
 
-    PickupManager pickupManager;
+    InteractManager pickupManager;
 
     public string GetInteractName() { return InteractName; }
 
@@ -28,7 +28,7 @@ public class InteractComponent : MonoBehaviour
 
     private void Start()
     {
-        pickupManager = FindAnyObjectByType<PickupManager>();
+        pickupManager = FindAnyObjectByType<InteractManager>();
         if (pickupManager == null)
         {
             Debug.LogError("Pickup component failed to find manager", this);
