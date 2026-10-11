@@ -2336,6 +2336,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: MonsterManager
       objectReference: {fileID: 0}
+    - target: {fileID: 5608880798388196166, guid: 63384e8d3669ca24ea5ea880aeab191a, type: 3}
+      propertyPath: radiusLoosingPlayer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5608880798388196166, guid: 63384e8d3669ca24ea5ea880aeab191a, type: 3}
+      propertyPath: radiusTargetReached
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5608880798388196166, guid: 63384e8d3669ca24ea5ea880aeab191a, type: 3}
+      propertyPath: radiusDetectionPlayer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 8490929336178307555, guid: 63384e8d3669ca24ea5ea880aeab191a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.10619
