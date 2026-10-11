@@ -226,42 +226,44 @@ public class MonsterManager : MonoBehaviour
         }
     }
 
+    private static Color GetDebugStateColor(MonsterBehaviourState state)
+    {
 #if UNITY_EDITOR
-
-    private Material debugLineMaterial;
-    private GUIStyle debugLabelStyle;
+        switch (state)
+        {
+            case MonsterBehaviourState.Wandering: return Color.green;
+            case MonsterBehaviourState.Chasing:   return Color.red;
+            default:                              return Color.gray;
+        }
+#endif
+    }
 
     private void OnGUI()
     {
+#if UNITY_EDITOR
         if (!showDebug)
             return;
+        
+        Camera mainCamera = Camera.main;
 
-        Camera camera = Camera.main;
+        DebugDraw.InitializeDebugs_IFN();
 
         Vector3 monsterPosition = monsterController.transform.position;
         Vector3 playerPosition = playerController.transform.position;
         Color stateColor = GetDebugStateColor(CurrentMonsterBehaviourState);
 
-        EnsureDebugResources();
-
-        debugLineMaterial.SetPass(0);
-        GL.Begin(GL.LINES);
+        DebugDraw.BeginLines();
 
         if (monsterNavMeshAgent.hasPath)
         {
             Vector3[] corners = monsterNavMeshAgent.path.corners;
             for (int i = 0; i < corners.Length - 1; i++)
             {
-                DebugLine(camera, corners[i], corners[i + 1], Color.cyan);
+                DebugDraw.DebugLine(mainCamera, corners[i], corners[i + 1], Color.cyan);
             }
         }
 
-        DebugCross(camera, monsterPosition, 0.5f, stateColor);
-
-        if (CurrentMonsterBehaviourState == MonsterBehaviourState.Wandering)
-        {
-            DebugCross(camera, targetPosition, 0.5f, Color.cyan);
-        }
+        DebugDraw.DebugCross(mainCamera, monsterPosition, 0.5f, stateColor);
 
         if (showDebugRadius)
         {
@@ -269,105 +271,25 @@ public class MonsterManager : MonoBehaviour
             {
                 case MonsterBehaviourState.Wandering:
                 {
-                    DebugCircle(camera, monsterPosition, radiusDetectionPlayer, Color.yellow);
-                    DebugCircle(camera, targetPosition, radiusTargetReached, Color.cyan);
+                    DebugDraw.DebugCircle(mainCamera, monsterPosition, radiusDetectionPlayer, Color.yellow);
+                    DebugDraw.DebugCircle(mainCamera, targetPosition, radiusTargetReached, Color.cyan);
                 } break;
                 case MonsterBehaviourState.Chasing:
                 {
-                    DebugCircle(camera, monsterPosition, radiusLoosingPlayer, Color.red);
+                    DebugDraw.DebugCircle(mainCamera, monsterPosition, radiusLoosingPlayer, Color.red);
                 } break;
             }
         }
 
-        GL.End();
+        DebugDraw.EndLines();
 
         float distToPlayer = Vector3.Distance(monsterPosition, playerPosition);
         float distToTarget = Vector3.Distance(monsterPosition, targetPosition);
 
-        DebugLabel(camera, monsterPosition + Vector3.up * 2.2f, $"{CurrentMonsterBehaviourState}\nPos {monsterPosition.ToString("F1")}\nPlayer dist {distToPlayer:F1}", stateColor);
+        DebugDraw.DebugLabel(mainCamera, monsterPosition + Vector3.up * 2.2f, $"{CurrentMonsterBehaviourState}\nPos {monsterPosition.ToString("F1")}\nPlayer dist {distToPlayer:F1}", stateColor);
 
-        DebugLabel(camera, targetPosition + Vector3.up * 0.8f, $"TARGET\n{targetPosition.ToString("F1")}\nDist {distToTarget:F1}", Color.magenta);
-    }
-
-    private static Color GetDebugStateColor(MonsterBehaviourState state)
-    {
-        switch (state)
-        {
-            case MonsterBehaviourState.Wandering: return Color.green;
-            case MonsterBehaviourState.Chasing:   return Color.red;
-            default:                              return Color.gray;
-        }
-    }
-
-    private void EnsureDebugResources()
-    {
-        if (debugLineMaterial == null)
-        {
-            debugLineMaterial = new Material(Shader.Find("Hidden/Internal-Colored"))
-            {
-                hideFlags = HideFlags.HideAndDontSave
-            };
-            debugLineMaterial.SetInt("_SrcBlend", (int)BlendMode.SrcAlpha);
-            debugLineMaterial.SetInt("_DstBlend", (int)BlendMode.OneMinusSrcAlpha);
-            debugLineMaterial.SetInt("_Cull",     (int)CullMode.Off);
-            debugLineMaterial.SetInt("_ZWrite", 0);
-        }
-
-        if (debugLabelStyle == null)
-        {
-            debugLabelStyle = new GUIStyle(GUI.skin.label)
-            {
-                alignment = TextAnchor.MiddleCenter,
-                fontSize = 12,
-                fontStyle = FontStyle.Bold
-            };
-        }
-    }
-
-    private static bool WorldToGui(Camera cam, Vector3 world, out Vector2 gui)
-    {
-        Vector3 s = cam.WorldToScreenPoint(world);
-        gui = new Vector2(s.x, cam.pixelHeight - s.y);
-        return s.z > 0f; // false when behind the camera
-    }
-
-    private static void DebugLine(Camera cam, Vector3 a, Vector3 b, Color color)
-    {
-        if (!WorldToGui(cam, a, out Vector2 pa) || !WorldToGui(cam, b, out Vector2 pb)) return;
-        GL.Color(color);
-        GL.Vertex3(pa.x, pa.y, 0f);
-        GL.Vertex3(pb.x, pb.y, 0f);
-    }
-
-    private static void DebugCross(Camera cam, Vector3 p, float size, Color color)
-    {
-        DebugLine(cam, p + Vector3.left * size,    p + Vector3.right * size,   color);
-        DebugLine(cam, p + Vector3.down * size,    p + Vector3.up * size,      color);
-        DebugLine(cam, p + Vector3.back * size,    p + Vector3.forward * size, color);
-    }
-
-    private static void DebugCircle(Camera cam, Vector3 center, float radius, Color color, int segments = 32)
-    {
-        Vector3 prev = center + new Vector3(radius, 0f, 0f);
-        for (int i = 1; i <= segments; i++)
-        {
-            float angle = (i / (float)segments) * Mathf.PI * 2f;
-            Vector3 next = center + new Vector3(Mathf.Cos(angle) * radius, 0f, Mathf.Sin(angle) * radius);
-            DebugLine(cam, prev, next, color);
-            prev = next;
-        }
-    }
-
-    private void DebugLabel(Camera cam, Vector3 worldPos, string text, Color color)
-    {
-        if (!WorldToGui(cam, worldPos, out Vector2 p)) return;
-
-        debugLabelStyle.normal.textColor = Color.black; // drop shadow
-        GUI.Label(new Rect(p.x - 99f, p.y - 29f, 200f, 60f), text, debugLabelStyle);
-
-        debugLabelStyle.normal.textColor = color;
-        GUI.Label(new Rect(p.x - 100f, p.y - 30f, 200f, 60f), text, debugLabelStyle);
-    }
+        DebugDraw.DebugLabel(mainCamera, targetPosition + Vector3.up * 0.8f, $"TARGET\n{targetPosition.ToString("F1")}\nDist {distToTarget:F1}", Color.magenta);
 #endif
+    }
 }
 
