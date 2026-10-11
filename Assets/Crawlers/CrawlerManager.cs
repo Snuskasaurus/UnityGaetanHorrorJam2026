@@ -42,8 +42,6 @@ public class CrawlerManager : MonoBehaviour
 
     const int MAX_INSTANCE_COUNT_BY_GPU_CALL = 1023;
     const int MAX_INSTANCE_COUNT_BY_KD_TREE = 1023;
-    const float MAX_DISTANCE_NAV_MESH_QUERY = 200.0f;
-    const int MAX_NAV_MESH_QUERY_EACH_FRAMES = 200;
 
     float fleeingRadiusFrom = 0.0f;
     float fleeingRadiusTo = 0.0f;
@@ -71,35 +69,6 @@ public class CrawlerManager : MonoBehaviour
         bool Fleeing;
     }
 
-    static readonly ProfilerMarker ProfilerMarker_GetClosestPointInNavMesh = new ProfilerMarker("GetClosestPointInNavMesh");
-    private Vector3 GetClosestPointInNavMesh(Vector3 source)
-    {
-        using var ProfilerMarker = ProfilerMarker_GetClosestPointInNavMesh.Auto();
-
-        if (NavMesh.SamplePosition(source, out NavMeshHit hit, MAX_DISTANCE_NAV_MESH_QUERY, NavMesh.AllAreas))
-        {
-            return hit.position;
-        }
-        return source;
-    }
-
-    private Vector3 PickNewTarget_Random(Vector3 crawlerPosition)
-    {
-        Vector2 offset = Random.insideUnitCircle * wanderRadius;
-        Vector3 candidate = crawlerPosition + new Vector3(offset.x, 0f, offset.y);
-
-        return GetClosestPointInNavMesh(candidate);
-    }
-
-    private Vector3 PickNewTarget_AwayFromPosition(Vector3 crawlerPosition, Vector3 position)
-    {
-        Vector3 crawlerPositionToPosition = crawlerPosition - position;
-        Vector3 awayVector = crawlerPositionToPosition.normalized;
-        Vector3 candidate = crawlerPosition + awayVector * fleeingDistance;
-
-        return GetClosestPointInNavMesh(candidate);
-    }
-
     private void SetCrawlerWalkSpeed(int crawlerIndex)
     {
         crawlerSpeeds[crawlerIndex] = Random.Range(minWalkSpeed, maxWalkSpeed);
@@ -119,7 +88,7 @@ public class CrawlerManager : MonoBehaviour
     {
         Vector2 RandomPositionInRadius = Random.insideUnitCircle * spawnRadius;
         Vector3 randomPosition = origin + new Vector3(RandomPositionInRadius.x, 0.0f, RandomPositionInRadius.y);
-        crawlerPositions[crawlerIndex] = GetClosestPointInNavMesh(randomPosition);
+        crawlerPositions[crawlerIndex] = NavMeshUtil.GetClosestPointInNavMesh(randomPosition);
         crawlerPositionTargets[crawlerIndex] = crawlerPositions[crawlerIndex];
         SetCrawlerWalkSpeed(crawlerIndex);
         crawlerRotations[crawlerIndex] = Quaternion.identity;
@@ -251,7 +220,7 @@ public class CrawlerManager : MonoBehaviour
             {
                 SetCrawlerFleeSpeed(crawlerIndex);
                 crawlerTimeSinceLastFleeing[crawlerIndex] = currentTime;
-                crawlerPositionTargets[crawlerIndex] = PickNewTarget_AwayFromPosition(crawlerPosition, actorPosition);
+                crawlerPositionTargets[crawlerIndex] = NavMeshUtil.PickNewTarget_AwayFromPosition(crawlerPosition, actorPosition, fleeingDistance);
             }
         }
     }
@@ -280,7 +249,7 @@ public class CrawlerManager : MonoBehaviour
             {
                 SetCrawlerWalkSpeed(crawlerIndex);
                 toTarget = crawlerPositionTargets[crawlerIndex] - crawlerPositions[crawlerIndex];
-                crawlerPositionTargets[crawlerIndex] = PickNewTarget_Random(crawlerPositions[crawlerIndex]);
+                crawlerPositionTargets[crawlerIndex] = NavMeshUtil.PickNewTarget_Random(crawlerPositions[crawlerIndex], wanderRadius);
             }
 
             crawlerPositions[crawlerIndex] = Vector3.MoveTowards(crawlerPositions[crawlerIndex], crawlerPositionTargets[crawlerIndex], crawlerSpeeds[crawlerIndex] * dt);
