@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Assets;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PickupManager : MonoBehaviour
+public class InteractManager : MonoBehaviour
 {
     [Header("Selection")]
     [Range(0f, 1f)][SerializeField] float minLookDot = 0.8f;
@@ -14,7 +13,6 @@ public class PickupManager : MonoBehaviour
 
     // References
     Camera camera;
-    FirstPersonController controller;
     TMP_Text interactPromptText;
 
     InteractComponent currentInteractComponent;
@@ -35,19 +33,18 @@ public class PickupManager : MonoBehaviour
 
     private void OnEnable()
     {
-        InputManagerSingleton.PlayerInteract.performed += OnInteractPerformed;
+        InputManager.PlayerInteract.performed += OnInteractPerformed;
     }
 
     private void Start()
     {
         camera = Common.FindTypeInScene<Camera>("PlayerCamera");
-        controller = Common.FindTypeInScene<FirstPersonController>();
         interactPromptText = Common.FindTypeInScene<TMP_Text>("interactPromptText");
     }
 
     private void OnDisable()
     {
-        InputManagerSingleton.PlayerInteract.performed -= OnInteractPerformed;
+        InputManager.PlayerInteract.performed -= OnInteractPerformed;
     }
 
     private void Update()

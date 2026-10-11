@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
-using Assets;
 using System.Threading.Tasks;
 using UnityEngine.UIElements.Experimental;
 
@@ -168,29 +167,29 @@ public class FirstPersonController : MonoBehaviour
     {
         if (enableJump)
         {
-            InputManagerSingleton.PlayerJump.performed += OnJumpPerformed;
+            InputManager.PlayerJump.performed += OnJumpPerformed;
         }
 
         if (enableCrouch)
         {
-            InputManagerSingleton.PlayerCrouch.performed += OnCrouchPerformed;
-            InputManagerSingleton.PlayerCrouch.canceled += OnCrouchCanceled;
+            InputManager.PlayerCrouch.performed += OnCrouchPerformed;
+            InputManager.PlayerCrouch.canceled += OnCrouchCanceled;
         }
 
         if (enableSprint)
         {
-            InputManagerSingleton.PlayerSprint.performed += OnSprintPerformed;
-            InputManagerSingleton.PlayerSprint.canceled += OnSprintCanceled;
+            InputManager.PlayerSprint.performed += OnSprintPerformed;
+            InputManager.PlayerSprint.canceled += OnSprintCanceled;
         }
     }
 
     private void OnDisable()
     {
-        InputManagerSingleton.PlayerJump.performed -= OnJumpPerformed;
-        InputManagerSingleton.PlayerCrouch.performed -= OnCrouchPerformed;
-        InputManagerSingleton.PlayerCrouch.canceled -= OnCrouchCanceled;
-        InputManagerSingleton.PlayerSprint.performed -= OnSprintPerformed;
-        InputManagerSingleton.PlayerSprint.canceled -= OnSprintCanceled;
+        InputManager.PlayerJump.performed -= OnJumpPerformed;
+        InputManager.PlayerCrouch.performed -= OnCrouchPerformed;
+        InputManager.PlayerCrouch.canceled -= OnCrouchCanceled;
+        InputManager.PlayerSprint.performed -= OnSprintPerformed;
+        InputManager.PlayerSprint.canceled -= OnSprintCanceled;
     }
 
     private void OnJumpPerformed(InputAction.CallbackContext context) => Jump();
@@ -275,16 +274,16 @@ public class FirstPersonController : MonoBehaviour
         // Control camera movement
         if(cameraCanMove)
         {
-            yaw = transform.localEulerAngles.y + InputManagerSingleton.PlayerLook.ReadValue<Vector2>().x * mouseSensitivity;
+            yaw = transform.localEulerAngles.y + InputManager.PlayerLook.ReadValue<Vector2>().x * mouseSensitivity;
 
             if (!invertCamera)
             {
-                pitch -= mouseSensitivity * InputManagerSingleton.PlayerLook.ReadValue<Vector2>().y;
+                pitch -= mouseSensitivity * InputManager.PlayerLook.ReadValue<Vector2>().y;
             }
             else
             {
                 // Inverted Y
-                pitch += mouseSensitivity * InputManagerSingleton.PlayerLook.ReadValue<Vector2>().y;
+                pitch += mouseSensitivity * InputManager.PlayerLook.ReadValue<Vector2>().y;
             }
 
             // Clamp pitch between lookAngle
@@ -300,11 +299,11 @@ public class FirstPersonController : MonoBehaviour
             // Behavior for hold to zoom
             if(holdToZoom && !isSprinting)
             {
-                if(InputManagerSingleton.PlayerJump.ReadValue<float>() > 0)
+                if(InputManager.PlayerJump.ReadValue<float>() > 0)
                 {
                     isZoomed = true;
                 }
-                else if(InputManagerSingleton.PlayerCrouch.ReadValue<float>() > 0)
+                else if(InputManager.PlayerCrouch.ReadValue<float>() > 0)
                 {
                     isZoomed = false;
                 }
@@ -384,7 +383,7 @@ public class FirstPersonController : MonoBehaviour
         {
 
             // Calculate how fast we should be moving
-            Vector3 inputVelocity = new Vector3(InputManagerSingleton.PlayerMove.ReadValue<Vector2>().x, 0, InputManagerSingleton.PlayerMove.ReadValue<Vector2>().y);
+            Vector3 inputVelocity = new Vector3(InputManager.PlayerMove.ReadValue<Vector2>().x, 0, InputManager.PlayerMove.ReadValue<Vector2>().y);
             
             // Checks if player is walking and isGrounded
             // Will allow head bob
