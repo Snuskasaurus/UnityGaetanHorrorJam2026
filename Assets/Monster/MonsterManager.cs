@@ -20,16 +20,15 @@ public class MonsterManager : MonoBehaviour
     [SerializeField] float wanderingRange = 10.0f;
     [SerializeField] float radiusTargetReached = 1.0f;
     [SerializeField] float radiusDetectionPlayer = 6.0f;
-    
+
     [Header("Chasing")]
     [SerializeField] float radiusLoosingPlayer = 10.0f;
-    
+
     [Header("Debug")]
     [SerializeField] bool showDebug = true;
     [SerializeField] bool showDebugRadius = true;
 
     private MonsterBehaviourState CurrentMonsterBehaviourState;
-    
     private MonsterBehaviourState RequestedMonsterBehaviourState;
 
     // Backboard
@@ -220,7 +219,7 @@ public class MonsterManager : MonoBehaviour
 
         if (CurrentMonsterBehaviourState != RequestedMonsterBehaviourState)
         {
-            DispatchMonsterBehaviourState_Stop(RequestedMonsterBehaviourState);
+            DispatchMonsterBehaviourState_Stop(CurrentMonsterBehaviourState);
             DispatchMonsterBehaviourState_Start(RequestedMonsterBehaviourState);
             CurrentMonsterBehaviourState = RequestedMonsterBehaviourState;
         }
@@ -243,7 +242,7 @@ public class MonsterManager : MonoBehaviour
 #if UNITY_EDITOR
         if (!showDebug)
             return;
-        
+
         Camera mainCamera = Camera.main;
 
         DebugDraw.InitializeDebugs_IFN();
