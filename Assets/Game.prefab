@@ -62,7 +62,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.033333335
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 7115d110c482284439a685553bcda942, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: facdeb099d553694d9933266a319b8a5, type: 2}
   m_BuildHeightMesh: 0
 --- !u!1 &3356382219399212241
 GameObject:
@@ -312,7 +312,7 @@ MonoBehaviour:
   fleeingCooldown: 1
   mesh: {fileID: 680470266113572073, guid: 72c129353dbd5564ba3a7f9841ef6591, type: 3}
   material: {fileID: 2100000, guid: 1e788f16c70c4c04086a751cf19517f5, type: 2}
-  scaleFactor: 10
+  scaleFactor: 5
   FirstPersonController: {fileID: 643871204884860357}
 --- !u!1 &8717266589827867052
 GameObject:
