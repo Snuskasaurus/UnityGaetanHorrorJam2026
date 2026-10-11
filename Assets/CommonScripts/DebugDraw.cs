@@ -84,24 +84,7 @@ public static class DebugDraw
 #endif
     }
 
-    public static void DebugCircleOnGround(Vector3 center, float radius, Color color, int segments = 32, float duration = 0f)
-    {
-#if UNITY_EDITOR
-        float step = 2f * Mathf.PI / segments;
-        Vector3 prev = center + new Vector3(radius, 0f, 0f);
-
-        for (int i = 1; i <= segments; i++)
-        {
-            float a = i * step;
-            Vector3 next = center + new Vector3(Mathf.Cos(a) * radius, 0f, Mathf.Sin(a) * radius);
-            Debug.DrawLine(prev, next, color, duration);
-            prev = next;
-        }
-#endif
-    }
-
-    // Call outside of BeginLines / EndLines.
-    public static void DebugLabel(Camera cam, Vector3 worldPos, string text, Color color)
+    public static void DebugLabel(Camera cam, Vector3 worldPos, Color color, string text)
     {
 #if UNITY_EDITOR
         if (!WorldToGui(cam, worldPos, out Vector2 p)) return;

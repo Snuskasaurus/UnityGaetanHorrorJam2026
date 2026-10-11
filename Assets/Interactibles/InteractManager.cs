@@ -14,6 +14,7 @@ public class InteractManager : MonoBehaviour
     // References
     Camera camera;
     TMP_Text interactPromptText;
+    PlayerController playerController;
 
     InteractComponent currentInteractComponent;
     readonly List<InteractComponent> interactComponents = new List<InteractComponent>();
@@ -38,6 +39,7 @@ public class InteractManager : MonoBehaviour
 
     private void Start()
     {
+        playerController = Common.FindTypeInScene<PlayerController>();
         camera = Common.FindTypeInScene<Camera>("PlayerCamera");
         interactPromptText = Common.FindTypeInScene<TMP_Text>("interactPromptText");
     }
@@ -66,6 +68,10 @@ public class InteractManager : MonoBehaviour
 
     private void OnInteractPerformed(InputAction.CallbackContext context)
     {
+        Vector3 soundPosition = playerController.transform.position;
+        float soundVolume = 5;
+        MonsterManager.SendSoundToMonsterHearing(soundPosition, soundVolume);
+
         if (currentInteractComponent == null)
             return;
 
@@ -97,7 +103,7 @@ public class InteractManager : MonoBehaviour
             bestInteractComponent = candidate;
             bestDot = dot;
         }
- 
+
         return bestInteractComponent;
     }
 }
