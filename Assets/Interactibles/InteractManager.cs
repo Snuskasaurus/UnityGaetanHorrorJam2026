@@ -12,10 +12,10 @@ public class PickupManager : MonoBehaviour
     [Range(0f, 1f)][SerializeField] float minLookDot = 0.8f;
     [SerializeField] string playerTag = "Player";
 
-    [Header("References")]
-    [SerializeField] Camera camera;
-    [SerializeField] FirstPersonController controller;
-    [SerializeField] TMP_Text interactPromptText;
+    // References
+    Camera camera;
+    FirstPersonController controller;
+    TMP_Text interactPromptText;
 
     InteractComponent currentInteractComponent;
     readonly List<InteractComponent> interactComponents = new List<InteractComponent>();
@@ -36,6 +36,13 @@ public class PickupManager : MonoBehaviour
     private void OnEnable()
     {
         InputManagerSingleton.PlayerInteract.performed += OnInteractPerformed;
+    }
+
+    private void Start()
+    {
+        camera = Common.FindTypeInScene<Camera>("PlayerCamera");
+        controller = Common.FindTypeInScene<FirstPersonController>();
+        interactPromptText = Common.FindTypeInScene<TMP_Text>("interactPromptText");
     }
 
     private void OnDisable()

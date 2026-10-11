@@ -37,8 +37,8 @@ public class CrawlerManager : MonoBehaviour
     [SerializeField] Material material;
     [SerializeField] float scaleFactor = 0.1f;
 
-    [Header("References")]
-    [SerializeField] FirstPersonController FirstPersonController;
+    // References
+    FirstPersonController FirstPersonController;
 
     const int MAX_INSTANCE_COUNT_BY_GPU_CALL = 1023;
     const int MAX_INSTANCE_COUNT_BY_KD_TREE = 1023;
@@ -128,6 +128,8 @@ public class CrawlerManager : MonoBehaviour
 
     void Start()
     {
+        FirstPersonController = Common.FindTypeInScene<FirstPersonController>();
+
         renderParams = new RenderParams(material)
         {
             shadowCastingMode = ShadowCastingMode.Off,
