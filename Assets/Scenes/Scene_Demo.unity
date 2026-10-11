@@ -2981,7 +2981,7 @@ MonoBehaviour:
   scriptRotationCamera: {fileID: 1604982166}
   distanceInteraction: 3
   sensibiliteSouris: 0.4
-  inverserSens: 0
+  inverserSens: 1
   angleMinimum: -100
   angleMaximum: 100
   masse: 10
