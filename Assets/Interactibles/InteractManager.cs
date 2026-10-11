@@ -79,23 +79,23 @@ public class InteractManager : MonoBehaviour
         Transform cameraTransform = camera.transform;
         Vector3 origin = cameraTransform.position;
         Vector3 forward = cameraTransform.forward;
- 
+
         InteractComponent bestInteractComponent = null;
         float bestDot = minLookDot;
- 
+
         foreach (InteractComponent candidate in interactComponents)
         {
             Vector3 toTarget = candidate.transform.position - origin;
             float distance = toTarget.magnitude;
             if (distance < 0.0001f) 
                 continue;
- 
+
             Vector3 direction = toTarget / distance;
             float dot = Vector3.Dot(forward, direction);
- 
+
             if (dot <= bestDot) 
                 continue;
- 
+
             bestInteractComponent = candidate;
             bestDot = dot;
         }
