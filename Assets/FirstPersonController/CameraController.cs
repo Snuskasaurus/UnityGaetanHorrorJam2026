@@ -20,25 +20,22 @@ public class CameraController : MonoBehaviour
     [Range(0f, 90f)]
     private float maxTopVerticalAngle = 85f;
 
-    [SerializeField]
-    private float crouchCameraHeight = 0.5f;
+    //[SerializeField]
+    //private float crouchCameraHeight = 0.5f;
 
-    [SerializeField]
-    private float crouchEasingDuration = 0.5f;
+    //[SerializeField]
+    //private float crouchEasingDuration = 0.5f;
 
 
     // Internal variables
     private float yaw = 0f;
     private float pitch = 0f;
-    private float postureTransitionProgress = 1f;
+    //private float postureTransitionProgress = 1f;
 
     private PlayerController playerManager;
 
-
-
-
     // Events
-    public event System.Action<OnPostureChangedEventArgs> OnPostureChanged;
+    //public event System.Action<OnPostureChangedEventArgs> OnPostureChanged;
 
     private void OnEnable()
     {

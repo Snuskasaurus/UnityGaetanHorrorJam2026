@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6774315742776961505}
   - component: {fileID: 998417499416328133}
   - component: {fileID: 7969281753550682249}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: PersonController
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -174,8 +174,6 @@ MonoBehaviour:
   mouseSensitivity: 0.5
   maxBottomVerticalAngle: 45
   maxTopVerticalAngle: 85
-  crouchCameraHeight: 0.5
-  crouchEasingDuration: 0.5
 --- !u!114 &7969281753550682249
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -204,7 +202,7 @@ GameObject:
   - component: {fileID: 4459864850190357392}
   - component: {fileID: 4459864850190357394}
   - component: {fileID: 4459864850190357395}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Reticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -278,7 +276,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4459864850831721275}
   - component: {fileID: 4459864850831721274}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: SprintBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -329,7 +327,7 @@ GameObject:
   - component: {fileID: 4459864850888339821}
   - component: {fileID: 4459864850888339823}
   - component: {fileID: 4459864850888339820}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Stamina
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -405,7 +403,7 @@ GameObject:
   - component: {fileID: 4459864851310106426}
   - component: {fileID: 4459864851310106427}
   - component: {fileID: 8254049307366204787}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: PlayerCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -542,7 +540,7 @@ GameObject:
   - component: {fileID: 4459864851397454649}
   - component: {fileID: 4459864851397454651}
   - component: {fileID: 4459864851397454648}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: StaminaBG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -615,7 +613,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4459864851508666808}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Joint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -650,7 +648,7 @@ GameObject:
   - component: {fileID: 4459864851551516607}
   - component: {fileID: 4459864851551516593}
   - component: {fileID: 4459864851551516606}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: HUD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -737,7 +735,7 @@ GameObject:
   - component: {fileID: 2350616740384115877}
   - component: {fileID: 7011571244096808501}
   - component: {fileID: 1294567925095417748}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: interactPromptText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -874,7 +872,7 @@ GameObject:
   - component: {fileID: 8030870586568231330}
   - component: {fileID: 4301362438769925828}
   - component: {fileID: 4683779637682287640}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}

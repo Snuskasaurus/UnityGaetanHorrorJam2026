@@ -66,8 +66,6 @@ public class InteractManager : MonoBehaviour
 
     private void OnInteractPerformed(InputAction.CallbackContext context)
     {
-        Debug.Log("pressed interact");
-        
         if (currentInteractComponent == null)
             return;
 
