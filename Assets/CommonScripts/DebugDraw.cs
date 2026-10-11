@@ -3,6 +3,7 @@ using UnityEngine.Rendering;
 
 public static class DebugDraw
 {
+
 #if UNITY_EDITOR
     private static Material debugLineMaterial;
     private static GUIStyle debugLabelStyle;
