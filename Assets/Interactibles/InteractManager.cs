@@ -4,6 +4,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 public class InteractManager : MonoBehaviour
 {
@@ -69,7 +70,7 @@ public class InteractManager : MonoBehaviour
     private void OnInteractPerformed(InputAction.CallbackContext context)
     {
         Vector3 soundPosition = playerController.transform.position;
-        float soundVolume = 5;
+        int soundVolume = Random.Range(1, 20);
         MonsterManager.SendSoundToMonsterHearing(soundPosition, soundVolume);
 
         if (currentInteractComponent == null)

@@ -39,9 +39,8 @@ public class MonsterManager : MonoBehaviour
     [SerializeField] MonsterBehaviourState DefaultBehaviour = MonsterBehaviourState.Wandering;
 
     [Header("State | Wandering")]
-    [SerializeField] float wanderingRange = 10.0f;
+    [SerializeField] float wanderingRange = 30.0f;
     [SerializeField] float radiusTargetReached = 1.0f;
-    [SerializeField] float radiusDetectionPlayer = 6.0f;
 
     [Header("State | Chasing")]
     [SerializeField] float radiusLoosingPlayer = 10.0f;
@@ -49,6 +48,10 @@ public class MonsterManager : MonoBehaviour
     [Header("State | InvestigatingSound")]
     [SerializeField] float minRadiusToSound = 1.0f;
     [SerializeField] float maxRadiusToSound = 8.0f;
+
+    [Header("Vision")]
+    [SerializeField] bool canSeePlayer = false;
+    [SerializeField] float radiusVisibility = 6.0f;
 
     [Header("Hearing")]
     [SerializeField] float hearingThreshold = 0.5f;
@@ -79,6 +82,16 @@ public class MonsterManager : MonoBehaviour
         INSTANCE.SendSoundToMonsterHearing_internal(soundPosition, soundVolume);
     }
 
+    private void UpdateTargetToSound_IFN(Vector3 newSoundPosition, float newSoundPrecision)
+    {
+        if (newSoundPrecision >= monsterBackboard.precisionLastSoundHeard)
+        {
+            UpdateTargetPosition_InvestigatingSound();
+        }
+        monsterBackboard.lastSoundPositionHeard = newSoundPosition;
+        monsterBackboard.precisionLastSoundHeard = newSoundPrecision;
+    }
+
     private void SendSoundToMonsterHearing_internal(Vector3 soundPosition, float soundVolume)
     {
         if (RequestedMonsterBehaviourState == MonsterBehaviourState.Chasing)
@@ -105,9 +118,16 @@ public class MonsterManager : MonoBehaviour
 
         if (soundCanBeHeard)
         {
-            monsterBackboard.lastSoundPositionHeard = soundPosition;
-            monsterBackboard.precisionLastSoundHeard = soundPrecision;
-            ChangeBehaviourState(MonsterBehaviourState.InvestigatingSound);
+            if (RequestedMonsterBehaviourState == MonsterBehaviourState.InvestigatingSound)
+            {
+                UpdateTargetToSound_IFN(soundPosition, soundVolume);
+            }
+            else
+            {
+                monsterBackboard.lastSoundPositionHeard = soundPosition;
+                monsterBackboard.precisionLastSoundHeard = soundPrecision;
+                ChangeBehaviourState(MonsterBehaviourState.InvestigatingSound);
+            }
         }
     }
 
@@ -146,7 +166,7 @@ public class MonsterManager : MonoBehaviour
 
     private bool CheckIfSoundCanBeHeard(Vector3 soundPosition, float soundVolume, out float precision)
     {
-        precision = 0.0f; // Must be assigned on every return path
+        precision = 0.0f;
 
         Vector3 monsterPosition = monsterController.transform.position;
 
@@ -182,7 +202,7 @@ public class MonsterManager : MonoBehaviour
 
         ChangeBehaviourState(DefaultBehaviour);
 
-        Debug.Assert(radiusDetectionPlayer <= radiusLoosingPlayer);
+        Debug.Assert(radiusVisibility <= radiusLoosingPlayer);
 
         soundPath = new NavMeshPath();
     }
@@ -262,10 +282,13 @@ public class MonsterManager : MonoBehaviour
 
     private void StartChasing_IFN()
     {
+        if (!canSeePlayer)
+            return;
+
         Vector3 monsterPosition = monsterController.transform.position;
         Vector3 playerPosition = playerController.transform.position;
         float distanceMonsterToPlayer = Vector3.Distance(monsterPosition, playerPosition);
-        if (distanceMonsterToPlayer <= radiusDetectionPlayer)
+        if (distanceMonsterToPlayer <= radiusVisibility)
         {
             ChangeBehaviourState(MonsterBehaviourState.Chasing);
         }
@@ -306,12 +329,6 @@ public class MonsterManager : MonoBehaviour
     private void UpdateEndMonsterBehaviourState_InvestigatingSound()
     {
         StartChasing_IFN();
-
-        float distanceTargetToSound = Vector3.Distance(monsterBackboard.targetPosition, monsterBackboard.lastSoundPositionHeard);
-        if (distanceTargetToSound <= radiusTargetReached)
-        {
-            UpdateTargetPosition_InvestigatingSound();
-        }
 
         Vector3 monsterPosition = monsterController.transform.position;
         float distanceMonsterToTarget = Vector3.Distance(monsterPosition, monsterBackboard.targetPosition);
@@ -401,13 +418,13 @@ public class MonsterManager : MonoBehaviour
         foreach (var soundInfo in soundInfosList)
         {
             Color colorDebug =  soundInfo.heard ? Color.orange : Color.white;
-            Vector3 labelPosition = soundInfo.Position + Vector3.up * 2.0f;
+            Vector3 labelPosition = soundInfo.Position + Vector3.up * 0.25f;
             DebugDraw.DebugLabel(mainCamera, labelPosition, colorDebug, $"Volume {soundInfo.volume:F1}\n" +
                                                                         $"Precision {soundInfo.precision:F2}");
         }
         if (CurrentMonsterBehaviourState == MonsterBehaviourState.InvestigatingSound)
         {
-            Vector3 labelPosition = LastSoundHeard.Position + Vector3.up * 2.0f;
+            Vector3 labelPosition = LastSoundHeard.Position + Vector3.up * 0.25f;
             DebugDraw.DebugLabel(mainCamera, labelPosition, Color.orange, $"Volume {LastSoundHeard.volume:F1}\n" +
                                                                              $"Precision {LastSoundHeard.precision:F2}");
         }
@@ -449,9 +466,9 @@ public class MonsterManager : MonoBehaviour
         {
             if (CurrentMonsterBehaviourState != MonsterBehaviourState.Chasing)
             {
-                DebugDraw.DebugCircle(mainCamera, monsterPosition, radiusDetectionPlayer, Color.red);
+                DebugDraw.DebugCircle(mainCamera, monsterPosition, radiusVisibility, Color.red);
             }
-            
+
             switch (CurrentMonsterBehaviourState)
             {
                 case MonsterBehaviourState.Wandering:
