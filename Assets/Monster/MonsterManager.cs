@@ -77,6 +77,11 @@ public class MonsterManager : MonoBehaviour
     private MonsterController monsterController;
     private UnityEngine.AI.NavMeshAgent monsterNavMeshAgent;
 
+    private void Awake()
+    {
+        INSTANCE = this;
+    }
+
     public static void SendSoundToMonsterHearing(Vector3 soundPosition, float soundVolume)
     {
         INSTANCE.SendSoundToMonsterHearing_internal(soundPosition, soundVolume);
@@ -86,10 +91,10 @@ public class MonsterManager : MonoBehaviour
     {
         if (newSoundPrecision >= monsterBackboard.precisionLastSoundHeard)
         {
+            monsterBackboard.lastSoundPositionHeard = newSoundPosition;
+            monsterBackboard.precisionLastSoundHeard = newSoundPrecision;
             UpdateTargetPosition_InvestigatingSound();
         }
-        monsterBackboard.lastSoundPositionHeard = newSoundPosition;
-        monsterBackboard.precisionLastSoundHeard = newSoundPrecision;
     }
 
     private void SendSoundToMonsterHearing_internal(Vector3 soundPosition, float soundVolume)
@@ -120,7 +125,7 @@ public class MonsterManager : MonoBehaviour
         {
             if (RequestedMonsterBehaviourState == MonsterBehaviourState.InvestigatingSound)
             {
-                UpdateTargetToSound_IFN(soundPosition, soundVolume);
+                UpdateTargetToSound_IFN(soundPosition, soundPrecision);
             }
             else
             {
@@ -194,8 +199,6 @@ public class MonsterManager : MonoBehaviour
 
     private void Start()
     {
-        INSTANCE = this;
-
         playerController = Common.FindTypeInScene<PlayerController>();
         monsterController = Common.FindTypeInScene<MonsterController>();
         monsterNavMeshAgent = Common.FindTypeInScene<UnityEngine.AI.NavMeshAgent>();
@@ -209,17 +212,17 @@ public class MonsterManager : MonoBehaviour
 
     private void UpdateTargetPosition_Wandering()
     {
-        Vector3 PlayerPosition = playerController.transform.position;
-        monsterBackboard.targetPosition = NavMeshUtil.PickNewTarget_Random(PlayerPosition, wanderingRange);
+        Vector3 playerPosition = playerController.transform.position;
+        monsterBackboard.targetPosition = NavMeshUtil.PickNewTarget_Random(playerPosition, wanderingRange);
         monsterNavMeshAgent.SetDestination(monsterBackboard.targetPosition);
     }
 
     private void UpdateTargetPosition_InvestigatingSound()
     {
         monsterBackboard.precisionLastSoundHeard = math.clamp(monsterBackboard.precisionLastSoundHeard, 0, 1);
-        float radius = math.lerp(minRadiusToSound, maxRadiusToSound, monsterBackboard.precisionLastSoundHeard);
-        Vector3 PlayerPosition = playerController.transform.position;
-        monsterBackboard.targetPosition = NavMeshUtil.PickNewTarget_Random(PlayerPosition, radius);
+        float radius = math.lerp(maxRadiusToSound, minRadiusToSound, monsterBackboard.precisionLastSoundHeard);
+        Vector3 soundPosition = monsterBackboard.lastSoundPositionHeard;
+        monsterBackboard.targetPosition = NavMeshUtil.PickNewTarget_Random(soundPosition, radius);
         monsterNavMeshAgent.SetDestination(monsterBackboard.targetPosition);
     }
 
@@ -282,6 +285,9 @@ public class MonsterManager : MonoBehaviour
 
     private void StartChasing_IFN()
     {
+        if (CurrentMonsterBehaviourState ==  MonsterBehaviourState.Chasing)
+            return;
+
         if (!canSeePlayer)
             return;
 
@@ -381,14 +387,14 @@ public class MonsterManager : MonoBehaviour
 
         if (showDebugHearing)
         {
-            float currentTime = Time.time;
+            float currentTime = Time.fixedTime;
             soundInfosList.RemoveAll(soundInfo => currentTime >= soundInfo.date + timeShowingAudioEvent);
         }
     }
 
+#if UNITY_EDITOR
     private static Color GetDebugStateColor(MonsterBehaviourState state)
     {
-#if UNITY_EDITOR
         switch (state)
         {
             case MonsterBehaviourState.Wandering:          return Color.green;
@@ -396,9 +402,10 @@ public class MonsterManager : MonoBehaviour
             case MonsterBehaviourState.Chasing:            return Color.red;
             default:                                       return Color.gray;
         }
-#endif
     }
+#endif
 
+#if UNITY_EDITOR
     private void OnGUI_DebugHearing(Camera mainCamera)
     {
         DebugDraw.BeginLines();
@@ -429,6 +436,7 @@ public class MonsterManager : MonoBehaviour
                                                                              $"Precision {LastSoundHeard.precision:F2}");
         }
     }
+#endif
 
     private void OnGUI()
     {
