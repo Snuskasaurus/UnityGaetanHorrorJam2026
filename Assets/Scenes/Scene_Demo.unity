@@ -3911,6 +3911,7 @@ MonoBehaviour:
   animateur: {fileID: 1155591502}
   joueur: {fileID: 1604982168}
   corpsJoueur: {fileID: 1604982169}
+  modelZippo: {fileID: 1488854041}
   zippoSorti: 0
 --- !u!1001 &1184775296
 PrefabInstance:
@@ -4394,6 +4395,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 1711081781}
     m_Modifications:
     - target: {fileID: 1997985201858607061, guid: 2526d0baebb1f6742999b2362646913a, type: 3}
+      propertyPath: crawlerCount
+      value: 10000
+      objectReference: {fileID: 0}
+    - target: {fileID: 1997985201858607061, guid: 2526d0baebb1f6742999b2362646913a, type: 3}
       propertyPath: FirstPersonController
       value: 
       objectReference: {fileID: 0}
@@ -4822,6 +4827,11 @@ MeshRenderer:
 Transform:
   m_CorrespondingSourceObject: {fileID: 4459864850019384738, guid: 2f2d1b318ca02954ebd056ae6644c5c4, type: 3}
   m_PrefabInstance: {fileID: 361233586}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1488854041 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 226014818002954728, guid: e6df2344f01723d4d9dae1d168473257, type: 3}
+  m_PrefabInstance: {fileID: 1155591499}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1521483449
 GameObject:
@@ -5776,7 +5786,7 @@ Transform:
   m_GameObject: {fileID: 1816406391}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.09, z: -0.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

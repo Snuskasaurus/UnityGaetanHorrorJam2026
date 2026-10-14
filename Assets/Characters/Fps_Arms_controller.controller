@@ -119,7 +119,7 @@ AnimatorStateTransition:
     m_ConditionEvent: IsCrouch
     m_EventTreshold: 0
   - m_ConditionMode: 1
-    m_ConditionEvent: ZIppoOut
+    m_ConditionEvent: ZippoOut
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 3130610127188116426}
@@ -249,19 +249,19 @@ AnimatorStateMachine:
     m_Position: {x: 300, y: 110, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -22276581186859936}
-    m_Position: {x: 300, y: 260, z: 0}
+    m_Position: {x: 230, y: 260, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 6130626071280416664}
-    m_Position: {x: 550, y: 190, z: 0}
+    m_Position: {x: 530, y: 310, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 3130610127188116426}
-    m_Position: {x: 850, y: 110, z: 0}
+    m_Position: {x: 650, y: 130, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7327243237574938717}
     m_Position: {x: 1130, y: 90, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 3589503346073002126}
-    m_Position: {x: 1090, y: 230, z: 0}
+    m_Position: {x: 1090, y: 250, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1930404967934126554}
     m_Position: {x: 1350, y: 170, z: 0}
@@ -281,6 +281,34 @@ AnimatorStateMachine:
   m_ExitPosition: {x: 940, y: 0, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: -7952841410386496914}
+--- !u!1101 &-2515322523433107492
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: ZippoOut
+    m_EventTreshold: 0
+  - m_ConditionMode: 3
+    m_ConditionEvent: WalkSpeed
+    m_EventTreshold: 1
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 3589503346073002126}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0.25
+  m_TransitionOffset: 0
+  m_ExitTime: 0.6666666
+  m_HasExitTime: 1
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!1101 &-2179049357071185315
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -333,6 +361,31 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1101 &-751221837374580920
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 2
+    m_ConditionEvent: ZippoOut
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 2222677234736017650}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0.25000012
+  m_TransitionOffset: 0
+  m_ExitTime: 0.82784015
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!1101 &-146712971573312420
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -416,7 +469,7 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: ZIppoOut
+  - m_Name: ZippoOut
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -457,7 +510,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: ZIppoOut
+    m_ConditionEvent: ZippoOut
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 3130610127188116426}
@@ -563,7 +616,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: ZIppoOut
+    m_ConditionEvent: ZippoOut
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 2222677234736017650}
@@ -616,6 +669,7 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 5542401917192959460}
+  - {fileID: -2515322523433107492}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -640,7 +694,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: ZIppoOut
+    m_ConditionEvent: ZippoOut
     m_EventTreshold: 0
   - m_ConditionMode: 3
     m_ConditionEvent: WalkSpeed
@@ -672,6 +726,7 @@ AnimatorState:
   m_Transitions:
   - {fileID: -6187545365702715699}
   - {fileID: -5866210237896404368}
+  - {fileID: -751221837374580920}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -806,7 +861,7 @@ AnimatorState:
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
+  m_WriteDefaultValues: 0
   m_Mirror: 0
   m_SpeedParameterActive: 0
   m_MirrorParameterActive: 0
@@ -817,7 +872,7 @@ AnimatorState:
   m_SpeedParameter: 
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
-  m_TimeParameter: 
+  m_TimeParameter: WalkSpeed
 --- !u!1101 &7884704407094230244
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
