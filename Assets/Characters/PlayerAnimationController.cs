@@ -30,15 +30,23 @@ public class PlayerAnimationController : MonoBehaviour
     [SerializeField] private AudioClip sonEchec1;
     [SerializeField] private AudioClip sonEchec2;
     [SerializeField] private AudioClip sonReussite;
+    [SerializeField] private AudioClip sonSortirZippo;
+[SerializeField] private AudioClip sonRangerZippo;
 
     [Header("Effet visuel du Zippo")]
-    [SerializeField] private SpriteRenderer flammezippo;
+    [SerializeField] private SpriteRenderer flammeZippo;
 
     [Header("Etincelles du Zippo")]
     [SerializeField] private ParticleSystem etincellesZippo;
     [SerializeField] private Light flashEtincelle;
 
     private Coroutine routineFlash;
+
+    [Header("Lumiere Du Zippo")]
+    [SerializeField] private Light lumiereZippo;
+    [SerializeField] private float intensiteMin = 1.2f;
+    [SerializeField] private float intensiteMax = 1.8f;
+    [SerializeField] private float vitesseScintillement = 7f;
 
     void Start()
     {
@@ -69,7 +77,6 @@ public class PlayerAnimationController : MonoBehaviour
         tentativeReussie = false;
 
         MasquerZippo();
-        EteindreFlamme();
         ArreterEffetsEtincelles();
 
         animateur.SetBool("ZippoOut", false);
@@ -110,18 +117,25 @@ public class PlayerAnimationController : MonoBehaviour
         {
             zippoSorti = !zippoSorti;
 
-            if (zippoSorti)
-            {
-                AfficherZippo();
-                EteindreFlamme();
+            
+        if (zippoSorti)
+        {
+            AfficherZippo();
 
-                Debug.Log("Zippo sorti.");
+            if (zippoAllume)
+            {
+                AllumerFlamme();
             }
             else
             {
-                zippoAllume = false;
-
                 EteindreFlamme();
+            }
+
+            Debug.Log("Zippo sorti.");
+        }
+
+            else
+            {
                 ArreterEffetsEtincelles();
 
                 tentativeEnCours = false;
@@ -129,7 +143,7 @@ public class PlayerAnimationController : MonoBehaviour
 
                 animateur.ResetTrigger("ZippoOn");
 
-                Debug.Log("Zippo range.");
+                Debug.Log("Rangement du Zippo en cours.");
             }
 
             animateur.SetBool("ZippoOut", zippoSorti);
@@ -149,13 +163,22 @@ public class PlayerAnimationController : MonoBehaviour
 
                 animateur.SetTrigger("ZippoOn");
 
+               
+
                 Debug.Log("Tentative d'allumage du Zippo...");
             }
         }
+        MettreAJourScintillement();
     }
 
+    
     public void MasquerZippo()
     {
+        if (zippoSorti)
+        {
+            return;
+        }
+
         if (rendusZippo != null)
         {
             foreach (Renderer rendu in rendusZippo)
@@ -171,6 +194,7 @@ public class PlayerAnimationController : MonoBehaviour
         ArreterEffetsEtincelles();
     }
 
+
     public void AfficherZippo()
     {
         if (rendusZippo == null)
@@ -178,7 +202,7 @@ public class PlayerAnimationController : MonoBehaviour
 
         foreach (Renderer rendu in rendusZippo)
         {
-            if (rendu != null && rendu != flammezippo)
+            if (rendu != null && rendu != flammeZippo)
             {
                 rendu.enabled = true;
             }
@@ -187,18 +211,29 @@ public class PlayerAnimationController : MonoBehaviour
 
     public void AllumerFlamme()
     {
-        if (flammezippo != null)
+        if (flammeZippo != null)
         {
-            flammezippo.enabled = true;
+            flammeZippo.enabled = true;
+        }
+
+        if (lumiereZippo != null)
+        {
+            lumiereZippo.intensity = intensiteMax;
+            lumiereZippo.enabled = true;
         }
     }
 
     public void EteindreFlamme()
     {
-        if (flammezippo != null)
-        {
-            flammezippo.enabled = false;
-        }
+       if (flammeZippo != null)
+       {
+        flammeZippo.enabled = false;
+       }
+
+       if (lumiereZippo != null)
+       {
+        lumiereZippo.enabled =false;
+       }
     }
 
     public void VerifierAllumage()
@@ -318,4 +353,86 @@ public class PlayerAnimationController : MonoBehaviour
             flashEtincelle.enabled = false;
         }
     }
+
+    
+    public void EteindreZippoAuRangement()
+    {
+        if (zippoSorti)
+            return;
+
+        zippoAllume = false;
+
+        EteindreFlamme();
+
+        Debug.Log("Zippo eteint : couvercle ferme.");
+    }
+
+    public void MettreAJourScintillement()
+    {
+        if (!zippoAllume || lumiereZippo == null || !lumiereZippo.enabled)
+        {
+            return;
+        }
+
+        float bruit = Mathf.PerlinNoise(
+            Time.time * vitesseScintillement,
+            0f 
+        );
+
+        lumiereZippo.intensity = Mathf.Lerp(
+            intensiteMin,
+            intensiteMax,
+            bruit
+        );
+    }
+
+    
+    public void EteindreZippoExterne()
+    {
+        zippoAllume = false;
+
+        tentativeEnCours = false;
+        tentativeReussie = false;
+
+        animateur.ResetTrigger("ZippoOn");
+
+        EteindreFlamme();
+        ArreterEffetsEtincelles();
+
+        Debug.Log("Zippo eteint par un evenement externe.");
+    }
+
+    
+    
+public void JouerSonSortirZippo()
+    {
+        Debug.Log("EVENT : Son de sortie du Zippo");
+
+        if (audioZippo != null && sonSortirZippo != null)
+        {
+            audioZippo.PlayOneShot(sonSortirZippo);
+        }
+        else
+        {
+            Debug.LogWarning("Son de sortie : reference manquante !");
+        }
+    }
+
+    public void JouerSonRangerZippo()
+    {
+        Debug.Log("EVENT : Son de rangement du Zippo");
+
+        if (audioZippo != null && sonRangerZippo != null)
+        {
+            audioZippo.PlayOneShot(sonRangerZippo);
+        }
+        else
+        {
+            Debug.LogWarning("Son de rangement : reference manquante !");
+        }
+    }
+
+
+
+
 }

@@ -35,7 +35,7 @@ ModelImporter:
       name: Scene
       takeName: Scene
       internalID: -623603649343465320
-      firstFrame: 0
+      firstFrame: 1.9
       lastFrame: 16
       wrapMode: 0
       orientationOffsetY: 0
@@ -56,6 +56,20 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000u
       curves: []
       events:
+      - time: 0.07786886
+        functionName: JouerSonRangerZippo
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.12090164
+        functionName: EteindreZippoAuRangement
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: 0.91803277
         functionName: MasquerZippo
         data: 
