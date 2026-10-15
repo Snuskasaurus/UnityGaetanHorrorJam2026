@@ -2649,7 +2649,7 @@ Transform:
   m_GameObject: {fileID: 1125107153859191614}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.01, y: -2.79, z: 0.25}
+  m_LocalPosition: {x: -0.01, y: -2.67, z: 0.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2702,6 +2702,8 @@ MonoBehaviour:
   sonEchec1: {fileID: 8300000, guid: 6883cfeff25fe884eb96f021b2daa9b5, type: 3}
   sonEchec2: {fileID: 8300000, guid: 22c81c2ba8d936b418149e4a791caf87, type: 3}
   sonReussite: {fileID: 8300000, guid: 2b3794c2379b94744a91029ad7cfc6eb, type: 3}
+  sonSortirZippo: {fileID: 8300000, guid: 49a63bc5145460148b4318207aa0f003, type: 3}
+  sonRangerZippo: {fileID: 8300000, guid: 6c8b0f55a6d5e134d985bd4bfac9cb0a, type: 3}
   flammeZippo: {fileID: 5939885600133658122}
   etincellesZippo: {fileID: 1506836202565066257}
   flashEtincelle: {fileID: 8050792938977400774}

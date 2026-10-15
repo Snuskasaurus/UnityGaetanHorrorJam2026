@@ -6405,10 +6405,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1711081781}
     m_Modifications:
-    - target: {fileID: 348745650562103684, guid: 26d497051c575744fab5afc5fea23f8e, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -2.67
-      objectReference: {fileID: 0}
     - target: {fileID: 801785107886988838, guid: 26d497051c575744fab5afc5fea23f8e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.62009
@@ -6453,14 +6449,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: PersonController
       objectReference: {fileID: 0}
-    - target: {fileID: 4430270089848907222, guid: 26d497051c575744fab5afc5fea23f8e, type: 3}
-      propertyPath: sonRangerZippo
-      value: 
-      objectReference: {fileID: 8300000, guid: 6c8b0f55a6d5e134d985bd4bfac9cb0a, type: 3}
-    - target: {fileID: 4430270089848907222, guid: 26d497051c575744fab5afc5fea23f8e, type: 3}
-      propertyPath: sonSortirZippo
-      value: 
-      objectReference: {fileID: 8300000, guid: 49a63bc5145460148b4318207aa0f003, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
