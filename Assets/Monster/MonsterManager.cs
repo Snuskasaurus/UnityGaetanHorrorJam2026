@@ -42,7 +42,6 @@ public class MonsterManager : MonoBehaviour
     [SerializeField] MonsterBehaviourState DefaultBehaviour = MonsterBehaviourState.Wandering;
 
     [Header("State | Wandering")]
-    [SerializeField] private float wanderingRange = 30.0f;
     [SerializeField] private float radiusTargetReached = 1.0f;
     [SerializeField, Range(0, 100)] private int chanceToWaitAfterTargetReached = 100;
 
@@ -143,7 +142,7 @@ public class MonsterManager : MonoBehaviour
     {
         UpdateWanderingTargetPosition();
     }
-    
+
     private void UpdateState_Wandering()
     {
         StartChasing_IFN();
@@ -152,7 +151,7 @@ public class MonsterManager : MonoBehaviour
         if (hasReachedTargetPosition)
         {
             monsterNavMeshAgent.ResetPath();
-            int randomNumber = Random.Range(0, 100);
+            int randomNumber = Random.Range(0, 101);
             if (randomNumber >= chanceToWaitAfterTargetReached)
             {
                 UpdateWanderingTargetPosition();
@@ -486,8 +485,13 @@ public class MonsterManager : MonoBehaviour
 
     private void UpdateWanderingTargetPosition()
     {
-        Vector3 playerPosition = playerController.transform.position;
-        blackboard.targetPosition = NavMeshUtil.PickNewTarget_Random(playerPosition, wanderingRange);
+        Vector3 targetPosition = Vector3.zero;
+        Room room = null;
+        if (RoomManager.TryGetRandomRoom(ref room))
+        {
+            targetPosition = room.GetRandomPositionInsideRoom();
+        }
+        blackboard.targetPosition = NavMeshUtil.GetClosestPointInNavMesh_Small(targetPosition);
         monsterNavMeshAgent.SetDestination(blackboard.targetPosition);
     }
 
@@ -496,7 +500,7 @@ public class MonsterManager : MonoBehaviour
         blackboard.lastSoundHeardPrecision = math.clamp(blackboard.lastSoundHeardPrecision, 0, 1);
         float radius = math.lerp(maxRadiusToSound, minRadiusToSound, blackboard.lastSoundHeardPrecision);
         Vector3 soundPosition = blackboard.lastSoundHeardPosition;
-        blackboard.targetPosition = NavMeshUtil.PickNewTarget_Random(soundPosition, radius);
+        blackboard.targetPosition = NavMeshUtil.PickNewTarget_RandomInCircle(soundPosition, radius);
         monsterNavMeshAgent.SetDestination(blackboard.targetPosition);
     }
 
