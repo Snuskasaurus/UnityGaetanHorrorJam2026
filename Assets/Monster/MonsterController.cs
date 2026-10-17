@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-[RequireComponent(typeof(Animator), typeof(UnityEngine.AI.NavMeshAgent))]
+[RequireComponent(typeof(UnityEngine.AI.NavMeshAgent))]
 public class MonsterController : MonoBehaviour
 {
     private UnityEngine.AI.NavMeshAgent navMeshAgent;
@@ -18,7 +18,7 @@ public class MonsterController : MonoBehaviour
     private void Awake()
     {
         navMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-        monsterAnimator = GetComponent<Animator>();
+        monsterAnimator = GetComponentInChildren<Animator>();
     }
 
     private void Update()
@@ -33,6 +33,8 @@ public class MonsterController : MonoBehaviour
     private void UpdateAnimations()
     {
         float monsterSpeed = navMeshAgent.speed;
-        monsterAnimator.SetFloat("Speed", monsterSpeed);
+
+        int animatorSpeedParam = Animator.StringToHash("Speed");
+        monsterAnimator.SetFloat(animatorSpeedParam, monsterSpeed);
     }
 }
