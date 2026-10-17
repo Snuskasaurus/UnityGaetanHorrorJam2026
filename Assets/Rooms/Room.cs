@@ -50,6 +50,12 @@ public class Room : MonoBehaviour
 
     private void OnEnable()
     {
+        Vector3 scale = boxCollider.transform.localScale;
+        if (scale != Vector3.one) // Unity's == / != on Vector3 uses an approximate (~1e-5) comparison
+        {
+            Debug.LogError($"Room '{boxCollider.name}' has a non-unit scale: {scale}", boxCollider);
+        }
+
         RoomManager.RegisterRoom(this);
     }
 

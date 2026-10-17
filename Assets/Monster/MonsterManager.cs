@@ -631,9 +631,8 @@ public class MonsterManager : MonoBehaviour
                                                                                           $"Pos {monsterPosition.ToString("F1")}\n" +
                                                                                           $"Player dist {distToPlayer:F1}");
 
-        DebugDraw.DebugLabel(mainCamera, blackboard.targetPosition + Vector3.up * 0.8f, Color.magenta, $"TARGET\n{blackboard.targetPosition.ToString("F1")}\n" +
-                                                                                                                $"Dist {distToTarget:F1}");
+        DebugDraw.DebugLabel(mainCamera, blackboard.targetPosition + Vector3.up * 0.8f, Color.magenta, $"TARGET\n{blackboard.targetPosition.ToString("F1")}\n" + 
+                                                                                                          $"Dist {distToTarget:F1}");
 #endif
     }
 }
-
