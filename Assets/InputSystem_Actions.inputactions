@@ -1010,6 +1010,67 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Zippo",
+            "id": "2dab2c04-ce4b-492b-8b55-23c0c483c614",
+            "actions": [
+                {
+                    "name": "On",
+                    "type": "Button",
+                    "id": "25a03199-73f3-49a7-a762-467936baa37e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "Intensity",
+                    "type": "Value",
+                    "id": "a98af6b2-9247-4828-8911-ebadfb15caa0",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "7bff734c-0b2c-445d-8bbe-c9520968ba9d",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "On",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "71ab4ff1-d627-4ca6-a9f2-9827854bc663",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Intensity",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "139b4fb5-b4bc-4268-a97b-89c79b9a5d20",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Intensity",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

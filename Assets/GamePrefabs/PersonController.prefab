@@ -1877,9 +1877,9 @@ ParticleSystem:
       properties: 0
       emitProbability: 1
   LightsModule:
-    enabled: 0
-    ratio: 0
-    light: {fileID: 0}
+    enabled: 1
+    ratio: 1
+    light: {fileID: 8050792938977400774}
     randomDistribution: 1
     color: 1
     range: 1
@@ -1918,7 +1918,7 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-    maxLights: 20
+    maxLights: 1
   TrailModule:
     enabled: 0
     mode: 0
@@ -2691,26 +2691,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2711e282617507642beb98f2197197be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimationController
-  animateur: {fileID: 2637371338144350399}
-  joueur: {fileID: 7402273110080162523}
-  corpsJoueur: {fileID: 6227999046116872325}
-  modelZippo: {fileID: 35659810892445575}
-  zippoSorti: 0
-  zippoAllume: 0
-  chanceAllumage: 0.35
-  audioZippo: {fileID: 9084525540607897949}
-  sonEchec1: {fileID: 8300000, guid: 6883cfeff25fe884eb96f021b2daa9b5, type: 3}
-  sonEchec2: {fileID: 8300000, guid: 22c81c2ba8d936b418149e4a791caf87, type: 3}
-  sonReussite: {fileID: 8300000, guid: 2b3794c2379b94744a91029ad7cfc6eb, type: 3}
-  sonSortirZippo: {fileID: 8300000, guid: 49a63bc5145460148b4318207aa0f003, type: 3}
-  sonRangerZippo: {fileID: 8300000, guid: 6c8b0f55a6d5e134d985bd4bfac9cb0a, type: 3}
-  flammeZippo: {fileID: 5939885600133658122}
-  etincellesZippo: {fileID: 1506836202565066257}
-  flashEtincelle: {fileID: 8050792938977400774}
-  lumiereZippo: {fileID: 7651319936331674161}
-  intensiteMin: 1.2
-  intensiteMax: 1.8
-  vitesseScintillement: 7
+  animator: {fileID: 2637371338144350399}
+  player: {fileID: 7402273110080162523}
+  playerBody: {fileID: 6227999046116872325}
+  zippoModel: {fileID: 35659810892445575}
+  isZippoOut: 0
+  isZippoLit: 0
+  ignitionChance: 0.35
+  zippoAudio: {fileID: 9084525540607897949}
+  failSound1: {fileID: 8300000, guid: 6883cfeff25fe884eb96f021b2daa9b5, type: 3}
+  failSound2: {fileID: 8300000, guid: 22c81c2ba8d936b418149e4a791caf87, type: 3}
+  successSound: {fileID: 8300000, guid: 2b3794c2379b94744a91029ad7cfc6eb, type: 3}
+  takeOutZippoSound: {fileID: 8300000, guid: 49a63bc5145460148b4318207aa0f003, type: 3}
+  zippoFlame: {fileID: 5939885600133658122}
+  zippoSparks: {fileID: 1506836202565066257}
+  zippoLight: {fileID: 7651319936331674161}
+  minIntensity: 1.2
+  maxIntensity: 1.8
+  flickerSpeed: 7
+  minFlamePower: 0.2
+  startFlamePower: 0.6
+  scrollStep: 0.1
 --- !u!82 &9084525540607897949
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3130,7 +3131,7 @@ Light:
   m_Type: 2
   m_Color: {r: 1, g: 0.7058824, b: 0.3529412, a: 1}
   m_Intensity: 1.5
-  m_Range: 3
+  m_Range: 6
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -3321,7 +3322,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.764151, g: 0.7139456, b: 0.5298594, a: 1}
   m_Intensity: 0.6
-  m_Range: 5
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -3942,6 +3943,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01c80b1baf6404d4e8235e90329ccbfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets.FirstPersonController.PlayerManager
+  environmentMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  groundCheckDistance: 0.1
+  ceilingCheckDistance: 0.5
+  checkRadiusFactor: 0.95
+  risingVelocityThreshold: 0.1
 --- !u!114 &2083564352033203485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3970,11 +3978,62 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a99be13a53f401f47a753ad496675830, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets.FirstPersonController.MovementController
-  moveEaseingDuration: 0.5
-  maxVelocityChange: 10
+  acceleration: 20
+  deceleration: 25
+  accelerationBySpeed:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: -2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0.15
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  decelerationBySpeed:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.3
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1.4
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  lateralGrip: 40
   walkSpeed: 2.5
   runSpeed: 5
   crouchSpeed: 1.125
+  maxSlopeAngle: 45
+  groundStickForce: 5
 --- !u!1 &4546829797849069984
 GameObject:
   m_ObjectHideFlags: 0
@@ -4008,6 +4067,29 @@ Transform:
   - {fileID: 348745650562103684}
   m_Father: {fileID: 3100916241813206217}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &931308353315282555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4546829797849069984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d56d50879cce1e445adf0c88e9fe1a4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ArmWallRetraction
+  playerCamera: {fileID: 3100916241813206217}
+  zippoTip: {fileID: 2918915901304665697}
+  wallMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  probeRadius: 0.08
+  maxRetract: 0.35
+  maxLower: 0.1
+  maxTuckAngles: {x: 15, y: -10, z: 0}
+  retractSharpness: 20
+  extendSharpness: 8
 --- !u!1 &4577217359352820334
 GameObject:
   m_ObjectHideFlags: 0
@@ -4403,7 +4485,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7542979213564778454
 Transform:
   m_ObjectHideFlags: 0
@@ -5570,17 +5652,3 @@ Transform:
   - {fileID: 4850877593346998338}
   m_Father: {fileID: 8729855399442555612}
   m_LocalEulerAnglesHint: {x: -88.08878, y: 0.13112739, z: 4.0158343}
---- !u!114 &931308353315282555
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4546829797849069984}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d56d50879cce1e445adf0c88e9fe1a4c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ArmWallRetraction
-  playerCamera: {fileID: 3100916241813206217}
-  zippoTip: {fileID: 2918915901304665697}

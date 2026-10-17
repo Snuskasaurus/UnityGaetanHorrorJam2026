@@ -102,15 +102,9 @@ public class MonsterManager : MonoBehaviour
     ///  PUBLIC FUNCTIONS
     /// ----------------------------------------------------------------------------------------------------------------
 
-    public static void SendSoundToMonsterHearing(Vector3 soundPosition, float soundVolume)
-    {
-        INSTANCE.SendSoundToMonsterHearing_internal(soundPosition, soundVolume);
-    }
+    public static void SendSoundToMonsterHearing(Vector3 soundPosition, float soundVolume) => INSTANCE.SendSoundToMonsterHearing_internal(soundPosition, soundVolume);
 
-    public static void TryToFearMonster()
-    {
-        INSTANCE.TryToFearMonster_Internal();
-    }
+    public static void TryToFearMonster() => INSTANCE.TryToFearMonster_Internal();
 
     /// ----------------------------------------------------------------------------------------------------------------
     ///  UNITY FUNCTIONS

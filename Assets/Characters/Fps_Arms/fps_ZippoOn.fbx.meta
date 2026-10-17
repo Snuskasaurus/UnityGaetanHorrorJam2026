@@ -57,14 +57,14 @@ ModelImporter:
       curves: []
       events:
       - time: 0.74590164
-        functionName: VerifierAllumage
+        functionName: CheckIgnition
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
       - time: 1
-        functionName: TerminerTentative
+        functionName: EndIgnitionAttempt
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

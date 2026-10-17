@@ -1,432 +1,347 @@
-
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections;
+using UnityEngine.InputSystem.Controls;
+using UnityEngine.Serialization;
 
 public class PlayerAnimationController : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] private Animator animateur;
-    [SerializeField] private PlayerController joueur;
-    [SerializeField] private Rigidbody corpsJoueur;
-    [SerializeField] private GameObject modelZippo;
+    // Animator parameters
+    private static readonly int WalkSpeedParam = Animator.StringToHash("WalkSpeed");
+    private static readonly int IsRunningParam = Animator.StringToHash("IsRunning");
+    private static readonly int IsCrouchParam = Animator.StringToHash("IsCrouch");
+    private static readonly int ZippoOutParam = Animator.StringToHash("ZippoOut");
+    private static readonly int ZippoOnParam = Animator.StringToHash("ZippoOn");
 
-    private Renderer[] rendusZippo;
+    [Header("References")]
+    [SerializeField, FormerlySerializedAs("animateur")] private Animator animator;
+    [SerializeField, FormerlySerializedAs("joueur")] private PlayerController player;
+    [SerializeField, FormerlySerializedAs("corpsJoueur")] private Rigidbody playerBody;
+    [SerializeField, FormerlySerializedAs("modelZippo")] private GameObject zippoModel;
 
     [Header("Zippo")]
-    [SerializeField] private bool zippoSorti = false;
+    [SerializeField, FormerlySerializedAs("zippoSorti")] private bool isZippoOut = false;
 
-    [Header("Allumage du Zippo")]
-    [SerializeField] private bool zippoAllume = false;
+    [Header("Zippo Ignition")]
+    [SerializeField, FormerlySerializedAs("zippoAllume")] private bool isZippoLit = false;
 
     [Range(0f, 1f)]
-    [SerializeField] private float chanceAllumage = 0.35f;
+    [SerializeField, FormerlySerializedAs("chanceAllumage")] private float ignitionChance = 0.35f;
 
-    private bool tentativeEnCours = false;
-    private bool tentativeReussie = false;
+    [Header("Zippo Sounds")]
+    [SerializeField, FormerlySerializedAs("audioZippo")] private AudioSource zippoAudio;
+    [SerializeField, FormerlySerializedAs("sonEchec1")] private AudioClip failSound1;
+    [SerializeField, FormerlySerializedAs("sonEchec2")] private AudioClip failSound2;
+    [SerializeField, FormerlySerializedAs("sonReussite")] private AudioClip successSound;
+    [SerializeField, FormerlySerializedAs("sonSortirZippo")] private AudioClip takeOutZippoSound;
 
-    [Header("Sons du Zippo")]
-    [SerializeField] private AudioSource audioZippo;
-    [SerializeField] private AudioClip sonEchec1;
-    [SerializeField] private AudioClip sonEchec2;
-    [SerializeField] private AudioClip sonReussite;
-    [SerializeField] private AudioClip sonSortirZippo;
-    [SerializeField] private AudioClip sonRangerZippo;
+    [Header("Zippo Flame Visual")]
+    [SerializeField, FormerlySerializedAs("flammeZippo")] private SpriteRenderer zippoFlame;
 
-    [Header("Effet visuel du Zippo")]
-    [SerializeField] private SpriteRenderer flammeZippo;
+    // The spark flash light is spawned by the Lights module of this particle system
+    [Header("Zippo Sparks")]
+    [SerializeField, FormerlySerializedAs("etincellesZippo")] private ParticleSystem zippoSparks;
 
-    [Header("Etincelles du Zippo")]
-    [SerializeField] private ParticleSystem etincellesZippo;
-    [SerializeField] private Light flashEtincelle;
+    [Header("Zippo Light")]
+    [SerializeField, FormerlySerializedAs("lumiereZippo")] private Light zippoLight;
+    [SerializeField, FormerlySerializedAs("intensiteMin")] private float minIntensity = 1.2f;
+    [SerializeField, FormerlySerializedAs("intensiteMax")] private float maxIntensity = 1.8f;
+    [SerializeField, FormerlySerializedAs("vitesseScintillement")] private float flickerSpeed = 7f;
 
-    private Coroutine routineFlash;
+    [Header("Flame Power")]
+    [SerializeField]
+    [Range(0.05f, 1f)]
+    private float minFlamePower = 0.2f;
 
-    [Header("Lumiere Du Zippo")]
-    [SerializeField] private Light lumiereZippo;
-    [SerializeField] private float intensiteMin = 1.2f;
-    [SerializeField] private float intensiteMax = 1.8f;
-    [SerializeField] private float vitesseScintillement = 7f;
+    [SerializeField]
+    [Range(0.05f, 1f)]
+    private float startFlamePower = 0.6f;
 
-    void Start()
+    [SerializeField]
+    [Range(0.05f, 1f)]
+    private float fleeingPower = 0.8f;
+
+    [SerializeField]
+    [Range(0.01f, 0.5f)]
+    private float scrollStep = 0.1f;
+
+    [SerializeField]
+    [Range(0.05f, 1f)]
+    private float minRangeFactor = 0.4f;  // light range at minimum power, relative to its range in the prefab
+
+    [SerializeField]
+    [Range(0.05f, 1f)]
+    private float minFlameScaleFactor = 0.4f;  // flame sprite scale at minimum power, relative to its scale in the prefab
+
+    [SerializeField]
+    private float flamePowerSmoothing = 10f;  // how fast the flame visually reaches the wanted power
+
+    // Internal variables
+    private Renderer[] zippoRenderers;
+    private bool isAttemptInProgress = false;
+    private bool isAttemptSuccessful = false;
+    private float flamePower;
+    private float displayedFlamePower;
+    private float baseLightRange;
+    private Vector3 baseFlameScale = Vector3.one;
+
+    private void OnEnable()
     {
-        animateur = GetComponent<Animator>();
-        joueur = GetComponentInParent<PlayerController>();
-        corpsJoueur = GetComponentInParent<Rigidbody>();
+        Subscribe(InputManager.ZippoOn, OnZippoOnPerformed);
+        Subscribe(InputManager.ZippoIntensity, OnZippoIntensityPerformed);
+    }
 
-        if (animateur == null ||
-            joueur == null ||
-            corpsJoueur == null ||
-            modelZippo == null)
+    private void OnDisable()
+    {
+        Unsubscribe(InputManager.ZippoOn, OnZippoOnPerformed);
+        Unsubscribe(InputManager.ZippoIntensity, OnZippoIntensityPerformed);
+    }
+
+    private static void Subscribe(InputAction action, System.Action<InputAction.CallbackContext> callback)
+    {
+        if (action != null)
         {
-            // Debug.LogError("PlayerAnimationController : reference manquante !", this);
+            action.performed += callback;
+        }
+    }
 
+    private static void Unsubscribe(InputAction action, System.Action<InputAction.CallbackContext> callback)
+    {
+        if (action != null)
+        {
+            action.performed -= callback;
+        }
+    }
+
+    private void Start()
+    {
+        // Only look for the references that were not assigned in the Inspector
+        if (animator == null)
+        {
+            animator = GetComponent<Animator>();
+        }
+        if (player == null)
+        {
+            player = GetComponentInParent<PlayerController>();
+        }
+        if (playerBody == null)
+        {
+            playerBody = GetComponentInParent<Rigidbody>();
+        }
+
+        if (animator == null || player == null || playerBody == null || zippoModel == null)
+        {
+            Debug.LogWarning("PlayerAnimationController : missing reference, component disabled.", this);
             enabled = false;
             return;
         }
 
-        rendusZippo =
-            modelZippo.GetComponentsInChildren<Renderer>(true);
-
-        zippoSorti = false;
-        zippoAllume = false;
-        tentativeEnCours = false;
-        tentativeReussie = false;
-
-        MasquerZippo();
-        ArreterEffetsEtincelles();
-
-        animateur.SetBool("ZippoOut", false);
-
-        // Debug.Log("Animator utilise : " + animateur.name);
-        // Debug.Log("Controller utilise : " + animateur.runtimeAnimatorController?.name);
-
-        foreach (AnimatorControllerParameter parametre
-            in animateur.parameters)
+        zippoRenderers = zippoModel.GetComponentsInChildren<Renderer>(true);
+        flamePower = Mathf.Clamp(startFlamePower, minFlamePower, 1f);
+        displayedFlamePower = flamePower;
+        if (zippoLight != null)
         {
-            // Debug.Log("Parametre trouve : [" + parametre.name + "]");
+            baseLightRange = zippoLight.range;
+        }
+        if (zippoFlame != null)
+        {
+            baseFlameScale = zippoFlame.transform.localScale;
+        }
+
+        // The zippo is always out, only its flame can be lit or extinguished
+        isZippoOut = true;
+        isZippoLit = false;
+        isAttemptInProgress = false;
+        isAttemptSuccessful = false;
+
+        ShowZippo();
+        ExtinguishFlame();
+        StopSparkEffects();
+
+        animator.SetBool(ZippoOutParam, true);
+    }
+
+    private void Update()
+    {
+        Vector3 velocity = playerBody.linearVelocity;
+        velocity.y = 0f;
+
+        animator.SetFloat(WalkSpeedParam, velocity.magnitude);
+        animator.SetBool(IsRunningParam, player.CurrentMovementState == MovementState.Running);
+        animator.SetBool(IsCrouchParam, player.CurrentPosture == Posture.Crouching);
+
+        UpdateFlamePower();
+        UpdateFlicker();
+
+        if (flamePower > fleeingPower)
+        {
+            MonsterManager.TryToFearMonster();
         }
     }
 
-    void Update()
+    // Starts an ignition attempt, the result is applied by the CheckIgnition animation event
+    private void OnZippoOnPerformed(InputAction.CallbackContext context)
     {
-        Vector3 vitesse = corpsJoueur.linearVelocity;
-        vitesse.y = 0f;
-
-        float vitesseActuelle = vitesse.magnitude;
-
-        animateur.SetFloat("WalkSpeed", vitesseActuelle);
-
-        bool estEnCourse =
-            joueur.CurrentMovementState == MovementState.Running;
-
-        bool estAccroupi =
-            joueur.CurrentPosture == Posture.Crouching;
-
-        animateur.SetBool("IsRunning", estEnCourse);
-        animateur.SetBool("IsCrouch", estAccroupi);
-
-        if (Keyboard.current != null &&
-            Keyboard.current.gKey.wasPressedThisFrame)
-        {
-            zippoSorti = !zippoSorti;
-
-            
-        if (zippoSorti)
-        {
-            AfficherZippo();
-
-            if (zippoAllume)
-            {
-                AllumerFlamme();
-            }
-            else
-            {
-                EteindreFlamme();
-            }
-
-            // Debug.Log("Zippo sorti.");
-        }
-
-            else
-            {
-                ArreterEffetsEtincelles();
-
-                tentativeEnCours = false;
-                tentativeReussie = false;
-
-                animateur.ResetTrigger("ZippoOn");
-
-                // Debug.Log("Rangement du Zippo en cours.");
-            }
-
-            animateur.SetBool("ZippoOut", zippoSorti);
-        }
-
-        if (Keyboard.current != null &&
-            Keyboard.current.rKey.wasPressedThisFrame)
-        {
-            if (zippoSorti &&
-                !zippoAllume &&
-                !tentativeEnCours)
-            {
-                tentativeEnCours = true;
-
-                tentativeReussie =
-                    Random.value < chanceAllumage;
-
-                animateur.SetTrigger("ZippoOn");
-
-               
-
-                // Debug.Log("Tentative d'allumage du Zippo...");
-            }
-        }
-        MettreAJourScintillement();
-    }
-
-    
-    public void MasquerZippo()
-    {
-        if (zippoSorti)
+        if (!isZippoOut || isZippoLit || isAttemptInProgress || animator == null)
         {
             return;
         }
 
-        if (rendusZippo != null)
-        {
-            foreach (Renderer rendu in rendusZippo)
-            {
-                if (rendu != null)
-                {
-                    rendu.enabled = false;
-                }
-            }
-        }
-
-        EteindreFlamme();
-        ArreterEffetsEtincelles();
+        isAttemptInProgress = true;
+        isAttemptSuccessful = Random.value < ignitionChance;
+        animator.SetTrigger(ZippoOnParam);
     }
 
-
-    public void AfficherZippo()
+    // A button (F) sets the power to 1, or back to its minimum if it is already at 1,
+    // each scroll notch changes the power by one step
+    private void OnZippoIntensityPerformed(InputAction.CallbackContext context)
     {
-        if (rendusZippo == null)
+        if (context.control is ButtonControl)
+        {
+            flamePower = flamePower >= minFlamePower + (1f - minFlamePower)/2f ? minFlamePower : 1f;
+            MonsterManager.SendSoundToMonsterHearing(transform.position, flamePower >= 1f ? 1f : 0.5f);
             return;
-
-        foreach (Renderer rendu in rendusZippo)
-        {
-            if (rendu != null && rendu != flammeZippo)
-            {
-                rendu.enabled = true;
-            }
-        }
-    }
-
-    public void AllumerFlamme()
-    {
-        if (flammeZippo != null)
-        {
-            flammeZippo.enabled = true;
         }
 
-        if (lumiereZippo != null)
+        float scroll = context.ReadValue<float>();
+        if (Mathf.Approximately(scroll, 0f))
         {
-            lumiereZippo.intensity = intensiteMax;
-            lumiereZippo.enabled = true;
-        }
-    }
-
-    public void EteindreFlamme()
-    {
-       if (flammeZippo != null)
-       {
-        flammeZippo.enabled = false;
-       }
-
-       if (lumiereZippo != null)
-       {
-        lumiereZippo.enabled =false;
-       }
-    }
-
-    public void VerifierAllumage()
-    {
-        if (!tentativeEnCours || !zippoSorti)
             return;
+        }
 
-        JouerEtincellesZippo();
+        flamePower = Mathf.Clamp(flamePower + Mathf.Sign(scroll) * scrollStep, minFlamePower, 1f);
+    }
 
-        if (tentativeReussie)
+    // The flame sprite is excluded, it is driven by LightFlame / ExtinguishFlame
+    public void ShowZippo()
+    {
+        if (zippoRenderers == null)
         {
-            zippoAllume = true;
+            return;
+        }
 
-            AllumerFlamme();
-
-            if (audioZippo != null && sonReussite != null)
+        foreach (Renderer zippoRenderer in zippoRenderers)
+        {
+            if (zippoRenderer != null && zippoRenderer != zippoFlame)
             {
-                audioZippo.PlayOneShot(sonReussite);
+                zippoRenderer.enabled = true;
             }
+        }
+    }
 
-            // Debug.Log("Zippo Allume ! Flamme activee !");
+    public void LightFlame()
+    {
+        if (zippoFlame != null)
+        {
+            zippoFlame.enabled = true;
+        }
+
+        if (zippoLight != null)
+        {
+            zippoLight.intensity = maxIntensity * displayedFlamePower;
+            zippoLight.enabled = true;
+        }
+    }
+
+    public void ExtinguishFlame()
+    {
+        if (zippoFlame != null)
+        {
+            zippoFlame.enabled = false;
+        }
+
+        if (zippoLight != null)
+        {
+            zippoLight.enabled = false;
+        }
+    }
+
+    // Animation event
+    public void CheckIgnition()
+    {
+        if (!isAttemptInProgress || !isZippoOut)
+        {
+            return;
+        }
+
+        PlayZippoSparks();
+
+        if (isAttemptSuccessful)
+        {
+            isZippoLit = true;
+            LightFlame();
+            PlaySound(successSound);
         }
         else
         {
-            zippoAllume = false;
-
-            EteindreFlamme();
-
-            int choixSon = Random.Range(0, 2);
-
-            AudioClip sonChoisi;
-
-            if (choixSon == 0)
-            {
-                sonChoisi = sonEchec1;
-            }
-            else
-            {
-                sonChoisi = sonEchec2;
-            }
-
-            if (audioZippo != null && sonChoisi != null)
-            {
-                audioZippo.PlayOneShot(sonChoisi);
-            }
-
-            // Debug.Log("Echec de l'allumage !");
+            isZippoLit = false;
+            ExtinguishFlame();
+            PlaySound(Random.value < 0.5f ? failSound1 : failSound2);
         }
     }
 
-    public void TerminerTentative()
+    // Animation event
+    public void EndIgnitionAttempt()
     {
-        tentativeEnCours = false;
-        tentativeReussie = false;
-
-        // Debug.Log("Tentative terminee.");
+        isAttemptInProgress = false;
+        isAttemptSuccessful = false;
     }
 
-    private void JouerEtincellesZippo()
+    // Animation event
+    public void PlayTakeOutZippoSound()
     {
-        if (etincellesZippo != null)
-        {
-            etincellesZippo.Stop(
-                true,
-                ParticleSystemStopBehavior.StopEmittingAndClear
-            );
-
-            etincellesZippo.Play(true);
-        }
-
-        if (flashEtincelle != null)
-        {
-            if (routineFlash != null)
-            {
-                StopCoroutine(routineFlash);
-                routineFlash = null;
-            }
-
-            routineFlash = StartCoroutine(
-                FlashEtincelleCoroutine()
-            );
-        }
+        PlaySound(takeOutZippoSound);
     }
 
-    private IEnumerator FlashEtincelleCoroutine()
+    private void UpdateFlicker()
     {
-        flashEtincelle.enabled = true;
-
-        yield return new WaitForSeconds(0.05f);
-
-        if (flashEtincelle != null)
-        {
-            flashEtincelle.enabled = false;
-        }
-
-        routineFlash = null;
-    }
-
-    private void ArreterEffetsEtincelles()
-    {
-        if (etincellesZippo != null)
-        {
-            etincellesZippo.Stop(
-                true,
-                ParticleSystemStopBehavior.StopEmittingAndClear
-            );
-        }
-
-        if (routineFlash != null)
-        {
-            StopCoroutine(routineFlash);
-            routineFlash = null;
-        }
-
-        if (flashEtincelle != null)
-        {
-            flashEtincelle.enabled = false;
-        }
-    }
-
-    
-    public void EteindreZippoAuRangement()
-    {
-        if (zippoSorti)
-            return;
-
-        zippoAllume = false;
-
-        EteindreFlamme();
-
-        // Debug.Log("Zippo eteint : couvercle ferme.");
-    }
-
-    public void MettreAJourScintillement()
-    {
-        if (!zippoAllume || lumiereZippo == null || !lumiereZippo.enabled)
+        if (!isZippoLit || zippoLight == null || !zippoLight.enabled)
         {
             return;
         }
 
-        float bruit = Mathf.PerlinNoise(
-            Time.time * vitesseScintillement,
-            0f 
-        );
-
-        lumiereZippo.intensity = Mathf.Lerp(
-            intensiteMin,
-            intensiteMax,
-            bruit
-        );
+        float noise = Mathf.PerlinNoise(Time.time * flickerSpeed, 0f);
+        zippoLight.intensity = Mathf.Lerp(minIntensity, maxIntensity, noise) * displayedFlamePower;
     }
 
-    
-    public void EteindreZippoExterne()
+    // Smoothly moves the flame towards the wanted power and applies it to the light range and the flame size
+    private void UpdateFlamePower()
     {
-        zippoAllume = false;
+        float smoothing = 1f - Mathf.Exp(-flamePowerSmoothing * Time.deltaTime);
+        displayedFlamePower = Mathf.Lerp(displayedFlamePower, flamePower, smoothing);
 
-        tentativeEnCours = false;
-        tentativeReussie = false;
+        if (zippoLight != null)
+        {
+            zippoLight.range = baseLightRange * Mathf.Lerp(minRangeFactor, 1f, displayedFlamePower);
+        }
 
-        animateur.ResetTrigger("ZippoOn");
-
-        EteindreFlamme();
-        ArreterEffetsEtincelles();
-
-        // Debug.Log("Zippo eteint par un evenement externe.");
+        if (zippoFlame != null)
+        {
+            zippoFlame.transform.localScale = baseFlameScale * Mathf.Lerp(minFlameScaleFactor, 1f, displayedFlamePower);
+        }
     }
 
-    
-    
-public void JouerSonSortirZippo()
+    private void PlayZippoSparks()
     {
-        // Debug.Log("EVENT : Son de sortie du Zippo");
-
-        if (audioZippo != null && sonSortirZippo != null)
+        if (zippoSparks != null)
         {
-            audioZippo.PlayOneShot(sonSortirZippo);
-        }
-        else
-        {
-            // Debug.LogWarning("Son de sortie : reference manquante !");
+            zippoSparks.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            zippoSparks.Play(true);
         }
     }
 
-    public void JouerSonRangerZippo()
+    private void StopSparkEffects()
     {
-        // Debug.Log("EVENT : Son de rangement du Zippo");
-
-        if (audioZippo != null && sonRangerZippo != null)
+        if (zippoSparks != null)
         {
-            audioZippo.PlayOneShot(sonRangerZippo);
-        }
-        else
-        {
-            // Debug.LogWarning("Son de rangement : reference manquante !");
+            zippoSparks.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
     }
 
-
-
-
+    private void PlaySound(AudioClip clip)
+    {
+        if (zippoAudio != null && clip != null)
+        {
+            zippoAudio.PlayOneShot(clip);
+        }
+    }
 }
