@@ -4,20 +4,6 @@ using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
-enum MonsterBehaviourState
-{
-    NoState,
-    Offmap,
-    Wandering,
-    Waiting,
-    InvestigatingSound,
-    RememberingPlayer,
-    Chasing, 
-    Fleeing,
-
-    COUNT
-}
-
 struct MonsterBlackboard
 {
     public Vector3 targetPosition;
@@ -45,6 +31,11 @@ public class MonsterManager : MonoBehaviour
     [Header("Common")]
     [SerializeField] private float radiusTargetReached = 1.0f;
 
+    [Header("Movement")]
+    [SerializeField] private float MovementSpeedDefault = 10.0f;
+    [SerializeField] private float MovementSpeedChasing = 10.0f;
+    [SerializeField] private float MovementSpeedFleeing = 10.0f;
+
     [Header("State | Wandering")]
     [SerializeField, Range(0, 100)] private int chanceToWaitAfterTargetReached = 100;
 
@@ -59,10 +50,10 @@ public class MonsterManager : MonoBehaviour
     [SerializeField] private float minTimeToWait = 0.5f;
     [SerializeField] private float maxTimeToWait = 1.0f;
 
-    [Header("State | Fleeing")] 
+    [Header("State | Fleeing")]
     [SerializeField] private float FleeingRadius = 10.0f;
 
-    [Header("State | OffMap")] 
+    [Header("State | OffMap")]
     [SerializeField] private float MinTimeSpentOffMap = 1.0f;
     [SerializeField] private float MaxTimeSpentOffMap = 3.0f;
 
@@ -126,6 +117,8 @@ public class MonsterManager : MonoBehaviour
         Debug.Assert(radiusVisibility <= radiusLoosingPlayer);
 
         soundPath = new NavMeshPath();
+
+        monsterNavMeshAgent.speed = MovementSpeedDefault;
     }
 
     private void Update()
@@ -153,6 +146,8 @@ public class MonsterManager : MonoBehaviour
     private void StartState_Wandering()
     {
         UpdateWanderingTargetPosition();
+
+        monsterNavMeshAgent.speed = MovementSpeedDefault;
     }
 
     private void UpdateState_Wandering()
@@ -182,6 +177,8 @@ public class MonsterManager : MonoBehaviour
     private void StartState_RememberingPlayer()
     {
         UpdateRememberingPlayerTargetPosition();
+
+        monsterNavMeshAgent.speed = MovementSpeedChasing;
     }
 
     private void UpdateState_RememberingPlayer()
@@ -201,6 +198,8 @@ public class MonsterManager : MonoBehaviour
     private void StartState_Chasing()
     {
         UpdateChasingTargetPosition();
+
+        monsterNavMeshAgent.speed = MovementSpeedChasing;
     }
 
     private void UpdateState_Chasing()
@@ -227,6 +226,8 @@ public class MonsterManager : MonoBehaviour
     private void StartState_Fleeing()
     {
         UpdateFleeingTargetPosition();
+
+        monsterNavMeshAgent.speed = MovementSpeedFleeing;
     }
 
     private void UpdateState_Fleeing()
@@ -244,6 +245,8 @@ public class MonsterManager : MonoBehaviour
     private void StartState_Waiting()
     {
         blackboard.EndDate = Common.GetCurrentDate() + Random.Range(minTimeToWait, maxTimeToWait);
+
+        monsterNavMeshAgent.speed = MovementSpeedDefault;
     }
 
     private void UpdateState_Waiting()
@@ -264,6 +267,8 @@ public class MonsterManager : MonoBehaviour
     private void StartState_InvestigatingSound()
     {
         UpdateInvestigatingSoundTargetPosition();
+
+        monsterNavMeshAgent.speed = MovementSpeedDefault;
     }
 
     private void UpdateState_InvestigatingSound()
@@ -285,6 +290,8 @@ public class MonsterManager : MonoBehaviour
     private void StartState_OffMap()
     {
         blackboard.EndDate = Common.GetCurrentDate() + Random.Range(MinTimeSpentOffMap, MaxTimeSpentOffMap);
+
+        monsterNavMeshAgent.speed = MovementSpeedDefault;
     }
 
     private void UpdateState_OffMap()

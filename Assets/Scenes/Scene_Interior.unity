@@ -1721,6 +1721,18 @@ PrefabInstance:
       propertyPath: canSeePlayer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5608880798388196166, guid: 63384e8d3669ca24ea5ea880aeab191a, type: 3}
+      propertyPath: MovementSpeedChasing
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5608880798388196166, guid: 63384e8d3669ca24ea5ea880aeab191a, type: 3}
+      propertyPath: MovementSpeedDefault
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5608880798388196166, guid: 63384e8d3669ca24ea5ea880aeab191a, type: 3}
+      propertyPath: MovementSpeedFleeing
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8490929336178307555, guid: 63384e8d3669ca24ea5ea880aeab191a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.06757
@@ -1921,7 +1933,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8501803517020677049, guid: a63271d5d14b03b4f9d4786b8de0cc0a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.997
       objectReference: {fileID: 0}
     - target: {fileID: 8501803517020677049, guid: a63271d5d14b03b4f9d4786b8de0cc0a, type: 3}
       propertyPath: m_LocalPosition.z
