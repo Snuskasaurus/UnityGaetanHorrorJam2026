@@ -913,6 +913,14 @@ PrefabInstance:
       propertyPath: intensiteMin
       value: 0.9
       objectReference: {fileID: 0}
+    - target: {fileID: 4430270089848907222, guid: 26d497051c575744fab5afc5fea23f8e, type: 3}
+      propertyPath: maxIntensity
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4430270089848907222, guid: 26d497051c575744fab5afc5fea23f8e, type: 3}
+      propertyPath: minIntensity
+      value: 0.9
+      objectReference: {fileID: 0}
     - target: {fileID: 7651319936331674161, guid: 26d497051c575744fab5afc5fea23f8e, type: 3}
       propertyPath: m_BounceIntensity
       value: 5
@@ -1760,7 +1768,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5608880798388196166, guid: 63384e8d3669ca24ea5ea880aeab191a, type: 3}
       propertyPath: MovementSpeedChasing
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5608880798388196166, guid: 63384e8d3669ca24ea5ea880aeab191a, type: 3}
       propertyPath: MovementSpeedDefault
@@ -1768,7 +1776,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5608880798388196166, guid: 63384e8d3669ca24ea5ea880aeab191a, type: 3}
       propertyPath: MovementSpeedFleeing
-      value: 2
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8490929336178307555, guid: 63384e8d3669ca24ea5ea880aeab191a, type: 3}
       propertyPath: m_LocalPosition.x
