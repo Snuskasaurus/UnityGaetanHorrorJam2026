@@ -33,6 +33,7 @@ public class CameraController : MonoBehaviour
     //private float postureTransitionProgress = 1f;
 
     private PlayerController playerManager;
+    private Rigidbody rigidBody;
 
     // Events
     //public event System.Action<OnPostureChangedEventArgs> OnPostureChanged;
@@ -40,6 +41,7 @@ public class CameraController : MonoBehaviour
     private void OnEnable()
     {
         playerManager = GetComponent<PlayerController>();
+        rigidBody = GetComponent<Rigidbody>();
     }
 
     // Use this for initialization
@@ -47,7 +49,7 @@ public class CameraController : MonoBehaviour
     {
         //Disable cursor and lock it to the center of the screen
         Cursor.lockState = CursorLockMode.Locked;
-
+        yaw = transform.eulerAngles.y;
     }
 
     // Update is called once per frame
@@ -56,13 +58,25 @@ public class CameraController : MonoBehaviour
         CameraRotation();
     }
 
+    // The camera is oriented every frame so the mouse look stays instant
+    void LateUpdate()
+    {
+        playerManager.PlayerCamera.transform.rotation = Quaternion.Euler(pitch, yaw, 0f);
+    }
+
+    // The body is rotated through the physics so it works with the Rigidbody interpolation
+    void FixedUpdate()
+    {
+        rigidBody.MoveRotation(Quaternion.Euler(0f, yaw, 0f));
+    }
+
     private void PosturePosition()
     {
     }
 
     private void CameraRotation()
     {
-        yaw = transform.localEulerAngles.y + InputManager.PlayerLook.ReadValue<Vector2>().x * mouseSensitivity;
+        yaw += InputManager.PlayerLook.ReadValue<Vector2>().x * mouseSensitivity;
 
         if (!invertCamera)
         {
@@ -76,8 +90,7 @@ public class CameraController : MonoBehaviour
 
         // Clamp pitch between lookAngle
         pitch = Mathf.Clamp(pitch, -maxTopVerticalAngle, maxBottomVerticalAngle);
-
-        transform.localEulerAngles = new Vector3(0, yaw, 0);
-        playerManager.PlayerCamera.transform.localEulerAngles = new Vector3(pitch, 0, 0);
+        // Keep yaw in a small range to avoid float precision loss over time
+        yaw = Mathf.Repeat(yaw, 360f);
     }
 }
