@@ -31,7 +31,7 @@ public class PlayerAnimationController : MonoBehaviour
     [SerializeField] private AudioClip sonEchec2;
     [SerializeField] private AudioClip sonReussite;
     [SerializeField] private AudioClip sonSortirZippo;
-[SerializeField] private AudioClip sonRangerZippo;
+    [SerializeField] private AudioClip sonRangerZippo;
 
     [Header("Effet visuel du Zippo")]
     [SerializeField] private SpriteRenderer flammeZippo;
@@ -59,10 +59,7 @@ public class PlayerAnimationController : MonoBehaviour
             corpsJoueur == null ||
             modelZippo == null)
         {
-            Debug.LogError(
-                "PlayerAnimationController : reference manquante !",
-                this
-            );
+            // Debug.LogError("PlayerAnimationController : reference manquante !", this);
 
             enabled = false;
             return;
@@ -81,16 +78,13 @@ public class PlayerAnimationController : MonoBehaviour
 
         animateur.SetBool("ZippoOut", false);
 
-        Debug.Log("Animator utilise : " + animateur.name);
-        Debug.Log("Controller utilise : " +
-            animateur.runtimeAnimatorController?.name);
+        // Debug.Log("Animator utilise : " + animateur.name);
+        // Debug.Log("Controller utilise : " + animateur.runtimeAnimatorController?.name);
 
         foreach (AnimatorControllerParameter parametre
             in animateur.parameters)
         {
-            Debug.Log(
-                "Parametre trouve : [" + parametre.name + "]"
-            );
+            // Debug.Log("Parametre trouve : [" + parametre.name + "]");
         }
     }
 
@@ -131,7 +125,7 @@ public class PlayerAnimationController : MonoBehaviour
                 EteindreFlamme();
             }
 
-            Debug.Log("Zippo sorti.");
+            // Debug.Log("Zippo sorti.");
         }
 
             else
@@ -143,7 +137,7 @@ public class PlayerAnimationController : MonoBehaviour
 
                 animateur.ResetTrigger("ZippoOn");
 
-                Debug.Log("Rangement du Zippo en cours.");
+                // Debug.Log("Rangement du Zippo en cours.");
             }
 
             animateur.SetBool("ZippoOut", zippoSorti);
@@ -165,7 +159,7 @@ public class PlayerAnimationController : MonoBehaviour
 
                
 
-                Debug.Log("Tentative d'allumage du Zippo...");
+                // Debug.Log("Tentative d'allumage du Zippo...");
             }
         }
         MettreAJourScintillement();
@@ -254,7 +248,7 @@ public class PlayerAnimationController : MonoBehaviour
                 audioZippo.PlayOneShot(sonReussite);
             }
 
-            Debug.Log("Zippo Allume ! Flamme activee !");
+            // Debug.Log("Zippo Allume ! Flamme activee !");
         }
         else
         {
@@ -280,7 +274,7 @@ public class PlayerAnimationController : MonoBehaviour
                 audioZippo.PlayOneShot(sonChoisi);
             }
 
-            Debug.Log("Echec de l'allumage !");
+            // Debug.Log("Echec de l'allumage !");
         }
     }
 
@@ -289,7 +283,7 @@ public class PlayerAnimationController : MonoBehaviour
         tentativeEnCours = false;
         tentativeReussie = false;
 
-        Debug.Log("Tentative terminee.");
+        // Debug.Log("Tentative terminee.");
     }
 
     private void JouerEtincellesZippo()
@@ -364,7 +358,7 @@ public class PlayerAnimationController : MonoBehaviour
 
         EteindreFlamme();
 
-        Debug.Log("Zippo eteint : couvercle ferme.");
+        // Debug.Log("Zippo eteint : couvercle ferme.");
     }
 
     public void MettreAJourScintillement()
@@ -399,14 +393,14 @@ public class PlayerAnimationController : MonoBehaviour
         EteindreFlamme();
         ArreterEffetsEtincelles();
 
-        Debug.Log("Zippo eteint par un evenement externe.");
+        // Debug.Log("Zippo eteint par un evenement externe.");
     }
 
     
     
 public void JouerSonSortirZippo()
     {
-        Debug.Log("EVENT : Son de sortie du Zippo");
+        // Debug.Log("EVENT : Son de sortie du Zippo");
 
         if (audioZippo != null && sonSortirZippo != null)
         {
@@ -414,13 +408,13 @@ public void JouerSonSortirZippo()
         }
         else
         {
-            Debug.LogWarning("Son de sortie : reference manquante !");
+            // Debug.LogWarning("Son de sortie : reference manquante !");
         }
     }
 
     public void JouerSonRangerZippo()
     {
-        Debug.Log("EVENT : Son de rangement du Zippo");
+        // Debug.Log("EVENT : Son de rangement du Zippo");
 
         if (audioZippo != null && sonRangerZippo != null)
         {
@@ -428,7 +422,7 @@ public void JouerSonSortirZippo()
         }
         else
         {
-            Debug.LogWarning("Son de rangement : reference manquante !");
+            // Debug.LogWarning("Son de rangement : reference manquante !");
         }
     }
 
