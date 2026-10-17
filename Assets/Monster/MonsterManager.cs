@@ -1,26 +1,29 @@
-using System;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Rendering;
+using Random = UnityEngine.Random;
 
 enum MonsterBehaviourState
 {
     NoState,
     Wandering,
+    Waiting,
     InvestigatingSound,
+    RememberingPlayer,
     Chasing,
     Fleeing,
 
     COUNT
 }
 
-struct MonsterBackboard
+struct MonsterBlackboard
 {
     public Vector3 targetPosition;
-    public Vector3 lastSoundPositionHeard;
-    public float precisionLastSoundHeard;
+    public Vector3 lastPlayerPosition;
+    public Vector3 lastSoundHeardPosition;
+    public float lastSoundHeardPrecision;
+    public float DateFinishingWaiting;
 }
 
 struct SoundInfo
@@ -39,67 +42,330 @@ public class MonsterManager : MonoBehaviour
     [SerializeField] MonsterBehaviourState DefaultBehaviour = MonsterBehaviourState.Wandering;
 
     [Header("State | Wandering")]
-    [SerializeField] float wanderingRange = 30.0f;
-    [SerializeField] float radiusTargetReached = 1.0f;
+    [SerializeField] private float radiusTargetReached = 1.0f;
+    [SerializeField, Range(0, 100)] private int chanceToWaitAfterTargetReached = 100;
 
     [Header("State | Chasing")]
-    [SerializeField] float radiusLoosingPlayer = 10.0f;
+    [SerializeField] private float radiusLoosingPlayer = 10.0f;
 
     [Header("State | InvestigatingSound")]
-    [SerializeField] float minRadiusToSound = 1.0f;
-    [SerializeField] float maxRadiusToSound = 8.0f;
+    [SerializeField] private float minRadiusToSound = 1.0f;
+    [SerializeField] private float maxRadiusToSound = 8.0f;
+
+    [Header("State | Waiting")]
+    [SerializeField] private float minTimeToWait = 0.5f;
+    [SerializeField] private float maxTimeToWait = 1.0f;
 
     [Header("Vision")]
-    [SerializeField] bool canSeePlayer = false;
-    [SerializeField] float radiusVisibility = 6.0f;
+    [SerializeField] private bool canSeePlayer = true;
+    [SerializeField] private float radiusVisibility = 6.0f;
 
     [Header("Hearing")]
-    [SerializeField] float hearingThreshold = 0.5f;
-    [SerializeField] float soundSnapDistance = 5.0f;
-    [SerializeField] float perfectPrecisionLoudnessRatio = 4.0f;
+    [SerializeField] private bool canHearSound = true;
+    [SerializeField] private float hearingThreshold = 0.5f;
+    [SerializeField] private float soundSnapDistance = 5.0f;
+    [SerializeField] private float perfectPrecisionLoudnessRatio = 4.0f;
 
     [Header("Debugs")]
-    [SerializeField] bool showDebug = true;
-    [SerializeField] bool showDebugRadius = true;
-    [SerializeField] bool showDebugHearing = true;
-    [SerializeField] float timeShowingAudioEvent = 0.5f;
+    [SerializeField] private bool showDebug = true;
+    [SerializeField] private bool showDebugRadius = true;
+    [SerializeField] private bool showDebugHearing = true;
+    [SerializeField] private float timeShowingAudioEvent = 0.5f;
 
-    private MonsterBackboard monsterBackboard;
+    private MonsterBlackboard blackboard;
     private MonsterBehaviourState CurrentMonsterBehaviourState;
     private MonsterBehaviourState RequestedMonsterBehaviourState;
 
-    NavMeshPath soundPath;
-    List<SoundInfo> soundInfosList = new List<SoundInfo>();
-    SoundInfo LastSoundHeard;
+    private NavMeshPath soundPath;
+    private List<SoundInfo> debugSoundInfosList = new List<SoundInfo>();
+    private SoundInfo DebugLastSoundHeard;
 
     // References
     private PlayerController playerController;
     private MonsterController monsterController;
     private UnityEngine.AI.NavMeshAgent monsterNavMeshAgent;
 
-    private void Awake()
-    {
-        INSTANCE = this;
-    }
+    /// ----------------------------------------------------------------------------------------------------------------
+    ///  PUBLIC FUNCTIONS
+    /// ----------------------------------------------------------------------------------------------------------------
 
     public static void SendSoundToMonsterHearing(Vector3 soundPosition, float soundVolume)
     {
         INSTANCE.SendSoundToMonsterHearing_internal(soundPosition, soundVolume);
     }
 
+    /// ----------------------------------------------------------------------------------------------------------------
+    ///  UNITY FUNCTIONS
+    /// ----------------------------------------------------------------------------------------------------------------
+
+    private void Awake()
+    {
+        INSTANCE = this;
+    }
+
+    private void Start()
+    {
+        playerController = Common.FindTypeInScene<PlayerController>();
+        monsterController = Common.FindTypeInScene<MonsterController>();
+        monsterNavMeshAgent = Common.FindTypeInScene<UnityEngine.AI.NavMeshAgent>();
+
+        ChangeBehaviourState(DefaultBehaviour);
+
+        Debug.Assert(radiusVisibility <= radiusLoosingPlayer);
+
+        soundPath = new NavMeshPath();
+    }
+
+    private void Update()
+    {
+        DispatchStateUpdate(CurrentMonsterBehaviourState);
+
+        if (CurrentMonsterBehaviourState != RequestedMonsterBehaviourState)
+        {
+            // DispatchMonsterBehaviourState_Stop(CurrentMonsterBehaviourState); // Julien Rogel (11-10-2026): Not needed ?
+            DispatchBehaviourStart(RequestedMonsterBehaviourState);
+            CurrentMonsterBehaviourState = RequestedMonsterBehaviourState;
+        }
+
+        if (showDebugHearing)
+        {
+            float currentTime = Time.fixedTime;
+            debugSoundInfosList.RemoveAll(soundInfo => currentTime >= soundInfo.date + timeShowingAudioEvent);
+        }
+    }
+
+    /// ----------------------------------------------------------------------------------------------------------------
+    /// WANDERING STATE
+    /// ----------------------------------------------------------------------------------------------------------------
+
+    private void StartState_Wandering()
+    {
+        UpdateWanderingTargetPosition();
+    }
+
+    private void UpdateState_Wandering()
+    {
+        StartChasing_IFN();
+
+        bool hasReachedTargetPosition = HasReachedTargetPosition();
+        if (hasReachedTargetPosition)
+        {
+            monsterNavMeshAgent.ResetPath();
+            int randomNumber = Random.Range(0, 101);
+            if (randomNumber >= chanceToWaitAfterTargetReached)
+            {
+                UpdateWanderingTargetPosition();
+            }
+            else
+            {
+                ChangeBehaviourState(MonsterBehaviourState.Waiting);
+            }
+        }
+    }
+
+    /// ----------------------------------------------------------------------------------------------------------------
+    /// REMEMBERING PLAYER STATE
+    /// ----------------------------------------------------------------------------------------------------------------
+
+    private void StartState_RememberingPlayer()
+    {
+        UpdateRememberingPlayerTargetPosition();
+    }
+
+    private void UpdateState_RememberingPlayer()
+    {
+        bool hasReachedTargetPosition = HasReachedTargetPosition();
+        if (hasReachedTargetPosition)
+        {
+            monsterNavMeshAgent.ResetPath();
+            ChangeBehaviourState(MonsterBehaviourState.Waiting);
+        }
+    }
+
+    /// ----------------------------------------------------------------------------------------------------------------
+    /// CHASING STATE
+    /// ----------------------------------------------------------------------------------------------------------------
+
+    private void StartState_Chasing()
+    {
+        UpdateChasingTargetPosition();
+    }
+
+    private void UpdateState_Chasing()
+    {
+        Vector3 playerPosition = playerController.transform.position;
+        Vector3 monsterPosition = monsterController.transform.position;
+        float distanceMonsterToPlayer = Vector3.Distance(monsterPosition, playerPosition);
+        if (distanceMonsterToPlayer >= radiusLoosingPlayer)
+        {
+            ChangeBehaviourState(MonsterBehaviourState.RememberingPlayer);
+        }
+        else
+        {
+            UpdateChasingTargetPosition();
+        }
+
+        blackboard.lastPlayerPosition = playerPosition;
+    }
+
+    /// ----------------------------------------------------------------------------------------------------------------
+    /// FLEEING STATE
+    /// ----------------------------------------------------------------------------------------------------------------
+
+    private void StartState_Fleeing()
+    {
+        
+    }
+
+    private void UpdateState_Fleeing()
+    {
+        // TODO Julien Rogel (11-10-2026): Analyse if close to target position, if yes, go to BehaviourState Wandering
+    }
+
+    /// ----------------------------------------------------------------------------------------------------------------
+    /// WAITING STATE
+    /// ----------------------------------------------------------------------------------------------------------------
+
+    private void StartState_Waiting()
+    {
+        blackboard.DateFinishingWaiting = Common.GetCurrentDate() + Random.Range(minTimeToWait, maxTimeToWait);
+    }
+
+    private void UpdateState_Waiting()
+    {
+        StartChasing_IFN();
+
+        bool HasFinishedWaiting = Common.HasReachedDate(blackboard.DateFinishingWaiting);
+        if (HasFinishedWaiting)
+        {
+            ChangeBehaviourState(MonsterBehaviourState.Wandering);
+        }
+    }
+
+    /// ----------------------------------------------------------------------------------------------------------------
+    /// INVESTIGATING SOUND STATE
+    /// ----------------------------------------------------------------------------------------------------------------
+
+    private void StartState_InvestigatingSound()
+    {
+        UpdateInvestigatingSoundTargetPosition();
+    }
+
+    private void UpdateState_InvestigatingSound()
+    {
+        StartChasing_IFN();
+
+        Vector3 monsterPosition = monsterController.transform.position;
+        float distanceMonsterToTarget = Vector3.Distance(monsterPosition, blackboard.targetPosition);
+        if (distanceMonsterToTarget <= radiusTargetReached)
+        {
+            ChangeBehaviourState(MonsterBehaviourState.Wandering);
+        }
+    }
+
+    /// ----------------------------------------------------------------------------------------------------------------
+    /// DISPATCH STATES
+    /// ----------------------------------------------------------------------------------------------------------------
+
+    private void DispatchBehaviourStart(MonsterBehaviourState monsterBehaviourState)
+    {
+        switch (monsterBehaviourState)
+        {
+            case MonsterBehaviourState.NoState:
+            {
+            } break;
+            case MonsterBehaviourState.Wandering:
+            {
+                StartState_Wandering();
+            } break;
+            case MonsterBehaviourState.InvestigatingSound:
+            {
+                StartState_InvestigatingSound();
+            } break;
+            case MonsterBehaviourState.Waiting:
+            {
+                StartState_Waiting();
+            } break;
+            case MonsterBehaviourState.RememberingPlayer:
+            {
+                StartState_RememberingPlayer();
+            } break;
+            case MonsterBehaviourState.Chasing:
+            {
+                StartState_Chasing();
+            } break;
+            case MonsterBehaviourState.Fleeing:
+            {
+                StartState_Fleeing();
+            } break;
+            default:
+            {
+                Debug.Assert((int)MonsterBehaviourState.COUNT == 5);
+            } break;;
+        }
+    }
+
+    private void DispatchStateUpdate(MonsterBehaviourState monsterBehaviourState)
+    {
+        switch (monsterBehaviourState)
+        {
+            case MonsterBehaviourState.NoState:
+            {
+            } break;
+            case MonsterBehaviourState.Wandering:
+            {
+                UpdateState_Wandering();
+            } break;
+            case MonsterBehaviourState.InvestigatingSound:
+            {
+                UpdateState_InvestigatingSound();
+            } break;
+            case MonsterBehaviourState.Chasing:
+            {
+                UpdateState_Chasing();
+            } break;
+            case MonsterBehaviourState.Waiting:
+            {
+                UpdateState_Waiting();
+            } break;
+            case MonsterBehaviourState.RememberingPlayer:
+            {
+                UpdateState_RememberingPlayer();
+            } break;
+            case MonsterBehaviourState.Fleeing:
+            {
+                UpdateState_Fleeing();
+            } break;
+            default:
+            {
+                Debug.Assert((int)MonsterBehaviourState.COUNT == 5);
+            } break;;
+        }
+    }
+
+    /// ----------------------------------------------------------------------------------------------------------------
+    ///  FREE FUNCTIONS
+    /// ----------------------------------------------------------------------------------------------------------------
+
     private void UpdateTargetToSound_IFN(Vector3 newSoundPosition, float newSoundPrecision)
     {
-        if (newSoundPrecision >= monsterBackboard.precisionLastSoundHeard)
+        if (newSoundPrecision >= blackboard.lastSoundHeardPrecision)
         {
-            monsterBackboard.lastSoundPositionHeard = newSoundPosition;
-            monsterBackboard.precisionLastSoundHeard = newSoundPrecision;
-            UpdateTargetPosition_InvestigatingSound();
+            blackboard.lastSoundHeardPosition = newSoundPosition;
+            blackboard.lastSoundHeardPrecision = newSoundPrecision;
+            UpdateInvestigatingSoundTargetPosition();
         }
     }
 
     private void SendSoundToMonsterHearing_internal(Vector3 soundPosition, float soundVolume)
     {
+        if (canHearSound == false)
+            return;
+
         if (RequestedMonsterBehaviourState == MonsterBehaviourState.Chasing)
+            return;
+
+        if (RequestedMonsterBehaviourState == MonsterBehaviourState.Fleeing)
             return;
 
         bool soundCanBeHeard = CheckIfSoundCanBeHeard(soundPosition, soundVolume, out float soundPrecision);
@@ -107,17 +373,15 @@ public class MonsterManager : MonoBehaviour
         if (showDebugHearing)
         {
             SoundInfo SoundInfo;
-            {
-                SoundInfo.Position = soundPosition;
-                SoundInfo.volume = soundVolume;
-                SoundInfo.precision = soundPrecision;
-                SoundInfo.date = Time.fixedTime;
-                SoundInfo.heard = soundCanBeHeard;
-            }
-            soundInfosList.Add(SoundInfo);
+            SoundInfo.Position = soundPosition;
+            SoundInfo.volume = soundVolume;
+            SoundInfo.precision = soundPrecision;
+            SoundInfo.date = Time.fixedTime;
+            SoundInfo.heard = soundCanBeHeard;
+            debugSoundInfosList.Add(SoundInfo);
             if (soundCanBeHeard)
             {
-                LastSoundHeard = SoundInfo;
+                DebugLastSoundHeard = SoundInfo;
             }
         }
 
@@ -129,8 +393,8 @@ public class MonsterManager : MonoBehaviour
             }
             else
             {
-                monsterBackboard.lastSoundPositionHeard = soundPosition;
-                monsterBackboard.precisionLastSoundHeard = soundPrecision;
+                blackboard.lastSoundHeardPosition = soundPosition;
+                blackboard.lastSoundHeardPrecision = soundPrecision;
                 ChangeBehaviourState(MonsterBehaviourState.InvestigatingSound);
             }
         }
@@ -197,97 +461,8 @@ public class MonsterManager : MonoBehaviour
         RequestedMonsterBehaviourState = monsterBehaviourState;
     }
 
-    private void Start()
-    {
-        playerController = Common.FindTypeInScene<PlayerController>();
-        monsterController = Common.FindTypeInScene<MonsterController>();
-        monsterNavMeshAgent = Common.FindTypeInScene<UnityEngine.AI.NavMeshAgent>();
-
-        ChangeBehaviourState(DefaultBehaviour);
-
-        Debug.Assert(radiusVisibility <= radiusLoosingPlayer);
-
-        soundPath = new NavMeshPath();
-    }
-
-    private void UpdateTargetPosition_Wandering()
-    {
-        Vector3 playerPosition = playerController.transform.position;
-        monsterBackboard.targetPosition = NavMeshUtil.PickNewTarget_Random(playerPosition, wanderingRange);
-        monsterNavMeshAgent.SetDestination(monsterBackboard.targetPosition);
-    }
-
-    private void UpdateTargetPosition_InvestigatingSound()
-    {
-        monsterBackboard.precisionLastSoundHeard = math.clamp(monsterBackboard.precisionLastSoundHeard, 0, 1);
-        float radius = math.lerp(maxRadiusToSound, minRadiusToSound, monsterBackboard.precisionLastSoundHeard);
-        Vector3 soundPosition = monsterBackboard.lastSoundPositionHeard;
-        monsterBackboard.targetPosition = NavMeshUtil.PickNewTarget_Random(soundPosition, radius);
-        monsterNavMeshAgent.SetDestination(monsterBackboard.targetPosition);
-    }
-
-    private void UpdateTargetPosition_Chasing()
-    {
-        Vector3 PlayerPosition = playerController.transform.position;
-        monsterBackboard.targetPosition = PlayerPosition;
-        monsterNavMeshAgent.SetDestination(monsterBackboard.targetPosition);
-    }
-
-    private void StartMonsterBehaviourState_Wandering()
-    {
-        UpdateTargetPosition_Wandering();
-    }
-
-    private void StartMonsterBehaviourState_InvestigatingSound()
-    {
-        UpdateTargetPosition_InvestigatingSound();
-    }
-
-    private void StartMonsterBehaviourState_Chasing()
-    {
-        UpdateTargetPosition_Chasing();
-    }
-
-    private void StartMonsterBehaviourState_Fleeing()
-    {
-        
-    }
-
-    private void DispatchMonsterBehaviourState_Start(MonsterBehaviourState monsterBehaviourState)
-    {
-        switch (monsterBehaviourState)
-        {
-            case MonsterBehaviourState.NoState:
-            {
-            } break;
-            case MonsterBehaviourState.Wandering:
-            {
-                StartMonsterBehaviourState_Wandering();
-            } break;
-            case MonsterBehaviourState.InvestigatingSound:
-            {
-                StartMonsterBehaviourState_InvestigatingSound();
-            } break;
-            case MonsterBehaviourState.Chasing:
-            {
-                StartMonsterBehaviourState_Chasing();
-            } break;
-            case MonsterBehaviourState.Fleeing:
-            {
-                StartMonsterBehaviourState_Fleeing();
-            } break;
-            default:
-            {
-                Debug.Assert((int)MonsterBehaviourState.COUNT == 5);
-            } break;;
-        }
-    }
-
     private void StartChasing_IFN()
     {
-        if (CurrentMonsterBehaviourState ==  MonsterBehaviourState.Chasing)
-            return;
-
         if (!canSeePlayer)
             return;
 
@@ -300,97 +475,51 @@ public class MonsterManager : MonoBehaviour
         }
     }
 
-    private void UpdateEndMonsterBehaviourState_Wandering()
-    {
-        StartChasing_IFN();
-
-        Vector3 monsterPosition = monsterController.transform.position;
-        float distanceMonsterToTarget = Vector3.Distance(monsterPosition, monsterBackboard.targetPosition);
-        if (distanceMonsterToTarget <= radiusTargetReached)
-        {
-            UpdateTargetPosition_Wandering();
-        }
-    }
-
-    private void UpdateEndMonsterBehaviourState_Chasing()
+    private bool HasReachedTargetPosition()
     {
         Vector3 monsterPosition = monsterController.transform.position;
-        Vector3 playerPosition = playerController.transform.position;
-        float distanceMonsterToPlayer = Vector3.Distance(monsterPosition, playerPosition);
-        if (distanceMonsterToPlayer >= radiusLoosingPlayer)
-        {
-            ChangeBehaviourState(MonsterBehaviourState.Wandering);
-        }
-        else
-        {
-            UpdateTargetPosition_Chasing();
-        }
+        float distanceMonsterToTarget = Vector3.Distance(monsterPosition, blackboard.targetPosition);
+
+        return distanceMonsterToTarget <= radiusTargetReached;
     }
 
-    private void UpdateEndMonsterBehaviourState_Fleeing()
+    private void UpdateWanderingTargetPosition()
     {
-        // TODO Julien Rogel (11-10-2026): Analyse if close to target position, if yes, go to BehaviourState Wandering
+        Vector3 targetPosition = Vector3.zero;
+        Room room = null;
+        if (RoomManager.TryGetRandomRoom(ref room))
+        {
+            targetPosition = room.GetRandomPositionInsideRoom();
+        }
+        blackboard.targetPosition = NavMeshUtil.GetClosestPointInNavMesh_Small(targetPosition);
+        monsterNavMeshAgent.SetDestination(blackboard.targetPosition);
     }
 
-    private void UpdateEndMonsterBehaviourState_InvestigatingSound()
+    private void UpdateInvestigatingSoundTargetPosition()
     {
-        StartChasing_IFN();
-
-        Vector3 monsterPosition = monsterController.transform.position;
-        float distanceMonsterToTarget = Vector3.Distance(monsterPosition, monsterBackboard.targetPosition);
-        if (distanceMonsterToTarget <= radiusTargetReached)
-        {
-            ChangeBehaviourState(MonsterBehaviourState.Wandering);
-        }
+        blackboard.lastSoundHeardPrecision = math.clamp(blackboard.lastSoundHeardPrecision, 0, 1);
+        float radius = math.lerp(maxRadiusToSound, minRadiusToSound, blackboard.lastSoundHeardPrecision);
+        Vector3 soundPosition = blackboard.lastSoundHeardPosition;
+        blackboard.targetPosition = NavMeshUtil.PickNewTarget_RandomInCircle(soundPosition, radius);
+        monsterNavMeshAgent.SetDestination(blackboard.targetPosition);
     }
 
-    private void DispatchMonsterBehaviourState_Update(MonsterBehaviourState monsterBehaviourState)
+    private void UpdateChasingTargetPosition()
     {
-        switch (monsterBehaviourState)
-        {
-            case MonsterBehaviourState.NoState:
-            {
-            } break;
-            case MonsterBehaviourState.Wandering:
-            {
-                UpdateEndMonsterBehaviourState_Wandering();
-            } break;
-            case MonsterBehaviourState.InvestigatingSound:
-            {
-                UpdateEndMonsterBehaviourState_InvestigatingSound();
-            } break;
-            case MonsterBehaviourState.Chasing:
-            {
-                UpdateEndMonsterBehaviourState_Chasing();
-            } break;
-            case MonsterBehaviourState.Fleeing:
-            {
-                UpdateEndMonsterBehaviourState_Fleeing();
-            } break;
-            default:
-            {
-                Debug.Assert((int)MonsterBehaviourState.COUNT == 5);
-            } break;;
-        }
+        Vector3 PlayerPosition = playerController.transform.position;
+        blackboard.targetPosition = PlayerPosition;
+        monsterNavMeshAgent.SetDestination(blackboard.targetPosition);
     }
 
-    private void Update()
+    private void UpdateRememberingPlayerTargetPosition()
     {
-        DispatchMonsterBehaviourState_Update(CurrentMonsterBehaviourState);
-
-        if (CurrentMonsterBehaviourState != RequestedMonsterBehaviourState)
-        {
-            // DispatchMonsterBehaviourState_Stop(CurrentMonsterBehaviourState); // Julien Rogel (11-10-2026): Not needed ?
-            DispatchMonsterBehaviourState_Start(RequestedMonsterBehaviourState);
-            CurrentMonsterBehaviourState = RequestedMonsterBehaviourState;
-        }
-
-        if (showDebugHearing)
-        {
-            float currentTime = Time.fixedTime;
-            soundInfosList.RemoveAll(soundInfo => currentTime >= soundInfo.date + timeShowingAudioEvent);
-        }
+        blackboard.targetPosition = blackboard.lastPlayerPosition;
+        monsterNavMeshAgent.SetDestination(blackboard.targetPosition);
     }
+
+    /// ----------------------------------------------------------------------------------------------------------------
+    ///  DEBUGS
+    /// ----------------------------------------------------------------------------------------------------------------
 
 #if UNITY_EDITOR
     private static Color GetDebugStateColor(MonsterBehaviourState state)
@@ -398,8 +527,10 @@ public class MonsterManager : MonoBehaviour
         switch (state)
         {
             case MonsterBehaviourState.Wandering:          return Color.green;
-            case MonsterBehaviourState.InvestigatingSound: return Color.orange;
+            case MonsterBehaviourState.InvestigatingSound: return Color.yellow;
             case MonsterBehaviourState.Chasing:            return Color.red;
+            case MonsterBehaviourState.RememberingPlayer:  return Color.orangeRed;
+            case MonsterBehaviourState.Waiting:            return Color.white;
             default:                                       return Color.gray;
         }
     }
@@ -409,7 +540,7 @@ public class MonsterManager : MonoBehaviour
     private void OnGUI_DebugHearing(Camera mainCamera)
     {
         DebugDraw.BeginLines();
-        foreach (var soundInfo in soundInfosList)
+        foreach (var soundInfo in debugSoundInfosList)
         {
             Color colorDebug = soundInfo.heard ? Color.orange : Color.white;
             float HearingRadius = GetHearingRadius(soundInfo.volume, hearingThreshold);
@@ -417,12 +548,12 @@ public class MonsterManager : MonoBehaviour
         }
         if (CurrentMonsterBehaviourState == MonsterBehaviourState.InvestigatingSound)
         {
-            float HearingRadius = GetHearingRadius(LastSoundHeard.volume, hearingThreshold);
-            DebugDraw.DebugCircle(mainCamera, LastSoundHeard.Position, HearingRadius, Color.orange);
+            float HearingRadius = GetHearingRadius(DebugLastSoundHeard.volume, hearingThreshold);
+            DebugDraw.DebugCircle(mainCamera, DebugLastSoundHeard.Position, HearingRadius, Color.orange);
         }
         DebugDraw.EndLines();
 
-        foreach (var soundInfo in soundInfosList)
+        foreach (var soundInfo in debugSoundInfosList)
         {
             Color colorDebug =  soundInfo.heard ? Color.orange : Color.white;
             Vector3 labelPosition = soundInfo.Position + Vector3.up * 0.25f;
@@ -431,9 +562,9 @@ public class MonsterManager : MonoBehaviour
         }
         if (CurrentMonsterBehaviourState == MonsterBehaviourState.InvestigatingSound)
         {
-            Vector3 labelPosition = LastSoundHeard.Position + Vector3.up * 0.25f;
-            DebugDraw.DebugLabel(mainCamera, labelPosition, Color.orange, $"Volume {LastSoundHeard.volume:F1}\n" +
-                                                                             $"Precision {LastSoundHeard.precision:F2}");
+            Vector3 labelPosition = DebugLastSoundHeard.Position + Vector3.up * 0.25f;
+            DebugDraw.DebugLabel(mainCamera, labelPosition, Color.orange, $"Volume {DebugLastSoundHeard.volume:F1}\n" +
+                                                                             $"Precision {DebugLastSoundHeard.precision:F2}");
         }
     }
 #endif
@@ -482,7 +613,7 @@ public class MonsterManager : MonoBehaviour
                 case MonsterBehaviourState.Wandering:
                 case MonsterBehaviourState.InvestigatingSound:
                 {
-                    DebugDraw.DebugCircle(mainCamera, monsterBackboard.targetPosition, radiusTargetReached, stateColor);
+                    DebugDraw.DebugCircle(mainCamera, blackboard.targetPosition, radiusTargetReached, stateColor);
                 } break;
                 case MonsterBehaviourState.Chasing:
                 {
@@ -494,15 +625,14 @@ public class MonsterManager : MonoBehaviour
         DebugDraw.EndLines();
 
         float distToPlayer = Vector3.Distance(monsterPosition, playerPosition);
-        float distToTarget = Vector3.Distance(monsterPosition, monsterBackboard.targetPosition);
+        float distToTarget = Vector3.Distance(monsterPosition, blackboard.targetPosition);
 
         DebugDraw.DebugLabel(mainCamera, monsterPosition + Vector3.up * 2.2f, stateColor, $"{CurrentMonsterBehaviourState}\n" +
                                                                                           $"Pos {monsterPosition.ToString("F1")}\n" +
                                                                                           $"Player dist {distToPlayer:F1}");
 
-        DebugDraw.DebugLabel(mainCamera, monsterBackboard.targetPosition + Vector3.up * 0.8f, Color.magenta, $"TARGET\n{monsterBackboard.targetPosition.ToString("F1")}\n" +
-                                                                                                                $"Dist {distToTarget:F1}");
+        DebugDraw.DebugLabel(mainCamera, blackboard.targetPosition + Vector3.up * 0.8f, Color.magenta, $"TARGET\n{blackboard.targetPosition.ToString("F1")}\n" + 
+                                                                                                          $"Dist {distToTarget:F1}");
 #endif
     }
 }
-

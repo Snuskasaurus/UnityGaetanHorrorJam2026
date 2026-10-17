@@ -88,7 +88,7 @@ public class CrawlerManager : MonoBehaviour
     {
         Vector2 RandomPositionInRadius = Random.insideUnitCircle * spawnRadius;
         Vector3 randomPosition = origin + new Vector3(RandomPositionInRadius.x, 0.0f, RandomPositionInRadius.y);
-        crawlerPositions[crawlerIndex] = NavMeshUtil.GetClosestPointInNavMesh(randomPosition);
+        crawlerPositions[crawlerIndex] = NavMeshUtil.GetClosestPointInNavMesh_Big(randomPosition);
         crawlerPositionTargets[crawlerIndex] = crawlerPositions[crawlerIndex];
         SetCrawlerWalkSpeed(crawlerIndex);
         crawlerRotations[crawlerIndex] = Quaternion.identity;
@@ -249,7 +249,7 @@ public class CrawlerManager : MonoBehaviour
             {
                 SetCrawlerWalkSpeed(crawlerIndex);
                 toTarget = crawlerPositionTargets[crawlerIndex] - crawlerPositions[crawlerIndex];
-                crawlerPositionTargets[crawlerIndex] = NavMeshUtil.PickNewTarget_Random(crawlerPositions[crawlerIndex], wanderRadius);
+                crawlerPositionTargets[crawlerIndex] = NavMeshUtil.PickNewTarget_RandomInCircle(crawlerPositions[crawlerIndex], wanderRadius);
             }
 
             crawlerPositions[crawlerIndex] = Vector3.MoveTowards(crawlerPositions[crawlerIndex], crawlerPositionTargets[crawlerIndex], crawlerSpeeds[crawlerIndex] * dt);

@@ -278,9 +278,7 @@ public class MenuPrincipal : MonoBehaviour
         // Verifier que le niveau existe
         if (!Application.CanStreamedLevelBeLoaded(nomSceneJeu))
         {
-            Debug.LogError(
-                "Scene introuvable : " + nomSceneJeu
-            );
+            // Debug.LogError("Scene introuvable : " + nomSceneJeu);
 
             texteChargement.text = "ERREUR DE CHARGEMENT";
             Cursor.visible = true;
@@ -293,7 +291,7 @@ public class MenuPrincipal : MonoBehaviour
 
         if (chargementEnCours == null)
         {
-            Debug.LogError("Chargement impossible.");
+            // Debug.LogError("Chargement impossible.");
 
             texteChargement.text = "ERREUR DE CHARGEMENT";
             Cursor.visible = true;

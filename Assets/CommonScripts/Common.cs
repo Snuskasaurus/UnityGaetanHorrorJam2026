@@ -21,4 +21,19 @@ public class Common : MonoBehaviour
         }
         return objectFound;
     }
+
+    public static float GetCurrentDate()
+    {
+        return Time.fixedTime;
+    }
+
+    public static bool IsBeforeDate(float Date)
+    {
+        return Time.fixedTime < Date;
+    }
+
+    public static bool HasReachedDate(float Date)
+    {
+        return Time.fixedTime >= Date;
+    }
 }
