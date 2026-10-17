@@ -7,11 +7,12 @@ using Random = UnityEngine.Random;
 enum MonsterBehaviourState
 {
     NoState,
+    Offmap,
     Wandering,
     Waiting,
     InvestigatingSound,
     RememberingPlayer,
-    Chasing,
+    Chasing, 
     Fleeing,
 
     COUNT
@@ -23,7 +24,7 @@ struct MonsterBlackboard
     public Vector3 lastPlayerPosition;
     public Vector3 lastSoundHeardPosition;
     public float lastSoundHeardPrecision;
-    public float DateFinishingWaiting;
+    public float EndDate;
 }
 
 struct SoundInfo
@@ -41,8 +42,10 @@ public class MonsterManager : MonoBehaviour
 
     [SerializeField] MonsterBehaviourState DefaultBehaviour = MonsterBehaviourState.Wandering;
 
-    [Header("State | Wandering")]
+    [Header("Common")]
     [SerializeField] private float radiusTargetReached = 1.0f;
+
+    [Header("State | Wandering")]
     [SerializeField, Range(0, 100)] private int chanceToWaitAfterTargetReached = 100;
 
     [Header("State | Chasing")]
@@ -56,15 +59,25 @@ public class MonsterManager : MonoBehaviour
     [SerializeField] private float minTimeToWait = 0.5f;
     [SerializeField] private float maxTimeToWait = 1.0f;
 
-    [Header("Vision")]
-    [SerializeField] private bool canSeePlayer = true;
+    [Header("State | Fleeing")] 
+    [SerializeField] private float FleeingRadius = 10.0f;
+
+    [Header("State | OffMap")] 
+    [SerializeField] private float MinTimeSpentOffMap = 1.0f;
+    [SerializeField] private float MaxTimeSpentOffMap = 3.0f;
+
+    [Header("Vision System")]
+    [SerializeField] private bool visionSystemEnabled = true;
     [SerializeField] private float radiusVisibility = 6.0f;
 
-    [Header("Hearing")]
-    [SerializeField] private bool canHearSound = true;
+    [Header("Hearing System")]
+    [SerializeField] private bool hearingSystemEnabled = true;
     [SerializeField] private float hearingThreshold = 0.5f;
     [SerializeField] private float soundSnapDistance = 5.0f;
     [SerializeField] private float perfectPrecisionLoudnessRatio = 4.0f;
+
+    [Header("Scare System")]
+    [SerializeField] private bool fearSystemEnabled = true;
 
     [Header("Debugs")]
     [SerializeField] private bool showDebug = true;
@@ -77,7 +90,7 @@ public class MonsterManager : MonoBehaviour
     private MonsterBehaviourState RequestedMonsterBehaviourState;
 
     private NavMeshPath soundPath;
-    private List<SoundInfo> debugSoundInfosList = new List<SoundInfo>();
+    private readonly List<SoundInfo> debugSoundInfosList = new List<SoundInfo>();
     private SoundInfo DebugLastSoundHeard;
 
     // References
@@ -92,6 +105,11 @@ public class MonsterManager : MonoBehaviour
     public static void SendSoundToMonsterHearing(Vector3 soundPosition, float soundVolume)
     {
         INSTANCE.SendSoundToMonsterHearing_internal(soundPosition, soundVolume);
+    }
+
+    public static void TryToFearMonster()
+    {
+        INSTANCE.TryToFearMonster_Internal();
     }
 
     /// ----------------------------------------------------------------------------------------------------------------
@@ -214,12 +232,15 @@ public class MonsterManager : MonoBehaviour
 
     private void StartState_Fleeing()
     {
-        
+        UpdateFleeingTargetPosition();
     }
 
     private void UpdateState_Fleeing()
     {
-        // TODO Julien Rogel (11-10-2026): Analyse if close to target position, if yes, go to BehaviourState Wandering
+        if (HasReachedTargetPosition())
+        {
+            ChangeBehaviourState(MonsterBehaviourState.Offmap);
+        }
     }
 
     /// ----------------------------------------------------------------------------------------------------------------
@@ -228,14 +249,14 @@ public class MonsterManager : MonoBehaviour
 
     private void StartState_Waiting()
     {
-        blackboard.DateFinishingWaiting = Common.GetCurrentDate() + Random.Range(minTimeToWait, maxTimeToWait);
+        blackboard.EndDate = Common.GetCurrentDate() + Random.Range(minTimeToWait, maxTimeToWait);
     }
 
     private void UpdateState_Waiting()
     {
         StartChasing_IFN();
 
-        bool HasFinishedWaiting = Common.HasReachedDate(blackboard.DateFinishingWaiting);
+        bool HasFinishedWaiting = Common.HasReachedDate(blackboard.EndDate);
         if (HasFinishedWaiting)
         {
             ChangeBehaviourState(MonsterBehaviourState.Wandering);
@@ -264,6 +285,24 @@ public class MonsterManager : MonoBehaviour
     }
 
     /// ----------------------------------------------------------------------------------------------------------------
+    /// OFFMAP STATE
+    /// ----------------------------------------------------------------------------------------------------------------
+
+    private void StartState_OffMap()
+    {
+        blackboard.EndDate = Common.GetCurrentDate() + Random.Range(MinTimeSpentOffMap, MaxTimeSpentOffMap);
+    }
+
+    private void UpdateState_OffMap()
+    {
+        bool HasFinishedWaiting = Common.HasReachedDate(blackboard.EndDate);
+        if (HasFinishedWaiting)
+        {
+            ChangeBehaviourState(MonsterBehaviourState.Wandering);
+        }
+    }
+
+    /// ----------------------------------------------------------------------------------------------------------------
     /// DISPATCH STATES
     /// ----------------------------------------------------------------------------------------------------------------
 
@@ -273,6 +312,10 @@ public class MonsterManager : MonoBehaviour
         {
             case MonsterBehaviourState.NoState:
             {
+            } break;
+            case MonsterBehaviourState.Offmap:
+            {
+                StartState_OffMap();
             } break;
             case MonsterBehaviourState.Wandering:
             {
@@ -300,7 +343,7 @@ public class MonsterManager : MonoBehaviour
             } break;
             default:
             {
-                Debug.Assert((int)MonsterBehaviourState.COUNT == 5);
+                Debug.Assert((int)MonsterBehaviourState.COUNT == 8);
             } break;;
         }
     }
@@ -311,6 +354,10 @@ public class MonsterManager : MonoBehaviour
         {
             case MonsterBehaviourState.NoState:
             {
+            } break;
+            case MonsterBehaviourState.Offmap:
+            {
+                UpdateState_OffMap();
             } break;
             case MonsterBehaviourState.Wandering:
             {
@@ -338,7 +385,7 @@ public class MonsterManager : MonoBehaviour
             } break;
             default:
             {
-                Debug.Assert((int)MonsterBehaviourState.COUNT == 5);
+                Debug.Assert((int)MonsterBehaviourState.COUNT == 8);
             } break;;
         }
     }
@@ -357,9 +404,22 @@ public class MonsterManager : MonoBehaviour
         }
     }
 
+    private void TryToFearMonster_Internal()
+    {
+        if (!fearSystemEnabled)
+            return;
+
+        Vector3 playerPosition = playerController.transform.position;
+        bool monsterIsCloseEnoughToPlayer = Vector3.Distance(playerPosition, blackboard.targetPosition) <= radiusTargetReached; 
+        if (monsterIsCloseEnoughToPlayer)
+        {
+            ChangeBehaviourState(MonsterBehaviourState.Fleeing);
+        }
+    }
+
     private void SendSoundToMonsterHearing_internal(Vector3 soundPosition, float soundVolume)
     {
-        if (canHearSound == false)
+        if (hearingSystemEnabled == false)
             return;
 
         if (RequestedMonsterBehaviourState == MonsterBehaviourState.Chasing)
@@ -425,7 +485,7 @@ public class MonsterManager : MonoBehaviour
         return true;
     }
 
-    public static float GetHearingRadius(float soundVolume, float hearingThreshold)
+    private static float GetHearingRadius(float soundVolume, float hearingThreshold)
     {
         if (hearingThreshold <= 0f) 
             return float.PositiveInfinity;
@@ -463,7 +523,7 @@ public class MonsterManager : MonoBehaviour
 
     private void StartChasing_IFN()
     {
-        if (!canSeePlayer)
+        if (!visionSystemEnabled)
             return;
 
         Vector3 monsterPosition = monsterController.transform.position;
@@ -490,6 +550,19 @@ public class MonsterManager : MonoBehaviour
         if (RoomManager.TryGetRandomRoom(ref room))
         {
             targetPosition = room.GetRandomPositionInsideRoom();
+        }
+        blackboard.targetPosition = NavMeshUtil.GetClosestPointInNavMesh_Small(targetPosition);
+        monsterNavMeshAgent.SetDestination(blackboard.targetPosition);
+    }
+
+    private void UpdateFleeingTargetPosition()
+    {
+        Vector3 monsterPosition = monsterController.transform.position;
+        Vector3 targetPosition = Vector3.zero;
+        EscapeZone escapeZone = null;
+        if (EscapeZoneManager.GetRandomEscapeZone(ref escapeZone, monsterPosition, FleeingRadius))
+        {
+            targetPosition = escapeZone.transform.position;
         }
         blackboard.targetPosition = NavMeshUtil.GetClosestPointInNavMesh_Small(targetPosition);
         monsterNavMeshAgent.SetDestination(blackboard.targetPosition);
@@ -526,11 +599,13 @@ public class MonsterManager : MonoBehaviour
     {
         switch (state)
         {
+            case MonsterBehaviourState.Offmap:             return Color.gray;
             case MonsterBehaviourState.Wandering:          return Color.green;
-            case MonsterBehaviourState.InvestigatingSound: return Color.yellow;
-            case MonsterBehaviourState.Chasing:            return Color.red;
-            case MonsterBehaviourState.RememberingPlayer:  return Color.orangeRed;
             case MonsterBehaviourState.Waiting:            return Color.white;
+            case MonsterBehaviourState.InvestigatingSound: return Color.yellow;
+            case MonsterBehaviourState.RememberingPlayer:  return Color.orangeRed;
+            case MonsterBehaviourState.Chasing:            return Color.red;
+            case MonsterBehaviourState.Fleeing:            return Color.purple;
             default:                                       return Color.gray;
         }
     }
@@ -603,22 +678,18 @@ public class MonsterManager : MonoBehaviour
 
         if (showDebugRadius)
         {
-            if (CurrentMonsterBehaviourState != MonsterBehaviourState.Chasing)
+            if (CurrentMonsterBehaviourState != MonsterBehaviourState.Chasing ||
+                CurrentMonsterBehaviourState != MonsterBehaviourState.Fleeing ||
+                CurrentMonsterBehaviourState != MonsterBehaviourState.Offmap)
             {
                 DebugDraw.DebugCircle(mainCamera, monsterPosition, radiusVisibility, Color.red);
             }
 
-            switch (CurrentMonsterBehaviourState)
+            DebugDraw.DebugCircle(mainCamera, blackboard.targetPosition, radiusTargetReached, stateColor);
+
+            if (CurrentMonsterBehaviourState == MonsterBehaviourState.Chasing)
             {
-                case MonsterBehaviourState.Wandering:
-                case MonsterBehaviourState.InvestigatingSound:
-                {
-                    DebugDraw.DebugCircle(mainCamera, blackboard.targetPosition, radiusTargetReached, stateColor);
-                } break;
-                case MonsterBehaviourState.Chasing:
-                {
-                    DebugDraw.DebugCircle(mainCamera, monsterPosition, radiusLoosingPlayer, stateColor);
-                } break;
+                DebugDraw.DebugCircle(mainCamera, monsterPosition, radiusLoosingPlayer, stateColor);
             }
         }
 

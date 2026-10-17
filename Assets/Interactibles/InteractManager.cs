@@ -73,6 +73,8 @@ public class InteractManager : MonoBehaviour
         int soundVolume = Random.Range(1, 20);
         MonsterManager.SendSoundToMonsterHearing(soundPosition, soundVolume);
 
+        MonsterManager.TryToFearMonster();
+
         if (currentInteractComponent == null)
             return;
 
