@@ -32,7 +32,7 @@ public class MonsterController : MonoBehaviour
 
     private void UpdateAnimations()
     {
-        float monsterSpeed = navMeshAgent.speed;
+        float monsterSpeed = navMeshAgent.desiredVelocity.magnitude;
 
         int animatorSpeedParam = Animator.StringToHash("Speed");
         monsterAnimator.SetFloat(animatorSpeedParam, monsterSpeed);
