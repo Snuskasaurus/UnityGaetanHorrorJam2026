@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 4581972173765392540}
   - component: {fileID: 8581569878604096697}
   - component: {fileID: 6537548266370170693}
-  - component: {fileID: 2139944864304148820}
   m_Layer: 0
   m_Name: Monster
   m_TagString: Untagged
@@ -128,28 +127,6 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!95 &2139944864304148820
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1442702917518248269}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: d7bbc81a30c620f4c8ec1a230c588b89, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &5531546234719745594
 GameObject:
   m_ObjectHideFlags: 0
@@ -241,10 +218,40 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c1f4ffa8baf67e24cad8dd27348a3d42, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1065318458063083140}
   m_SourcePrefab: {fileID: 100100000, guid: c1f4ffa8baf67e24cad8dd27348a3d42, type: 3}
 --- !u!4 &5818361026799254357 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c1f4ffa8baf67e24cad8dd27348a3d42, type: 3}
   m_PrefabInstance: {fileID: 6283719929063922878}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6626246589678150127 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: c1f4ffa8baf67e24cad8dd27348a3d42, type: 3}
+  m_PrefabInstance: {fileID: 6283719929063922878}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1065318458063083140
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6626246589678150127}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d7bbc81a30c620f4c8ec1a230c588b89, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
