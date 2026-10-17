@@ -1,0 +1,11 @@
+Texture PS1 horror — version pixel v2
+
+Monstre_PS1_Pixel_v2_128.png : atlas natif 128 x 128, palette de 32 couleurs.
+Monstre_PS1_Pixel_v2_1024.png : le même atlas agrandi 8 fois sans lissage. Pixels de 8 x 8.
+Monstre_Texture_PS1_Pixel_v2.blend : copie du modèle avec le nouvel atlas embarqué, interpolation Closest.
+
+Les deux premiers PNG correspondent aux coordonnées UV du Monstre.blend fourni. Le mesh et les UV sont conservés. Aucun cheveu n'est peint dans l'atlas.
+La variante UV_image_1024 correspond au cadrage serré de l'image UV fournie.
+
+Création visuelle : imagegen intégré, prompt complet dans generation_prompt.txt.
+Les fichiers de la première version sont conservés séparément.

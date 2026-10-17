@@ -1,0 +1,17 @@
+Normal map du monstre pixel PS1 v2
+
+Monstre_PS1_Normal_OpenGL_128.png : normal map native, 128 x 128.
+Monstre_PS1_Normal_OpenGL_1024.png : la même carte agrandie 8 fois sans lissage.
+Monstre_PS1_Pixel_v2_Normal.blend : copie avec albedo et normal map embarquées et branchées.
+Monstre_PS1_Normal_UV_image_1024.png : variante pour le cadrage de l'image UV fournie. Pour le .blend, utiliser la version OpenGL.
+Monstre_PS1_Height_128.png : carte de relief intermédiaire.
+
+Format : RGB, normale en espace tangent, convention OpenGL (+Y). Les reliefs sont volontairement discrets pour conserver le style pixel PS1. Aucun cheveu n'est inclus. Géométrie et UV du mesh conservés.
+
+Dans la copie Blender : texture Non-Color / interpolation Closest, node Normal Map en Tangent sur CarteUV, intensité 0,7, connecté à l'entrée Normal du Principled BSDF.
+
+Création : relief stylisé généré avec imagegen (prompt joint), puis calcul des normales via un bake Blender sur le mesh. Les vecteurs ont été normalisés et leur inclinaison limitée pour éviter les reliefs excessifs sur les petits îlots UV. Il ne s'agit pas d'un bake d'une sculpture haute définition.
+
+Documentation Blender :
+https://docs.blender.org/manual/en/4.4/render/cycles/baking.html
+https://docs.blender.org/manual/en/2.81/render/shader_nodes/vector/normal_map.html

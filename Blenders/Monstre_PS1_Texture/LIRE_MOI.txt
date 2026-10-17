@@ -1,0 +1,17 @@
+Texture du monstre — PS1 horror
+
+Fichiers à utiliser avec Monstre.blend :
+- Monstre_PS1_512.png : texture native 512 x 512 pour le rendu pixel.
+- Monstre_PS1_1024.png : la même texture agrandie en nearest neighbor.
+- Monstre_Texture_PS1.blend : copie avec la texture 512 branchée sur le matériau de Mesh-Monster et embarquée dans le fichier. Interpolation Closest, métal 0, rugosité 1. Les UV et la géométrie du mesh sont conservés.
+
+Le fichier Monstre.blend original n'a pas été remplacé.
+La texture contient le corps, le crâne, le visage et l'intérieur de la bouche. Aucun cheveu n'est peint ; l'objet Haire reste un asset séparé.
+
+Variante pour l'image UV fournie :
+- Monstre_PS1_UV_image_1024.png est recadrée pour correspondre à Mesh-Monster.png, qui montre un cadrage plus serré que les coordonnées UV enregistrées dans Monstre.blend. Pour le fichier Blender fourni, utiliser les versions 512 ou 1024 sans le suffixe UV_image.
+
+Les aperçus front, back, angle et head sont des rendus du véritable mesh avec la texture, en couleur diffuse sans éclairage ajouté, pour contrôler son placement.
+
+Création visuelle : outil intégré imagegen. Prompt complet dans generation_prompt.txt.
+Préparation technique : export en 512 px, agrandissement sans lissage en 1024 px et débord des texels aux bords des îlots UV. Aucun canal normal/roughness/PBR supplémentaire n'est requis pour cette texture diffuse.
