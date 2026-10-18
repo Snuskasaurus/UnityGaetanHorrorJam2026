@@ -12,8 +12,8 @@ public class CameraController : MonoBehaviour
     [Range(0.1f, 5f)]
     private float mouseSensitivity = 0.5f;
 
-    // Tuning values, read from the camera section of GameSettings
-    private CameraSettings Settings => GameSettings.Instance.camera;
+    // Tuning values, read from the camera settings of GameSettings
+    private CameraSettings Settings => GameSettings.Camera;
 
     //[SerializeField]
     //private float crouchCameraHeight = 0.5f;

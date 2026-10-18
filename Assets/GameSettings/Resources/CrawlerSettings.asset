@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fef7a7cf53a487982ce685dc0484d6f, type: 3}
+  m_Name: CrawlerSettings
+  m_EditorClassIdentifier: Assembly-CSharp::CrawlerSettings
+  crawlerCount: 1500
+  spawnRadius: 10
+  despawnRadius: 20
+  turnSpeed: 360
+  wanderRadius: 5
+  arriveThreshold: 0.05
+  minWalkSpeed: 2
+  maxWalkSpeed: 3
+  fleeingDistance: 10
+  minFleeingSpeed: 4
+  maxFleeingSpeed: 5
+  fleeingRadiusTransitionDuration: 0.4
+  fleeingCooldown: 1
+  scaleFactor: 5

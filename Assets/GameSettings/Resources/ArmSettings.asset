@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 630d4eb730ba48bc82a60a105a43878b, type: 3}
+  m_Name: ArmSettings
+  m_EditorClassIdentifier: Assembly-CSharp::ArmSettings
+  wallMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  probeRadius: 0.08
+  maxRetract: 0.35
+  maxLower: 0.1
+  maxTuckAngles: {x: 15, y: -10, z: 0}
+  retractSharpness: 20
+  extendSharpness: 8

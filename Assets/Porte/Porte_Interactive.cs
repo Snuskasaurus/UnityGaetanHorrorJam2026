@@ -15,7 +15,7 @@ public class PorteInteractive : MonoBehaviour
     public Camera cameraJoueur;
     public CameraController scriptRotationCamera;
     // Tuning values, read from the DoorSettings asset of GameSettings
-    private DoorSettings Settings => GameSettings.Instance.door;
+    private DoorSettings Settings => GameSettings.Door;
 
     private Rigidbody rb;
     private HingeJoint charniere;

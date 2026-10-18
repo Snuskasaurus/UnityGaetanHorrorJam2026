@@ -13,8 +13,8 @@ public class ArmWallRetraction : MonoBehaviour
     [SerializeField]
     private Transform zippoTip;
 
-    // Tuning values, read from the arm section of GameSettings
-    private ArmSettings Settings => GameSettings.Instance.arm;
+    // Tuning values, read from the arm settings of GameSettings
+    private ArmSettings Settings => GameSettings.Arm;
 
     // Internal variables
     private Vector3 restPosition;

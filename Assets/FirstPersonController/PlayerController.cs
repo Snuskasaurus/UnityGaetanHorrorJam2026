@@ -35,8 +35,8 @@ public enum AirborneState
 [RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider))]
 public class PlayerController : MonoBehaviour
 {
-    // Tuning values, read from the playerChecks section of GameSettings
-    private PlayerChecksSettings Settings => GameSettings.Instance.playerChecks;
+    // Tuning values, read from the playerChecks settings of GameSettings
+    private PlayerChecksSettings Settings => GameSettings.PlayerChecks;
 
     // References
     public Camera PlayerCamera

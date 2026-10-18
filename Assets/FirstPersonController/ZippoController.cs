@@ -10,8 +10,8 @@ using UnityEngine.InputSystem.Controls;
 [RequireComponent(typeof(PlayerController))]
 public class ZippoController : MonoBehaviour
 {
-    // Tuning values, read from the zippo section of GameSettings
-    private ZippoSettings Settings => GameSettings.Instance.zippo;
+    // Tuning values, read from the zippo settings of GameSettings
+    private ZippoSettings Settings => GameSettings.Zippo;
 
     // Hooks for feedback (sounds, effects, UI) that can be wired in the Inspector
     [Header("Events")]

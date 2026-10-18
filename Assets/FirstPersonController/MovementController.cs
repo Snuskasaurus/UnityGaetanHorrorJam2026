@@ -7,8 +7,8 @@ public class MovementController : MonoBehaviour
     private Rigidbody rigidBody;
     private PlayerController playerManager;
 
-    // Tuning values, read from the movement section of GameSettings
-    private MovementSettings Settings => GameSettings.Instance.movement;
+    // Tuning values, read from the movement settings of GameSettings
+    private MovementSettings Settings => GameSettings.Movement;
 
     private void OnEnable()
     {

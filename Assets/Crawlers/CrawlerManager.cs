@@ -12,7 +12,7 @@ using Random = UnityEngine.Random;
 public class CrawlerManager : MonoBehaviour
 {
     // Tuning values, read from the CrawlerSettings asset of GameSettings
-    private CrawlerSettings Settings => GameSettings.Instance.crawler;
+    private CrawlerSettings Settings => GameSettings.Crawler;
 
     [Header("Graphic")]
     [SerializeField] Mesh mesh;

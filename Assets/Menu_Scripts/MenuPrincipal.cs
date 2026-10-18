@@ -21,7 +21,7 @@ public class MenuPrincipal : MonoBehaviour
     [SerializeField] private TMP_Text textetip;
 
     // Tuning values, read from the MenuSettings asset of GameSettings
-    private MenuSettings Settings => GameSettings.Instance.menu;
+    private MenuSettings Settings => GameSettings.Menu;
 
     [Header("Personnage de chargement")]
     [SerializeField] private RectTransform personnageCourse;

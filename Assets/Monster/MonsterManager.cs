@@ -27,7 +27,7 @@ public class MonsterManager : MonoBehaviour
     private static MonsterManager INSTANCE;
 
     // Tuning values, read from the MonsterSettings asset of GameSettings
-    private MonsterSettings Settings => GameSettings.Instance.monster;
+    private MonsterSettings Settings => GameSettings.Monster;
 
     private MonsterBlackboard blackboard;
     private MonsterBehaviourState CurrentMonsterBehaviourState;

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94620cd845fe439f98098f6f58a6bea5, type: 3}
+  m_Name: MonsterSettings
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterSettings
+  DefaultBehaviour: 1
+  radiusTargetReached: 1
+  MovementSpeedDefault: 1
+  MovementSpeedChasing: 3
+  MovementSpeedFleeing: 6
+  radiusLoosingPlayer: 7
+  showDebug: 1
+  showDebugRadius: 1

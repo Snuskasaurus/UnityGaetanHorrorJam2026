@@ -12,8 +12,8 @@ public class ZippoFlameVisual : MonoBehaviour
     [SerializeField]
     private SpriteRenderer flameSprite;
 
-    // Tuning values, read from the zippoVisual section of GameSettings
-    private ZippoVisualSettings Settings => GameSettings.Instance.zippoVisual;
+    // Tuning values, read from the zippoVisual settings of GameSettings
+    private ZippoVisualSettings Settings => GameSettings.ZippoVisual;
 
     // Internal variables
     private float power = 1f;

@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 public class InteractManager : MonoBehaviour
 {
     // Tuning values, read from the InteractSettings asset of GameSettings
-    private InteractSettings Settings => GameSettings.Instance.interact;
+    private InteractSettings Settings => GameSettings.Interact;
 
     // References
     Camera camera;
