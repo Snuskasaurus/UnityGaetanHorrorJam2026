@@ -1,10 +1,12 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RenderTextureResolutionScaler : MonoBehaviour
 {
     [SerializeField] private Camera gameCamera;
     [SerializeField] private Camera renderingCamera;
     [SerializeField] private RenderTexture renderTexture;
+    [SerializeField] private RawImage RenderingRawImage;
 
     Vector2Int gameResolutionOnLastFrame;
 
@@ -16,8 +18,12 @@ public class RenderTextureResolutionScaler : MonoBehaviour
             Debug.Log("Game resolution changed to :" + gameResolution);
 
             gameCamera.targetTexture = null;
+            RenderingRawImage.texture = null;
+
             ResizeRenderTexture(renderTexture, gameResolution.x, gameResolution.y);
+
             gameCamera.targetTexture = renderTexture;
+            RenderingRawImage.texture = renderTexture;
         }
     }
 

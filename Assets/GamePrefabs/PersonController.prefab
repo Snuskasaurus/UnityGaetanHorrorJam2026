@@ -3758,6 +3758,7 @@ MonoBehaviour:
   gameCamera: {fileID: 7163183404399561143}
   renderingCamera: {fileID: 6034910930206073385}
   renderTexture: {fileID: 8400000, guid: 31878b81a1630e24c828b82610576cd2, type: 2}
+  RenderingRawImage: {fileID: 4872962879718296566}
 --- !u!1 &3481102695503192129
 GameObject:
   m_ObjectHideFlags: 0
@@ -5464,7 +5465,7 @@ GameObject:
   - component: {fileID: 6311337861329840123}
   - component: {fileID: 4872962879718296566}
   m_Layer: 3
-  m_Name: RenderTexture
+  m_Name: RenderingRawImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
