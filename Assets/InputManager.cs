@@ -10,6 +10,6 @@ public class InputManager : MonoBehaviour
     public static InputAction PlayerSprint => InputSystem.actions.FindAction("Player/Sprint");
     public static InputAction PlayerCrouch => InputSystem.actions.FindAction("Player/Crouch");
     public static InputAction PlayerInteract => InputSystem.actions.FindAction("Player/Interact");
-    public static InputAction ZippoOn => InputSystem.actions.FindAction("Zippo/On");
+    public static InputAction ZippoLightAttempt => InputSystem.actions.FindAction("Zippo/LightAttempt");
     public static InputAction ZippoIntensity => InputSystem.actions.FindAction("Zippo/Intensity");
 }

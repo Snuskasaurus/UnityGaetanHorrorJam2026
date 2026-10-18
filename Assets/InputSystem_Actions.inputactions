@@ -1016,7 +1016,7 @@
             "id": "2dab2c04-ce4b-492b-8b55-23c0c483c614",
             "actions": [
                 {
-                    "name": "On",
+                    "name": "LightAttempt",
                     "type": "Button",
                     "id": "25a03199-73f3-49a7-a762-467936baa37e",
                     "expectedControlType": "",
@@ -1032,7 +1032,7 @@
                     "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false,
+                    "initialStateCheck": true,
                     "priority": 0
                 }
             ],
@@ -1044,14 +1044,14 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "On",
+                    "action": "LightAttempt",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "71ab4ff1-d627-4ca6-a9f2-9827854bc663",
-                    "path": "<Keyboard>/f",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",

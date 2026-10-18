@@ -1,5 +1,14 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.InputSystem;
+
+// Previous and current value of a state, sent by the state changed events
+public struct StateChange<T>
+{
+    public T Previous;
+    public T Current;
+}
 
 public enum Posture
 {
@@ -8,11 +17,6 @@ public enum Posture
     Prone
 }
 
-public struct OnPostureChangedEventArgs
-{
-    public Posture PreviousPostureState;
-    public Posture CurrentPostureState;
-}
 public enum MovementState
 {
     Crouching,
@@ -20,23 +24,11 @@ public enum MovementState
     Running
 }
 
-public struct OnMovementStateChangedEventArgs
-{
-    public MovementState PreviousMovementState;
-    public MovementState CurrentMovementState;
-}
-
 public enum AirborneState
 {
     Grounded,
     Jumping,
     Falling
-}
-
-public struct OnAirborneStateChangedEventArgs
-{
-    public AirborneState PreviousAirborneState;
-    public AirborneState CurrentAirborneState;
 }
 
 [DefaultExecutionOrder(-10)]
@@ -122,9 +114,13 @@ public class PlayerController : MonoBehaviour
     }
 
     // Events
-    public event System.Action<OnPostureChangedEventArgs> OnPostureChanged;
-    public event System.Action<OnMovementStateChangedEventArgs> OnMovementStateChanged;
-    public event System.Action<OnAirborneStateChangedEventArgs> OnAirborneStateChanged;
+    [Header("Events")]
+    public UnityEvent<StateChange<Posture>> OnPostureChanged;
+    public UnityEvent<StateChange<MovementState>> OnMovementStateChanged;
+    public UnityEvent<StateChange<AirborneState>> OnAirborneStateChanged;
+
+    // When crouch and sprint are both held, the last one pressed wins
+    private bool isSprintPressedLast = false;
 
     // Use this for initialization
     void OnEnable()
@@ -132,6 +128,19 @@ public class PlayerController : MonoBehaviour
         PlayerCamera = GetComponentInChildren<Camera>();
         rigidBody = GetComponent<Rigidbody>();
         capsule = GetComponent<CapsuleCollider>();
+
+        InputManager.PlayerCrouch.performed += OnCrouchPerformed;
+        InputManager.PlayerCrouch.canceled += OnStanceInputCanceled;
+        InputManager.PlayerSprint.performed += OnSprintPerformed;
+        InputManager.PlayerSprint.canceled += OnStanceInputCanceled;
+    }
+
+    private void OnDisable()
+    {
+        InputManager.PlayerCrouch.performed -= OnCrouchPerformed;
+        InputManager.PlayerCrouch.canceled -= OnStanceInputCanceled;
+        InputManager.PlayerSprint.performed -= OnSprintPerformed;
+        InputManager.PlayerSprint.canceled -= OnStanceInputCanceled;
     }
 
     private void FixedUpdate()
@@ -142,31 +151,62 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        // Initialize posture
         CurrentPosture = Posture.Standing;
-        InputManager.PlayerCrouch.performed += ctx => ChangePostureState(Posture.Crouching);
-        InputManager.PlayerCrouch.canceled += ctx => ChangePostureState(Posture.Standing);
-        InputManager.PlayerSprint.performed += ctx => ChangePostureState(Posture.Standing);
-
-        // Initialize movement state
         CurrentMovementState = MovementState.Walking;
-        InputManager.PlayerSprint.performed += ctx => ChangeMovementState(MovementState.Running);
-        InputManager.PlayerSprint.canceled += ctx => ChangeMovementState(MovementState.Walking);
-        InputManager.PlayerCrouch.performed += ctx => ChangeMovementState(MovementState.Crouching);
-        InputManager.PlayerCrouch.canceled += ctx => ChangeMovementState(MovementState.Walking);
+    }
+
+    private void OnCrouchPerformed(InputAction.CallbackContext context)
+    {
+        isSprintPressedLast = false;
+        RefreshStances();
+    }
+
+    private void OnSprintPerformed(InputAction.CallbackContext context)
+    {
+        isSprintPressedLast = true;
+        RefreshStances();
+    }
+
+    private void OnStanceInputCanceled(InputAction.CallbackContext context)
+    {
+        RefreshStances();
+    }
+
+    // Deduces the posture and the movement state from the crouch and sprint keys currently held
+    private void RefreshStances()
+    {
+        bool isCrouchHeld = InputManager.PlayerCrouch.IsPressed();
+        bool isSprintHeld = InputManager.PlayerSprint.IsPressed();
+
+        if (isSprintHeld && (!isCrouchHeld || isSprintPressedLast))
+        {
+            ChangePostureState(Posture.Standing);
+            ChangeMovementState(MovementState.Running);
+        }
+        else if (isCrouchHeld)
+        {
+            ChangePostureState(Posture.Crouching);
+            ChangeMovementState(MovementState.Crouching);
+        }
+        else
+        {
+            ChangePostureState(Posture.Standing);
+            ChangeMovementState(MovementState.Walking);
+        }
     }
 
     private void ChangePostureState(Posture newPosture)
     {
         if (CurrentPosture != newPosture)
         {
-            // Raise the event
-            OnPostureChanged?.Invoke(new OnPostureChangedEventArgs
-            {
-                PreviousPostureState = CurrentPosture,
-                CurrentPostureState = newPosture
-            });
+            // The state is updated before raising the event, so listeners can read the new value
+            Posture previousPosture = CurrentPosture;
             CurrentPosture = newPosture;
+            OnPostureChanged?.Invoke(new StateChange<Posture>
+            {
+                Previous = previousPosture,
+                Current = newPosture
+            });
         }
     }
 
@@ -174,12 +214,14 @@ public class PlayerController : MonoBehaviour
     {
         if (CurrentMovementState != newMovementState)
         {
-            OnMovementStateChanged?.Invoke(new OnMovementStateChangedEventArgs
-            {
-                PreviousMovementState = CurrentMovementState,
-                CurrentMovementState = newMovementState
-            });
+            // The state is updated before raising the event, so listeners can read the new value
+            MovementState previousMovementState = CurrentMovementState;
             CurrentMovementState = newMovementState;
+            OnMovementStateChanged?.Invoke(new StateChange<MovementState>
+            {
+                Previous = previousMovementState,
+                Current = newMovementState
+            });
         }
     }
 
@@ -187,12 +229,14 @@ public class PlayerController : MonoBehaviour
     {
         if (AirborneState != newAirborneState)
         {
-            OnAirborneStateChanged?.Invoke(new OnAirborneStateChangedEventArgs
-            {
-                PreviousAirborneState = AirborneState,
-                CurrentAirborneState = newAirborneState
-            });
+            // The state is updated before raising the event, so listeners can read the new value
+            AirborneState previousAirborneState = AirborneState;
             AirborneState = newAirborneState;
+            OnAirborneStateChanged?.Invoke(new StateChange<AirborneState>
+            {
+                Previous = previousAirborneState,
+                Current = newAirborneState
+            });
         }
     }
 

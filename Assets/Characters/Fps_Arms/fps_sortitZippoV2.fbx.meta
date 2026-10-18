@@ -57,7 +57,7 @@ ModelImporter:
       curves: []
       events:
       - time: 0.44262296
-        functionName: PlayTakeOutZippoSound
+        functionName: NotifyZippoEquipped
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

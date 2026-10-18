@@ -2691,27 +2691,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2711e282617507642beb98f2197197be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimationController
-  animator: {fileID: 2637371338144350399}
-  player: {fileID: 7402273110080162523}
-  playerBody: {fileID: 6227999046116872325}
-  zippoModel: {fileID: 35659810892445575}
-  isZippoOut: 0
-  isZippoLit: 0
-  ignitionChance: 0.35
-  zippoAudio: {fileID: 9084525540607897949}
-  failSound1: {fileID: 8300000, guid: 6883cfeff25fe884eb96f021b2daa9b5, type: 3}
-  failSound2: {fileID: 8300000, guid: 22c81c2ba8d936b418149e4a791caf87, type: 3}
-  successSound: {fileID: 8300000, guid: 2b3794c2379b94744a91029ad7cfc6eb, type: 3}
-  takeOutZippoSound: {fileID: 8300000, guid: 49a63bc5145460148b4318207aa0f003, type: 3}
-  zippoFlame: {fileID: 5939885600133658122}
-  zippoSparks: {fileID: 1506836202565066257}
-  zippoLight: {fileID: 7651319936331674161}
-  minIntensity: 1.2
-  maxIntensity: 1.8
-  flickerSpeed: 7
-  minFlamePower: 0.2
-  startFlamePower: 0.6
-  scrollStep: 0.1
 --- !u!82 &9084525540607897949
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3097,6 +3076,7 @@ GameObject:
   - component: {fileID: 5494703126774766354}
   - component: {fileID: 7651319936331674161}
   - component: {fileID: 6284607522123268865}
+  - component: {fileID: 5506937939068601830}
   m_Layer: 0
   m_Name: Lumiere_Zippo
   m_TagString: Untagged
@@ -3317,7 +3297,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2726840797775041160}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 13
   m_Type: 2
   m_Color: {r: 0.764151, g: 0.7139456, b: 0.5298594, a: 1}
@@ -3801,6 +3781,7 @@ GameObject:
   - component: {fileID: 7402273110080162523}
   - component: {fileID: 2083564352033203485}
   - component: {fileID: 1934177061492016537}
+  - component: {fileID: 3115470457590564180}
   m_Layer: 3
   m_Name: PersonController
   m_TagString: Player
@@ -3950,6 +3931,27 @@ MonoBehaviour:
   ceilingCheckDistance: 0.5
   checkRadiusFactor: 0.95
   risingVelocityThreshold: 0.1
+  OnPostureChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnMovementStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAirborneStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &2083564352033203485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4034,6 +4036,179 @@ MonoBehaviour:
   crouchSpeed: 1.125
   maxSlopeAngle: 45
   groundStickForce: 5
+--- !u!114 &3115470457590564180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4384303418514471492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52c2157acc9fe7945b86d0246f962b68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ZippoController
+  lightAttemptSuccessChance: 0.35
+  zippoFlame: {fileID: 5939885600133658122}
+  zippoLight: {fileID: 7651319936331674161}
+  minFlamePower: 0.2
+  startFlamePower: 0.6
+  fleeingPower: 0.8
+  scrollStep: 0.1
+  rangeByPower:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.4
+      inSlope: 0
+      outSlope: 0.6
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.6
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  flameScaleByPower:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.4
+      inSlope: 0
+      outSlope: 0.6
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.6
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  flamePowerSmoothing: 10
+  onLightAttemptStarted:
+    m_PersistentCalls:
+      m_Calls: []
+  onLightAttempt:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1506836202565066257}
+        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+        m_MethodName: Clear
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1506836202565066257}
+        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+        m_MethodName: Play
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  onFlameLit:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 9084525540607897949}
+        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+        m_MethodName: PlayOneShot
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8300000, guid: 2b3794c2379b94744a91029ad7cfc6eb, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onLightAttemptFailed:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 9084525540607897949}
+        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+        m_MethodName: set_resource
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8300000, guid: 6883cfeff25fe884eb96f021b2daa9b5, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Audio.AudioResource, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 9084525540607897949}
+        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onFlameExtinguished:
+    m_PersistentCalls:
+      m_Calls: []
+  onFlamePowerChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5506937939068601830}
+        m_TargetAssemblyTypeName: LightFlicker, Assembly-CSharp
+        m_MethodName: SetPower
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onZippoEquipped:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 9084525540607897949}
+        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+        m_MethodName: PlayOneShot
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8300000, guid: 49a63bc5145460148b4318207aa0f003, type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &4546829797849069984
 GameObject:
   m_ObjectHideFlags: 0
@@ -5652,3 +5827,20 @@ Transform:
   - {fileID: 4850877593346998338}
   m_Father: {fileID: 8729855399442555612}
   m_LocalEulerAnglesHint: {x: -88.08878, y: 0.13112739, z: 4.0158343}
+--- !u!114 &5506937939068601830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2566798070547448758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29293074cd084120a233222ff1e4af39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LightFlicker
+  minIntensity: 1.2
+  maxIntensity: 1.8
+  flickerSpeed: 7
+  power: 1
+  powerSmoothing: 10
