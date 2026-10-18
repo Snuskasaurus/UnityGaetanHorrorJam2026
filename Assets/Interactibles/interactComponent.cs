@@ -1,16 +1,27 @@
 using UnityEngine;
 
+public enum InteractType
+{
+    OilLamp,
+    Other
+}
+
 [RequireComponent(typeof(Collider))]
 public class InteractComponent : MonoBehaviour
 {
     [Header("Selection")]
     [SerializeField] string InteractName;
 
+    [Header("Interact Type")]
+    [SerializeField] InteractType interactType;
+
     InteractManager pickupManager;
 
     public string GetInteractName() { return InteractName; }
 
-    public void Interact()
+    public InteractType GetInteractType() { return interactType; }
+
+    public void Interact(GameObject player)
     {
         pickupManager.UnregisterPickupComponent(this);
         Destroy(gameObject);

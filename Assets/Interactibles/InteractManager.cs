@@ -78,7 +78,20 @@ public class InteractManager : MonoBehaviour
         if (currentInteractComponent == null)
             return;
 
-        currentInteractComponent.Interact();
+        switch(currentInteractComponent.GetInteractType())
+        {
+            case InteractType.OilLamp:
+                ZippoController zippo = playerController.GetComponentInChildren<ZippoController>();
+                if (zippo != null)
+                {
+                    zippo.RefillRessource(25f);
+                }
+                break;
+            default:
+                break;
+        }
+
+        currentInteractComponent.Interact(playerController.gameObject);
     }
 
     private InteractComponent FindMostLookedAt()
