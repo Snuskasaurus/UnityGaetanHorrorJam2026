@@ -3,6 +3,7 @@ using UnityEngine;
 public enum InteractType
 {
     OilLamp,
+    WinCondition,
     Other
 }
 

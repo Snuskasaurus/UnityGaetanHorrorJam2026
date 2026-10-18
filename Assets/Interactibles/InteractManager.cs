@@ -1,3 +1,4 @@
+using Assets.CommonScripts;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -15,6 +16,7 @@ public class InteractManager : MonoBehaviour
     Camera camera;
     TMP_Text interactPromptText;
     PlayerController playerController;
+    ZippoController ZippoController;
 
     InteractComponent currentInteractComponent;
     readonly List<InteractComponent> interactComponents = new List<InteractComponent>();
@@ -42,6 +44,7 @@ public class InteractManager : MonoBehaviour
         playerController = Common.FindTypeInScene<PlayerController>();
         camera = Common.FindTypeInScene<Camera>("PlayerCamera");
         interactPromptText = Common.FindTypeInScene<TMP_Text>("interactPromptText");
+        ZippoController = playerController.GetComponentInChildren<ZippoController>();
     }
 
     private void OnDisable()
@@ -80,11 +83,10 @@ public class InteractManager : MonoBehaviour
         switch(currentInteractComponent.GetInteractType())
         {
             case InteractType.OilLamp:
-                ZippoController zippo = playerController.GetComponentInChildren<ZippoController>();
-                if (zippo != null)
-                {
-                    zippo.RefillRessource(25f);
-                }
+                ZippoController.RefillRessource(25f);
+                break;
+            case InteractType.WinCondition:
+                GameManager.CollectibleCollected();
                 break;
             default:
                 break;

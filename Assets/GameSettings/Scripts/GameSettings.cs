@@ -40,6 +40,9 @@ public class GameSettings : ScriptableObject
     public static MenuSettings Menu => Instance.menu;
     public MenuSettings menu;
 
+    public static GameFlowSettings GameFlow => Instance.gameFlow;
+    public GameFlowSettings gameFlow;
+
     /// ----------------------------------------------------------------------------------------------------------------
     /// ----------------------------------------------------------------------------------------------------------------
     /// ----------------------------------------------------------------------------------------------------------------
