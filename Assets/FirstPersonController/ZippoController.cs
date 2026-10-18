@@ -134,7 +134,7 @@ public class ZippoController : MonoBehaviour
         ExtinguishFlame();
 
         // Gives the initial power to the listeners, the event only fires on changes afterwards
-        onFlamePowerChanged.Invoke(flamePower);
+        OnFlamePowerChanged.Invoke(flamePower);
     }
 
     private void Update()
@@ -157,7 +157,7 @@ public class ZippoController : MonoBehaviour
 
         isLightAttemptInProgress = true;
         isLightAttemptSuccessful = Random.value < lightAttemptSuccessChance;
-        onLightAttemptStarted.Invoke();
+        OnLightAttemptStarted.Invoke();
     }
 
     // A button (F) sets the power to 1, or back to its minimum if it is already high,
@@ -189,7 +189,7 @@ public class ZippoController : MonoBehaviour
         }
 
         flamePower = newPower;
-        onFlamePowerChanged.Invoke(flamePower);
+        OnFlamePowerChanged.Invoke(flamePower);
     }
 
     // Applies the result of the current light attempt
@@ -200,19 +200,19 @@ public class ZippoController : MonoBehaviour
             return;
         }
 
-        onLightAttempt.Invoke();
+        OnLightAttempt.Invoke();
 
         if (isLightAttemptSuccessful)
         {
             IsZippoLit = true;
             LightFlame();
-            onFlameLit.Invoke();
+            OnFlameLit.Invoke();
         }
         else
         {
             IsZippoLit = false;
             ExtinguishFlame();
-            onLightAttemptFailed.Invoke();
+            OnLightAttemptFailed.Invoke();
         }
     }
 
@@ -224,7 +224,7 @@ public class ZippoController : MonoBehaviour
 
     public void NotifyZippoEquipped()
     {
-        onZippoEquipped.Invoke();
+        OnZippoEquipped.Invoke();
     }
 
     public void LightFlame()
@@ -260,7 +260,7 @@ public class ZippoController : MonoBehaviour
 
         if (wasBurning)
         {
-            onFlameExtinguished.Invoke();
+            OnFlameExtinguished.Invoke();
         }
     }
 
