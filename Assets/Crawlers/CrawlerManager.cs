@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DataStructures.ViliWonka.KDTree;
+using Unity.Mathematics;
 using Unity.Profiling;
 using UnityEngine;
 using UnityEngine.AI;
@@ -23,9 +24,10 @@ public class CrawlerManager : MonoBehaviour
     [SerializeField] float maxWalkSpeed = 1.8f;
     
     [Header("Fleeing")]
-    [SerializeField] float fleeingRadiusStatic = 1.0f;
-    [SerializeField] float fleeingRadiusWalking = 4.0f;
-    [SerializeField] float fleeingRadiusSprinting = 10.0f;
+    [SerializeField] FloatRange fleeingRadiusStatic = new FloatRange(1.0f, 1.0f);
+    [SerializeField] FloatRange fleeingRadiusWalking = new FloatRange(4.0f, 4.0f);
+    [SerializeField] FloatRange fleeingRadiusRunning = new FloatRange(10.0f, 10.0f);
+
     [SerializeField] float fleeingDistance = 10.0f;
     [SerializeField] float minFleeingSpeed = 2.8f;
     [SerializeField] float maxFleeingSpeed = 3.1f;
@@ -39,6 +41,7 @@ public class CrawlerManager : MonoBehaviour
 
     // References
     PlayerController playerController;
+    ZippoController zippoController;
 
     const int MAX_INSTANCE_COUNT_BY_GPU_CALL = 1023;
     const int MAX_INSTANCE_COUNT_BY_KD_TREE = 1023;
@@ -98,6 +101,7 @@ public class CrawlerManager : MonoBehaviour
     void Start()
     {
         playerController = Common.FindTypeInScene<PlayerController>();
+        zippoController = Common.FindTypeInScene<ZippoController>();
 
         renderParams = new RenderParams(material)
         {
@@ -134,21 +138,23 @@ public class CrawlerManager : MonoBehaviour
 
     private void UpdateFleeingRadius()
     {
-        float target;
+        float flamePower = zippoController.flamePower;
+
+        float target = 0.0f;
         switch (playerController.CurrentMovementState)
         {
             case MovementState.Crouching:
-                target = fleeingRadiusStatic;
-                break;
+            {
+                target = FloatRange.Lerp(fleeingRadiusStatic, flamePower);
+            } break;
             case MovementState.Walking:
-                target = fleeingRadiusWalking;
-                break;
+            {
+                target = FloatRange.Lerp(fleeingRadiusWalking, flamePower);
+            } break;
             case MovementState.Running:
-                target = fleeingRadiusSprinting;
-                break;
-            default:
-                target = fleeingRadiusStatic;
-                break;
+            {
+                target = FloatRange.Lerp(fleeingRadiusRunning, flamePower);
+            } break;
         }
 
         if (!Mathf.Approximately(target, fleeingRadiusTo))
@@ -205,23 +211,21 @@ public class CrawlerManager : MonoBehaviour
 
         QueryKdTree_Radius(actorPosition);
 
-        for (int i = 0; i < kdTreeResults.Count; i++)
+        foreach (int crawlerIndex in kdTreeResults)
         {
-            int crawlerIndex = kdTreeResults[i];
-            ref Vector3 crawlerPosition = ref crawlerPositions[crawlerIndex];
+            float timeSinceLastFleeingCrawler = currentTime - crawlerTimeSinceLastFleeing[crawlerIndex];
+            if (!(timeSinceLastFleeingCrawler >= fleeingCooldown)) 
+                continue;
 
+            ref Vector3 crawlerPosition = ref crawlerPositions[crawlerIndex];
             float sqrDistance = (crawlerPosition - actorPosition).sqrMagnitude;
             float randomPercentage = Random.Range(0.2f, 1.0f);
             if (sqrDistance > sqrFleeingRadius * randomPercentage)
                 continue;
 
-            float timeSinceLastFleeingCrawler = currentTime - crawlerTimeSinceLastFleeing[crawlerIndex];
-            if (timeSinceLastFleeingCrawler >= fleeingCooldown)
-            {
-                SetCrawlerFleeSpeed(crawlerIndex);
-                crawlerTimeSinceLastFleeing[crawlerIndex] = currentTime;
-                crawlerPositionTargets[crawlerIndex] = NavMeshUtil.PickNewTarget_AwayFromPosition(crawlerPosition, actorPosition, fleeingDistance);
-            }
+            SetCrawlerFleeSpeed(crawlerIndex);
+            crawlerTimeSinceLastFleeing[crawlerIndex] = currentTime;
+            crawlerPositionTargets[crawlerIndex] = NavMeshUtil.PickNewTarget_AwayFromPosition(crawlerPosition, actorPosition, fleeingDistance);
         }
     }
 

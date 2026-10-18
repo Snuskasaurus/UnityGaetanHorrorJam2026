@@ -69,10 +69,15 @@ public class ZippoController : MonoBehaviour
         private set;
     }
 
+    public float flamePower
+    {
+        get;
+        private set;
+    }
+
     // Internal variables
     private bool isLightAttemptInProgress = false;
     private bool isLightAttemptSuccessful = false;
-    private float flamePower;
     private float currentRessource;
 
     private void OnEnable()
