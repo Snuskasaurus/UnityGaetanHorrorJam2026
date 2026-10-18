@@ -32,6 +32,12 @@ public class ZippoController : MonoBehaviour
     [Range(0.01f, 0.5f)]
     private float scrollStep = 0.1f;
 
+    [Header("Ressource Management")]
+    [SerializeField]
+    private float consumptionPerSecond = 1f;
+    [SerializeField]
+    private float maxRessource = 100f;
+
     // Hooks for feedback (sounds, effects, UI) that can be wired in the Inspector
     [Header("Events")]
     public UnityEvent OnLightAttempt;  // the thumb strikes the wheel and makes sparks, whatever the result
@@ -47,6 +53,8 @@ public class ZippoController : MonoBehaviour
     public UnityEvent<float> OnFlamePowerChanged;  // receives the new flame power, from 0 to 1
 
     public UnityEvent OnZippoEquipped;
+
+    public UnityEvent<float> OnRessourceChanged;  // receives the new ressource value, from 0 to maxRessource
 
     // State
     public bool IsZippoOut
@@ -65,6 +73,7 @@ public class ZippoController : MonoBehaviour
     private bool isLightAttemptInProgress = false;
     private bool isLightAttemptSuccessful = false;
     private float flamePower;
+    private float currentRessource;
 
     private void OnEnable()
     {
@@ -87,6 +96,7 @@ public class ZippoController : MonoBehaviour
         IsZippoLit = false;
         isLightAttemptInProgress = false;
         isLightAttemptSuccessful = false;
+        currentRessource = maxRessource;
 
         // Gives the initial power to the listeners, the event only fires on changes afterwards
         OnFlamePowerChanged.Invoke(flamePower);
@@ -97,6 +107,12 @@ public class ZippoController : MonoBehaviour
         if (flamePower > fleeingPower)
         {
             MonsterManager.TryToFearMonster();
+        }
+
+        if (IsZippoLit)
+        {
+            float consumption = consumptionPerSecond * flamePower * Time.deltaTime;
+            ConsumeRessource(consumption);
         }
     }
 
@@ -109,7 +125,7 @@ public class ZippoController : MonoBehaviour
         }
 
         isLightAttemptInProgress = true;
-        isLightAttemptSuccessful = Random.value < lightAttemptSuccessChance;
+        isLightAttemptSuccessful = currentRessource > 0 && Random.value < lightAttemptSuccessChance;
         OnLightAttemptStarted.Invoke();
     }
 
@@ -117,6 +133,11 @@ public class ZippoController : MonoBehaviour
     // each scroll notch changes the power by one step
     private void OnZippoIntensityPerformed(InputAction.CallbackContext context)
     {
+        if (!IsZippoOut || !IsZippoLit)
+        {
+            return;
+        }
+
         if (context.control is ButtonControl)
         {
             SetFlamePower(flamePower >= minFlamePower + (1f - minFlamePower) / 2f ? minFlamePower : 1f);
@@ -186,6 +207,31 @@ public class ZippoController : MonoBehaviour
         }
 
         IsZippoLit = false;
+        flamePower = 0.0f;
         OnFlameExtinguished.Invoke();
+    }
+
+    public void ConsumeRessource(float amount)
+    {
+        if (amount <= 0f)
+        {
+            return;
+        }
+        currentRessource = Mathf.Max(0f, currentRessource - amount);
+        OnRessourceChanged.Invoke(currentRessource);
+        if (currentRessource <= 0f)
+        {
+            ExtinguishFlame();
+        }
+    }
+
+    public void RefillRessource(float amount, bool overrideMax = false)
+    {
+        if (amount <= 0f)
+        {
+            return;
+        }
+        currentRessource = overrideMax ? currentRessource + amount : Mathf.Min(maxRessource, currentRessource + amount);
+        OnRessourceChanged.Invoke(currentRessource);
     }
 }
