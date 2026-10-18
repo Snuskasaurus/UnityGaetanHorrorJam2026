@@ -51,6 +51,8 @@ public class CrawlerManager : MonoBehaviour
     KDQuery kdTreeQuery = new KDQuery();
     List<int> kdTreeResults = new List<int>();
 
+    private int drawCallCount = 0;
+
     /// ----------------------------------------------------------------------------------------------------------------
     ///  UNITY FUNCTIONS
     /// ----------------------------------------------------------------------------------------------------------------
@@ -88,7 +90,8 @@ public class CrawlerManager : MonoBehaviour
 
     void Start()
     {
-        
+        drawCallCount = (Settings.crawlerCount + MAX_INSTANCE_COUNT_BY_GPU_CALL - 1) / MAX_INSTANCE_COUNT_BY_GPU_CALL;
+        Debug.Log("There will be " + drawCallCount + " draw call for crawlers each frames");
     }
 
     private void FixedUpdate()
@@ -102,19 +105,23 @@ public class CrawlerManager : MonoBehaviour
     private void Update()
     {
         UpdateCrawlerPositions();
-
-        for (int i = 0; i < Settings.crawlerCount; i += MAX_INSTANCE_COUNT_BY_GPU_CALL)
-        {
-            int instanceCount = Mathf.Min(MAX_INSTANCE_COUNT_BY_GPU_CALL, Settings.crawlerCount - i);
-            int startInstanceIndex = i;
-            Graphics.RenderMeshInstanced(renderParams, mesh, 0, crawlerMatrices, instanceCount, startInstanceIndex);
-        }
+        HandleDrawCalls();
     }
 
     /// ----------------------------------------------------------------------------------------------------------------
     ///  PRIVATE FUNCTIONS
     /// ----------------------------------------------------------------------------------------------------------------
-    
+
+    private void HandleDrawCalls()
+    {
+        for (int drawCallIndex = 0; drawCallIndex < drawCallCount; drawCallIndex++)
+        {
+            int startInstanceIndex = drawCallIndex * MAX_INSTANCE_COUNT_BY_GPU_CALL;
+            int instanceCount = Mathf.Min(MAX_INSTANCE_COUNT_BY_GPU_CALL, Settings.crawlerCount - startInstanceIndex);
+            Graphics.RenderMeshInstanced(renderParams, mesh, 0, crawlerMatrices, instanceCount, startInstanceIndex);
+        }
+    }
+
     private void SetCrawlerWalkSpeed(int crawlerIndex)
     {
         crawlerSpeeds[crawlerIndex] = Random.Range(Settings.minWalkSpeed, Settings.maxWalkSpeed);
