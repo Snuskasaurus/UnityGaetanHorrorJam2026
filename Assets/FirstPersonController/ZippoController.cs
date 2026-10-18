@@ -54,25 +54,25 @@ public class ZippoController : MonoBehaviour
     // Hooks for feedback (sounds, effects, UI) that can be wired in the Inspector
     [Header("Events")]
     [SerializeField]
-    private UnityEvent onLightAttemptStarted;
+    public UnityEvent OnLightAttempt;  // the thumb strikes the wheel and makes sparks, whatever the result
 
     [SerializeField]
-    private UnityEvent onLightAttempt;  // the thumb strikes the wheel and makes sparks, whatever the result
+    public UnityEvent OnLightAttemptStarted;
 
     [SerializeField]
-    private UnityEvent onFlameLit;
+    public UnityEvent OnLightAttemptFailed;
 
     [SerializeField]
-    private UnityEvent onLightAttemptFailed;
+    public UnityEvent OnFlameLit;
 
     [SerializeField]
-    private UnityEvent onFlameExtinguished;
+    public UnityEvent OnFlameExtinguished;
 
     [SerializeField]
-    private UnityEvent<float> onFlamePowerChanged;  // receives the new flame power, from 0 to 1
+    public UnityEvent<float> OnFlamePowerChanged;  // receives the new flame power, from 0 to 1
 
     [SerializeField]
-    private UnityEvent onZippoEquipped;
+    public UnityEvent OnZippoEquipped;
 
     // State
     public bool IsZippoOut
@@ -86,8 +86,6 @@ public class ZippoController : MonoBehaviour
         get;
         private set;
     }
-
-    public float FlamePower => flamePower;
 
     // Raised when a light attempt starts, the result is applied when ResolveLightAttempt is called.
     // Code listeners use AddListener, the Inspector uses the onLightAttemptStarted field.
