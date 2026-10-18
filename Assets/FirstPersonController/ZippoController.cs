@@ -3,9 +3,9 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 
-// Gameplay of the zippo: light attempts, flame power, light and flame visual.
-// The sounds and the sparks are wired on the UnityEvents in the Inspector.
-// The animations are driven by PlayerAnimationController, which listens to LightAttemptStarted
+// Mechanics of the zippo: light attempts, lit state and flame power.
+// All the feedback (sounds, sparks, light, flame visual) is wired on the UnityEvents in the Inspector.
+// The animations are driven by PlayerAnimationController, which listens to OnLightAttemptStarted
 // and relays the animation events back to this component.
 [RequireComponent(typeof(PlayerController))]
 public class ZippoController : MonoBehaviour
@@ -14,15 +14,6 @@ public class ZippoController : MonoBehaviour
     [SerializeField]
     [Range(0f, 1f)]
     private float lightAttemptSuccessChance = 0.35f;
-
-    [Header("Flame Visual")]
-    [SerializeField]
-    private SpriteRenderer zippoFlame;
-
-    // The intensity and the flicker are handled by a LightFlicker on the light, driven by onFlamePowerChanged
-    [Header("Light")]
-    [SerializeField]
-    private Light zippoLight;
 
     [Header("Flame Power")]
     [SerializeField]
@@ -41,37 +32,20 @@ public class ZippoController : MonoBehaviour
     [Range(0.01f, 0.5f)]
     private float scrollStep = 0.1f;
 
-    // Light range and flame size by flame power (0 to 1), relative to their values in the prefab
-    [SerializeField]
-    private AnimationCurve rangeByPower = AnimationCurve.Linear(0f, 0.4f, 1f, 1f);
-
-    [SerializeField]
-    private AnimationCurve flameScaleByPower = AnimationCurve.Linear(0f, 0.4f, 1f, 1f);
-
-    [SerializeField]
-    private float flamePowerSmoothing = 10f;  // how fast the flame visually reaches the wanted power
-
     // Hooks for feedback (sounds, effects, UI) that can be wired in the Inspector
     [Header("Events")]
-    [SerializeField]
     public UnityEvent OnLightAttempt;  // the thumb strikes the wheel and makes sparks, whatever the result
 
-    [SerializeField]
     public UnityEvent OnLightAttemptStarted;
 
-    [SerializeField]
     public UnityEvent OnLightAttemptFailed;
 
-    [SerializeField]
     public UnityEvent OnFlameLit;
 
-    [SerializeField]
     public UnityEvent OnFlameExtinguished;
 
-    [SerializeField]
     public UnityEvent<float> OnFlamePowerChanged;  // receives the new flame power, from 0 to 1
 
-    [SerializeField]
     public UnityEvent OnZippoEquipped;
 
     // State
@@ -87,18 +61,10 @@ public class ZippoController : MonoBehaviour
         private set;
     }
 
-    // Raised when a light attempt starts, the result is applied when ResolveLightAttempt is called.
-    // Code listeners use AddListener, the Inspector uses the onLightAttemptStarted field.
-    public UnityEvent LightAttemptStarted => OnLightAttemptStarted;
-
     // Internal variables
     private bool isLightAttemptInProgress = false;
     private bool isLightAttemptSuccessful = false;
-    private bool isFlameBurning = false;
     private float flamePower;
-    private float displayedFlamePower;
-    private float baseLightRange;
-    private Vector3 baseFlameScale = Vector3.one;
 
     private void OnEnable()
     {
@@ -115,15 +81,6 @@ public class ZippoController : MonoBehaviour
     private void Start()
     {
         flamePower = Mathf.Clamp(startFlamePower, minFlamePower, 1f);
-        displayedFlamePower = flamePower;
-        if (zippoLight != null)
-        {
-            baseLightRange = zippoLight.range;
-        }
-        if (zippoFlame != null)
-        {
-            baseFlameScale = zippoFlame.transform.localScale;
-        }
 
         // The zippo is always out, only its flame can be lit or extinguished
         IsZippoOut = true;
@@ -131,16 +88,12 @@ public class ZippoController : MonoBehaviour
         isLightAttemptInProgress = false;
         isLightAttemptSuccessful = false;
 
-        ExtinguishFlame();
-
         // Gives the initial power to the listeners, the event only fires on changes afterwards
         OnFlamePowerChanged.Invoke(flamePower);
     }
 
     private void Update()
     {
-        UpdateFlamePower();
-
         if (flamePower > fleeingPower)
         {
             MonsterManager.TryToFearMonster();
@@ -205,13 +158,10 @@ public class ZippoController : MonoBehaviour
         if (isLightAttemptSuccessful)
         {
             IsZippoLit = true;
-            LightFlame();
             OnFlameLit.Invoke();
         }
         else
         {
-            IsZippoLit = false;
-            ExtinguishFlame();
             OnLightAttemptFailed.Invoke();
         }
     }
@@ -227,57 +177,15 @@ public class ZippoController : MonoBehaviour
         OnZippoEquipped.Invoke();
     }
 
-    public void LightFlame()
-    {
-        isFlameBurning = true;
-
-        if (zippoFlame != null)
-        {
-            zippoFlame.enabled = true;
-        }
-
-        if (zippoLight != null)
-        {
-            zippoLight.enabled = true;
-        }
-    }
-
+    // Puts the flame out, for the mechanics that extinguish the zippo (sprint, monster, fuel...)
     public void ExtinguishFlame()
     {
-        // Only notify when a burning flame goes out, not when the flame is reset at start
-        bool wasBurning = isFlameBurning;
-        isFlameBurning = false;
-
-        if (zippoFlame != null)
+        if (!IsZippoLit)
         {
-            zippoFlame.enabled = false;
+            return;
         }
 
-        if (zippoLight != null)
-        {
-            zippoLight.enabled = false;
-        }
-
-        if (wasBurning)
-        {
-            OnFlameExtinguished.Invoke();
-        }
-    }
-
-    // Smoothly moves the flame towards the wanted power and applies it to the light range and the flame size
-    private void UpdateFlamePower()
-    {
-        float smoothing = 1f - Mathf.Exp(-flamePowerSmoothing * Time.deltaTime);
-        displayedFlamePower = Mathf.Lerp(displayedFlamePower, flamePower, smoothing);
-
-        if (zippoLight != null)
-        {
-            zippoLight.range = baseLightRange * rangeByPower.Evaluate(displayedFlamePower);
-        }
-
-        if (zippoFlame != null)
-        {
-            zippoFlame.transform.localScale = baseFlameScale * flameScaleByPower.Evaluate(displayedFlamePower);
-        }
+        IsZippoLit = false;
+        OnFlameExtinguished.Invoke();
     }
 }
