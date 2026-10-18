@@ -35,7 +35,7 @@ public class PlayerAnimationController : MonoBehaviour
         }
         if (zippo != null)
         {
-            zippo.LightAttemptStarted.AddListener(OnLightAttemptStarted);
+            zippo.OnLightAttemptStarted.AddListener(OnLightAttemptStarted);
         }
     }
 
@@ -48,7 +48,7 @@ public class PlayerAnimationController : MonoBehaviour
         }
         if (zippo != null)
         {
-            zippo.LightAttemptStarted.RemoveListener(OnLightAttemptStarted);
+            zippo.OnLightAttemptStarted.RemoveListener(OnLightAttemptStarted);
         }
     }
 

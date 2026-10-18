@@ -89,7 +89,7 @@ public class ZippoController : MonoBehaviour
 
     // Raised when a light attempt starts, the result is applied when ResolveLightAttempt is called.
     // Code listeners use AddListener, the Inspector uses the onLightAttemptStarted field.
-    public UnityEvent LightAttemptStarted => onLightAttemptStarted;
+    public UnityEvent LightAttemptStarted => OnLightAttemptStarted;
 
     // Internal variables
     private bool isLightAttemptInProgress = false;
