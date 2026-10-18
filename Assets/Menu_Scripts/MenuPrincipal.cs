@@ -20,32 +20,19 @@ public class MenuPrincipal : MonoBehaviour
     [Header("Astuces de chargement")]
     [SerializeField] private TMP_Text textetip;
 
-    [TextArea(2, 4)]
-    [SerializeField] private string[] astuces;
+    // Tuning values, read from the MenuSettings asset of GameSettings
+    private MenuSettings Settings => GameSettings.Instance.menu;
 
     [Header("Personnage de chargement")]
     [SerializeField] private RectTransform personnageCourse;
     [SerializeField] private RectTransform pointDepart;
     [SerializeField] private RectTransform pointArrivee;
 
-    [Header("Reglages chargement")]
-    [SerializeField] private string nomSceneJeu = "Scene_Demo";
-    [SerializeField] private float dureeFondu = 1f;
-    [SerializeField] private float attenteSecurite = 5f;
-    [SerializeField] private float dureeCourseMinimale = 3f;
-
-    [Header("Reglages camera")]
-    [SerializeField] private float dureeDeplacement = 2f;
-
-    [SerializeField] private AnimationCurve courbeMouvement =
-        AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
-
     private AsyncOperation chargementEnCours;
     private bool pretAContinuer = false;
     private bool transitionEnCours = false;
 
     private Button boutonContinuer;
-
 
     // ====================================
     // INITIALISATION DU MENU
@@ -83,7 +70,6 @@ public class MenuPrincipal : MonoBehaviour
         panelChargement.SetActive(false);
     }
 
-
     // ====================================
     // DEPLACEMENT DE LA CAMERA
     // ====================================
@@ -94,7 +80,7 @@ public class MenuPrincipal : MonoBehaviour
         Quaternion rotationDepart = cameraMenu.rotation;
 
         float temps = 0f;
-        float duree = Mathf.Max(0.01f, dureeDeplacement);
+        float duree = Mathf.Max(0.01f, Settings.dureeDeplacement);
 
         while (temps < duree)
         {
@@ -103,7 +89,7 @@ public class MenuPrincipal : MonoBehaviour
             float progression = Mathf.Clamp01(temps / duree);
 
             float progresLisse =
-                courbeMouvement.Evaluate(progression);
+                Settings.courbeMouvement.Evaluate(progression);
 
             // Position de la camera
             cameraMenu.position = Vector3.Lerp(
@@ -127,7 +113,6 @@ public class MenuPrincipal : MonoBehaviour
         cameraMenu.rotation = destination.rotation;
     }
 
-
     // ====================================
     // FONDU PROGRESSIF AU NOIR
     // ====================================
@@ -135,7 +120,7 @@ public class MenuPrincipal : MonoBehaviour
     private IEnumerator FonduChargement()
     {
         float temps = 0f;
-        float duree = Mathf.Max(0.01f, dureeFondu);
+        float duree = Mathf.Max(0.01f, Settings.dureeFondu);
 
         canvasGroupChargement.alpha = 0f;
 
@@ -159,7 +144,6 @@ public class MenuPrincipal : MonoBehaviour
         canvasGroupChargement.alpha = 1f;
     }
 
-
     // ====================================
     // ASTUCES ALEATOIRES
     // ====================================
@@ -167,16 +151,15 @@ public class MenuPrincipal : MonoBehaviour
     private void AfficherAstuceAleatoire()
     {
         // Verifier que des astuces existent
-        if (astuces == null || astuces.Length == 0)
+        if (Settings.astuces == null || Settings.astuces.Length == 0)
             return;
 
         // Choisir une astuce au hasard
-        int index = Random.Range(0, astuces.Length);
+        int index = Random.Range(0, Settings.astuces.Length);
 
         // Afficher l'astuce
-        textetip.text = astuces[index];
+        textetip.text = Settings.astuces[index];
     }
-
 
     // ====================================
     // BOUTON JOUER
@@ -193,7 +176,6 @@ public class MenuPrincipal : MonoBehaviour
         StartCoroutine(JouerEtCharger());
     }
 
-
     // ====================================
     // BOUTON QUITTER
     // ====================================
@@ -208,7 +190,6 @@ public class MenuPrincipal : MonoBehaviour
 
         StartCoroutine(QuitterApresAnimation());
     }
-
 
     // ====================================
     // ANIMATION AVANT DE QUITTER
@@ -228,7 +209,6 @@ public class MenuPrincipal : MonoBehaviour
         Application.Quit();
 #endif
     }
-
 
     // ====================================
     // ENCHAINEMENT DU MENU JOUER
@@ -261,7 +241,6 @@ public class MenuPrincipal : MonoBehaviour
         );
     }
 
-
     // ====================================
     // CHARGEMENT ASYNCHRONE DU NIVEAU
     // ====================================
@@ -276,7 +255,7 @@ public class MenuPrincipal : MonoBehaviour
         texteChargement.text = "CHARGEMENT...";
 
         // Verifier que le niveau existe
-        if (!Application.CanStreamedLevelBeLoaded(nomSceneJeu))
+        if (!Application.CanStreamedLevelBeLoaded(Settings.nomSceneJeu))
         {
             // Debug.LogError("Scene introuvable : " + nomSceneJeu);
 
@@ -287,7 +266,7 @@ public class MenuPrincipal : MonoBehaviour
 
         // Demarrer le chargement asynchrone
         chargementEnCours =
-            SceneManager.LoadSceneAsync(nomSceneJeu);
+            SceneManager.LoadSceneAsync(Settings.nomSceneJeu);
 
         if (chargementEnCours == null)
         {
@@ -305,7 +284,7 @@ public class MenuPrincipal : MonoBehaviour
         float progressionAffichee = 0f;
 
         float vitesseCourse =
-            1f / Mathf.Max(0.01f, dureeCourseMinimale);
+            1f / Mathf.Max(0.01f, Settings.dureeCourseMinimale);
 
         // ====================================
         // PROGRESSION DU CHARGEMENT
@@ -335,14 +314,13 @@ public class MenuPrincipal : MonoBehaviour
             yield return null;
         }
 
-
         // ====================================
         // ATTENTE DE SECURITE : 5 SECONDES
         // ====================================
 
         float tempsAttente = 0f;
 
-        while (tempsAttente < attenteSecurite ||
+        while (tempsAttente < Settings.attenteSecurite ||
                progressionAffichee < 1f)
         {
             tempsAttente += Time.unscaledDeltaTime;
@@ -382,7 +360,6 @@ public class MenuPrincipal : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
-
 
     // ====================================
     // CLIC POUR CONTINUER

@@ -14,18 +14,8 @@ public class PorteInteractive : MonoBehaviour
     [Header("JOUEUR")]
     public Camera cameraJoueur;
     public CameraController scriptRotationCamera;
-    public float distanceInteraction = 3f;
-
-    [Header("OUVERTURE")]
-    public float sensibiliteSouris = 0.4f;
-    public bool inverserSens = false;
-    public float angleMinimum = -100f;
-    public float angleMaximum = 100f;
-
-    [Header("PHYSIQUE")]
-    public float masse = 10f;
-    public float force = 500f;
-    public float amortissement = 55f;
+    // Tuning values, read from the DoorSettings asset of GameSettings
+    private DoorSettings Settings => GameSettings.Instance.door;
 
     private Rigidbody rb;
     private HingeJoint charniere;
@@ -58,7 +48,7 @@ public class PorteInteractive : MonoBehaviour
         if (rb == null)
             rb = modelePorte.gameObject.AddComponent<Rigidbody>();
 
-        rb.mass = masse;
+        rb.mass = Settings.masse;
         rb.useGravity = false;
         rb.isKinematic = false;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
@@ -82,15 +72,15 @@ public class PorteInteractive : MonoBehaviour
         charniere.connectedAnchor = modelePorte.position;
 
         JointLimits limites = charniere.limits;
-        limites.min = angleMinimum;
-        limites.max = angleMaximum;
+        limites.min = Settings.angleMinimum;
+        limites.max = Settings.angleMaximum;
 
         charniere.limits = limites;
         charniere.useLimits = true;
 
         JointSpring ressort = charniere.spring;
-        ressort.spring = force;
-        ressort.damper = amortissement;
+        ressort.spring = Settings.force;
+        ressort.damper = Settings.amortissement;
         ressort.targetPosition = 0f;
 
         charniere.spring = ressort;
@@ -119,18 +109,18 @@ public class PorteInteractive : MonoBehaviour
         float mouvement = SourisY();
 
         angleCible +=
-            mouvement * sensibiliteSouris * sensInteraction;
+            mouvement * Settings.sensibiliteSouris * sensInteraction;
 
         angleCible = Mathf.Clamp(
             angleCible,
-            angleMinimum,
-            angleMaximum
+            Settings.angleMinimum,
+            Settings.angleMaximum
         );
 
         JointSpring ressort = charniere.spring;
         ressort.targetPosition = angleCible;
-        ressort.spring = force;
-        ressort.damper = amortissement;
+        ressort.spring = Settings.force;
+        ressort.damper = Settings.amortissement;
 
         charniere.spring = ressort;
     }
@@ -145,7 +135,7 @@ public class PorteInteractive : MonoBehaviour
         if (!Physics.Raycast(
             rayon,
             out RaycastHit hit,
-            distanceInteraction,
+            Settings.distanceInteraction,
             ~0,
             QueryTriggerInteraction.Ignore))
             return;
@@ -180,7 +170,7 @@ public class PorteInteractive : MonoBehaviour
         sensInteraction =
             Vector3.Dot(versJoueur, normale) >= 0f ? 1f : -1f;
 
-        if (inverserSens)
+        if (Settings.inverserSens)
             sensInteraction *= -1f;
 
         
@@ -198,8 +188,8 @@ public class PorteInteractive : MonoBehaviour
         // La porte reste vers l'angle atteint.
         JointSpring ressort = charniere.spring;
         ressort.targetPosition = charniere.angle;
-        ressort.spring = force * 0.25f;
-        ressort.damper = amortissement;
+        ressort.spring = Settings.force * 0.25f;
+        ressort.damper = Settings.amortissement;
 
         charniere.spring = ressort;
 

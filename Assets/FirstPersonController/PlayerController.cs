@@ -35,25 +35,8 @@ public enum AirborneState
 [RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider))]
 public class PlayerController : MonoBehaviour
 {
-    // Environment check settings
-    [Header("Environment Checks")]
-    [SerializeField]
-    private LayerMask environmentMask = ~0;
-
-    [SerializeField]
-    [Range(0.01f, 1f)]
-    private float groundCheckDistance = 0.1f;
-
-    [SerializeField]
-    [Range(0.01f, 2f)]
-    private float ceilingCheckDistance = 0.5f;
-
-    [SerializeField]
-    [Range(0.5f, 1f)]
-    private float checkRadiusFactor = 0.95f;
-
-    [SerializeField]
-    private float risingVelocityThreshold = 0.1f;
+    // Tuning values, read from the playerChecks section of GameSettings
+    private PlayerChecksSettings Settings => GameSettings.Instance.playerChecks;
 
     // References
     public Camera PlayerCamera
@@ -244,14 +227,14 @@ public class PlayerController : MonoBehaviour
     private void CheckEnvironment()
     {
         GetCapsuleSpheres(out Vector3 bottomSphere, out Vector3 topSphere, out float radius);
-        float castRadius = radius * checkRadiusFactor;
+        float castRadius = radius * Settings.checkRadiusFactor;
         // Start the cast slightly inside the capsule so contacts at distance 0 are not missed
         float skin = radius - castRadius;
 
-        IsGrounded = SphereCast(bottomSphere, castRadius, Vector3.down, groundCheckDistance + skin, out RaycastHit groundHit);
+        IsGrounded = SphereCast(bottomSphere, castRadius, Vector3.down, Settings.groundCheckDistance + skin, out RaycastHit groundHit);
         GroundHit = groundHit;
 
-        HasCeiling = SphereCast(topSphere, castRadius, Vector3.up, ceilingCheckDistance + skin, out RaycastHit ceilingHit);
+        HasCeiling = SphereCast(topSphere, castRadius, Vector3.up, Settings.ceilingCheckDistance + skin, out RaycastHit ceilingHit);
         CeilingHit = ceilingHit;
     }
 
@@ -261,7 +244,7 @@ public class PlayerController : MonoBehaviour
         {
             ChangeAirborneState(AirborneState.Grounded);
         }
-        else if (rigidBody.linearVelocity.y > risingVelocityThreshold)
+        else if (rigidBody.linearVelocity.y > Settings.risingVelocityThreshold)
         {
             ChangeAirborneState(AirborneState.Jumping);
         }
@@ -275,7 +258,7 @@ public class PlayerController : MonoBehaviour
     private bool SphereCast(Vector3 origin, float radius, Vector3 direction, float distance, out RaycastHit closestHit)
     {
         closestHit = default;
-        int count = Physics.SphereCastNonAlloc(origin, radius, direction, castHits, distance, environmentMask, QueryTriggerInteraction.Ignore);
+        int count = Physics.SphereCastNonAlloc(origin, radius, direction, castHits, distance, Settings.environmentMask, QueryTriggerInteraction.Ignore);
 
         bool found = false;
         for (int i = 0; i < count; i++)

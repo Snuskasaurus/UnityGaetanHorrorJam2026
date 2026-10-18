@@ -7,47 +7,8 @@ public class MovementController : MonoBehaviour
     private Rigidbody rigidBody;
     private PlayerController playerManager;
 
-    // Movement settings
-    [Header("Acceleration")]
-    [SerializeField]
-    private float acceleration = 20f;  // m/s² at multiplier 1
-
-    [SerializeField]
-    private float deceleration = 25f;
-
-    [SerializeField]
-    private AnimationCurve accelerationBySpeed = new AnimationCurve(
-        new Keyframe(0f, 1f, 0f, -2f),
-        new Keyframe(1f, 0.15f, 0f, 0f));
-
-    [SerializeField]
-    private AnimationCurve decelerationBySpeed = new AnimationCurve(
-        new Keyframe(0f, 0.3f, 0f, 0f),
-        new Keyframe(1f, 1f, 1.4f, 0f));
-
-    [SerializeField]
-    private float lateralGrip = 40f;  // m/s², how fast sideways drift is removed when changing direction
-
-    [Header("Movement Speeds")]
-    [SerializeField]
-    [Range(0f, 10f)]
-    private float walkSpeed = 5f;
-
-    [SerializeField]
-    [Range(0f, 10f)]
-    private float runSpeed = 10f;
-
-    [SerializeField]
-    [Range(0f, 10f)]
-    private float crouchSpeed = 2.5f;
-
-    [Header("Slopes")]
-    [SerializeField]
-    [Range(0f, 90f)]
-    private float maxSlopeAngle = 45f;
-
-    [SerializeField]
-    private float groundStickForce = 5f;
+    // Tuning values, read from the movement section of GameSettings
+    private MovementSettings Settings => GameSettings.Instance.movement;
 
     private void OnEnable()
     {
@@ -86,11 +47,11 @@ public class MovementController : MonoBehaviour
         switch (playerManager.CurrentMovementState)
         {
             case MovementState.Crouching:
-                return crouchSpeed;
+                return Settings.crouchSpeed;
             case MovementState.Running:
-                return runSpeed;
+                return Settings.runSpeed;
             default:
-                return walkSpeed;
+                return Settings.walkSpeed;
         }
     }
 
@@ -98,7 +59,7 @@ public class MovementController : MonoBehaviour
     private Vector3 ApplyGroundPhysics(ref Vector3 target, ref Vector3 velocity)
     {
         Vector3 groundNormal = playerManager.GroundNormal;
-        bool onWalkableGround = playerManager.IsGrounded && playerManager.GroundAngle <= maxSlopeAngle;
+        bool onWalkableGround = playerManager.IsGrounded && playerManager.GroundAngle <= Settings.maxSlopeAngle;
 
         if (onWalkableGround)
         {
@@ -112,7 +73,7 @@ public class MovementController : MonoBehaviour
                 rigidBody.AddForce(-groundNormal * awayFromGround, ForceMode.VelocityChange);
                 velocity -= groundNormal * awayFromGround;
             }
-            rigidBody.AddForce(-groundNormal * groundStickForce, ForceMode.Acceleration);
+            rigidBody.AddForce(-groundNormal * Settings.groundStickForce, ForceMode.Acceleration);
             return groundNormal;
         }
 
@@ -154,11 +115,11 @@ public class MovementController : MonoBehaviour
         float speedRatio = maxSpeed > 0f ? Mathf.Clamp01(Mathf.Abs(along) / maxSpeed) : 1f;
         bool accelerating = along >= 0f && targetSpeed > along;
         float rate = accelerating
-            ? acceleration * accelerationBySpeed.Evaluate(speedRatio)
-            : deceleration * decelerationBySpeed.Evaluate(speedRatio);
+            ? Settings.acceleration * Settings.accelerationBySpeed.Evaluate(speedRatio)
+            : Settings.deceleration * Settings.decelerationBySpeed.Evaluate(speedRatio);
 
         float newAlong = Mathf.MoveTowards(along, targetSpeed, rate * Time.fixedDeltaTime);
-        Vector3 newLateral = Vector3.MoveTowards(lateral, Vector3.zero, lateralGrip * Time.fixedDeltaTime);
+        Vector3 newLateral = Vector3.MoveTowards(lateral, Vector3.zero, Settings.lateralGrip * Time.fixedDeltaTime);
 
         return direction * newAlong + newLateral;
     }

@@ -13,33 +13,8 @@ public class ArmWallRetraction : MonoBehaviour
     [SerializeField]
     private Transform zippoTip;
 
-    // Detection settings
-    [Header("Detection")]
-    [SerializeField]
-    private LayerMask wallMask = ~0;
-
-    [SerializeField]
-    [Range(0.01f, 0.3f)]
-    private float probeRadius = 0.08f;
-
-    // Retraction settings
-    [Header("Retraction")]
-    [SerializeField]
-    [Range(0f, 1f)]
-    private float maxRetract = 0.35f;
-
-    [SerializeField]
-    [Range(0f, 0.5f)]
-    private float maxLower = 0.1f;
-
-    [SerializeField]
-    private Vector3 maxTuckAngles = new Vector3(15f, -10f, 0f);
-
-    [SerializeField]
-    private float retractSharpness = 20f;
-
-    [SerializeField]
-    private float extendSharpness = 8f;
+    // Tuning values, read from the arm section of GameSettings
+    private ArmSettings Settings => GameSettings.Instance.arm;
 
     // Internal variables
     private Vector3 restPosition;
@@ -71,17 +46,17 @@ public class ArmWallRetraction : MonoBehaviour
         float targetRetraction = ComputeTargetRetraction();
 
         // Retract fast so the arms don't enter the wall, extend slowly so it doesn't shake along uneven walls
-        float sharpness = targetRetraction > currentRetraction ? retractSharpness : extendSharpness;
+        float sharpness = targetRetraction > currentRetraction ? Settings.retractSharpness : Settings.extendSharpness;
         currentRetraction = Mathf.Lerp(currentRetraction, targetRetraction, 1f - Mathf.Exp(-sharpness * Time.deltaTime));
 
-        transform.localPosition = restPosition + new Vector3(0f, -maxLower, -maxRetract) * currentRetraction;
-        transform.localRotation = restRotation * Quaternion.Euler(maxTuckAngles * currentRetraction);
+        transform.localPosition = restPosition + new Vector3(0f, -Settings.maxLower, -Settings.maxRetract) * currentRetraction;
+        transform.localRotation = restRotation * Quaternion.Euler(Settings.maxTuckAngles * currentRetraction);
     }
 
     // Returns how much the arms must be retracted, from 0 (free) to 1 (fully retracted)
     private float ComputeTargetRetraction()
     {
-        if (maxRetract <= 0f)
+        if (Settings.maxRetract <= 0f)
         {
             return 0f;
         }
@@ -100,7 +75,7 @@ public class ArmWallRetraction : MonoBehaviour
             return 0f;
         }
 
-        return Mathf.Clamp01((reach - hitDistance) / maxRetract);
+        return Mathf.Clamp01((reach - hitDistance) / Settings.maxRetract);
     }
 
     private Vector3 GetZippoPositionAtRest()
@@ -114,7 +89,7 @@ public class ArmWallRetraction : MonoBehaviour
     private bool SphereCast(Vector3 origin, Vector3 direction, float distance, out float hitDistance)
     {
         hitDistance = distance;
-        int count = Physics.SphereCastNonAlloc(origin, probeRadius, direction, castHits, distance, wallMask, QueryTriggerInteraction.Ignore);
+        int count = Physics.SphereCastNonAlloc(origin, Settings.probeRadius, direction, castHits, distance, Settings.wallMask, QueryTriggerInteraction.Ignore);
 
         bool found = false;
         for (int i = 0; i < count; i++)

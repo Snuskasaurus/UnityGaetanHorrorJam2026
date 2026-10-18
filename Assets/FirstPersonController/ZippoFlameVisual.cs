@@ -12,16 +12,8 @@ public class ZippoFlameVisual : MonoBehaviour
     [SerializeField]
     private SpriteRenderer flameSprite;
 
-    // Light range and flame size by flame power (0 to 1), relative to their values in the prefab
-    [Header("Power")]
-    [SerializeField]
-    private AnimationCurve rangeByPower = AnimationCurve.Linear(0f, 0.4f, 1f, 1f);
-
-    [SerializeField]
-    private AnimationCurve flameScaleByPower = AnimationCurve.Linear(0f, 0.4f, 1f, 1f);
-
-    [SerializeField]
-    private float powerSmoothing = 10f;  // how fast the flame visually reaches a new power
+    // Tuning values, read from the zippoVisual section of GameSettings
+    private ZippoVisualSettings Settings => GameSettings.Instance.zippoVisual;
 
     // Internal variables
     private float power = 1f;
@@ -73,16 +65,16 @@ public class ZippoFlameVisual : MonoBehaviour
 
     private void Update()
     {
-        power = Mathf.Lerp(power, targetPower, 1f - Mathf.Exp(-powerSmoothing * Time.deltaTime));
+        power = Mathf.Lerp(power, targetPower, 1f - Mathf.Exp(-Settings.powerSmoothing * Time.deltaTime));
 
         if (flameLight != null)
         {
-            flameLight.range = baseLightRange * rangeByPower.Evaluate(power);
+            flameLight.range = baseLightRange * Settings.rangeByPower.Evaluate(power);
         }
 
         if (flameSprite != null)
         {
-            flameSprite.transform.localScale = baseFlameScale * flameScaleByPower.Evaluate(power);
+            flameSprite.transform.localScale = baseFlameScale * Settings.flameScaleByPower.Evaluate(power);
         }
     }
 }

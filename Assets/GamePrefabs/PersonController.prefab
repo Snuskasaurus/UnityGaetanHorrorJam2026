@@ -3941,13 +3941,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01c80b1baf6404d4e8235e90329ccbfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets.FirstPersonController.PlayerManager
-  environmentMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  groundCheckDistance: 0.1
-  ceilingCheckDistance: 0.5
-  checkRadiusFactor: 0.95
-  risingVelocityThreshold: 0.1
   OnPostureChanged:
     m_PersistentCalls:
       m_Calls:
@@ -3983,8 +3976,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Assets.FirstPersonController.CameraController
   invertCamera: 0
   mouseSensitivity: 0.5
-  maxBottomVerticalAngle: 45
-  maxTopVerticalAngle: 85
 --- !u!114 &1934177061492016537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3997,62 +3988,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a99be13a53f401f47a753ad496675830, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets.FirstPersonController.MovementController
-  acceleration: 20
-  deceleration: 25
-  accelerationBySpeed:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: -2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 0.15
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  decelerationBySpeed:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0.3
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1.4
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  lateralGrip: 40
-  walkSpeed: 2.5
-  runSpeed: 5
-  crouchSpeed: 1.125
-  maxSlopeAngle: 45
-  groundStickForce: 5
 --- !u!114 &3115470457590564180
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4065,13 +4000,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52c2157acc9fe7945b86d0246f962b68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ZippoController
-  lightAttemptSuccessChance: 0.35
-  minFlamePower: 0.2
-  startFlamePower: 0.6
-  fleeingPower: 0.8
-  scrollStep: 0.1
-  consumptionPerSecond: 5
-  maxRessource: 100
   OnLightAttempt:
     m_PersistentCalls:
       m_Calls:
@@ -4260,15 +4188,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ArmWallRetraction
   playerCamera: {fileID: 3100916241813206217}
   zippoTip: {fileID: 2918915901304665697}
-  wallMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  probeRadius: 0.08
-  maxRetract: 0.35
-  maxLower: 0.1
-  maxTuckAngles: {x: 15, y: -10, z: 0}
-  retractSharpness: 20
-  extendSharpness: 8
 --- !u!1 &4577217359352820334
 GameObject:
   m_ObjectHideFlags: 0
@@ -5613,55 +5532,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ZippoFlameVisual
   flameLight: {fileID: 7651319936331674161}
   flameSprite: {fileID: 5939885600133658122}
-  rangeByPower:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0.4
-      inSlope: 0
-      outSlope: 0.6
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0.6
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  flameScaleByPower:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0.4
-      inSlope: 0
-      outSlope: 0.6
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0.6
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  powerSmoothing: 10
 --- !u!1 &9115108456803895235
 GameObject:
   m_ObjectHideFlags: 0

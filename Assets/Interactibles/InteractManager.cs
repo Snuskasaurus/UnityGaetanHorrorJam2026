@@ -8,9 +8,8 @@ using Random = UnityEngine.Random;
 
 public class InteractManager : MonoBehaviour
 {
-    [Header("Selection")]
-    [Range(0f, 1f)][SerializeField] float minLookDot = 0.8f;
-    [SerializeField] string playerTag = "Player";
+    // Tuning values, read from the InteractSettings asset of GameSettings
+    private InteractSettings Settings => GameSettings.Instance.interact;
 
     // References
     Camera camera;
@@ -20,7 +19,7 @@ public class InteractManager : MonoBehaviour
     InteractComponent currentInteractComponent;
     readonly List<InteractComponent> interactComponents = new List<InteractComponent>();
 
-    public string GetPlayerTag() { return playerTag; }
+    public string GetPlayerTag() { return Settings.playerTag; }
 
     public void RegisterPickupComponent(InteractComponent interactComponent)
     {
@@ -101,7 +100,7 @@ public class InteractManager : MonoBehaviour
         Vector3 forward = cameraTransform.forward;
 
         InteractComponent bestInteractComponent = null;
-        float bestDot = minLookDot;
+        float bestDot = Settings.minLookDot;
 
         foreach (InteractComponent candidate in interactComponents)
         {

@@ -11,34 +11,12 @@ using Random = UnityEngine.Random;
 
 public class CrawlerManager : MonoBehaviour
 {
-    [Header("Spawn")]
-    [SerializeField] public int crawlerCount = 20000;
-    [SerializeField] float spawnRadius = 36.0f;
-    [SerializeField] float despawnRadius = 200.0f;
-
-    [Header("Wandering")]
-    [SerializeField] float turnSpeed = 360f;
-    [SerializeField] float wanderRadius = 5f;
-    [SerializeField] float arriveThreshold = 0.05f;
-    [SerializeField] float minWalkSpeed = 1.5f;
-    [SerializeField] float maxWalkSpeed = 1.8f;
-    
-    [Header("Fleeing")]
-    [SerializeField] FloatRange fleeingRadiusStatic = new FloatRange(1.0f, 1.0f);
-    [SerializeField] FloatRange fleeingRadiusWalking = new FloatRange(4.0f, 4.0f);
-    [SerializeField] FloatRange fleeingRadiusRunning = new FloatRange(10.0f, 10.0f);
-
-    [SerializeField] float fleeingDistance = 10.0f;
-    [SerializeField] float minFleeingSpeed = 2.8f;
-    [SerializeField] float maxFleeingSpeed = 3.1f;
-    [SerializeField] float fleeingRadiusTransitionDuration = 0.4f;
-    [SerializeField] float fleeingCooldown = 1.0f;
+    // Tuning values, read from the CrawlerSettings asset of GameSettings
+    private CrawlerSettings Settings => GameSettings.Instance.crawler;
 
     [Header("Graphic")]
     [SerializeField] Mesh mesh;
     [SerializeField] Material material;
-    [SerializeField] float scaleFactor = 0.1f;
-
     // References
     PlayerController playerController;
     ZippoController zippoController;
@@ -74,12 +52,12 @@ public class CrawlerManager : MonoBehaviour
 
     private void SetCrawlerWalkSpeed(int crawlerIndex)
     {
-        crawlerSpeeds[crawlerIndex] = Random.Range(minWalkSpeed, maxWalkSpeed);
+        crawlerSpeeds[crawlerIndex] = Random.Range(Settings.minWalkSpeed, Settings.maxWalkSpeed);
     }
 
     private void SetCrawlerFleeSpeed(int crawlerIndex)
     {
-        crawlerSpeeds[crawlerIndex] = Random.Range(minFleeingSpeed, maxFleeingSpeed);
+        crawlerSpeeds[crawlerIndex] = Random.Range(Settings.minFleeingSpeed, Settings.maxFleeingSpeed);
     }
 
     private void FillMatrixFromIndex(int crawlerIndex)
@@ -89,13 +67,13 @@ public class CrawlerManager : MonoBehaviour
 
     void InitializeCrawler(int crawlerIndex, Vector3 origin)
     {
-        Vector2 RandomPositionInRadius = Random.insideUnitCircle * spawnRadius;
+        Vector2 RandomPositionInRadius = Random.insideUnitCircle * Settings.spawnRadius;
         Vector3 randomPosition = origin + new Vector3(RandomPositionInRadius.x, 0.0f, RandomPositionInRadius.y);
         crawlerPositions[crawlerIndex] = NavMeshUtil.GetClosestPointInNavMesh_Big(randomPosition);
         crawlerPositionTargets[crawlerIndex] = crawlerPositions[crawlerIndex];
         SetCrawlerWalkSpeed(crawlerIndex);
         crawlerRotations[crawlerIndex] = Quaternion.identity;
-        crawlerScales[crawlerIndex] = Vector3.one * scaleFactor;
+        crawlerScales[crawlerIndex] = Vector3.one * Settings.scaleFactor;
     }
 
     void Start()
@@ -109,17 +87,17 @@ public class CrawlerManager : MonoBehaviour
             receiveShadows = false
         };
 
-        crawlerPositions = new Vector3[crawlerCount];
-        crawlerPositionTargets = new Vector3[crawlerCount];
-        crawlerSpeeds = new float[crawlerCount];
-        crawlerRotations = new Quaternion[crawlerCount];
-        crawlerScales = new Vector3[crawlerCount];
-        crawlerMatrices = new Matrix4x4[crawlerCount];
-        crawlerBoolCache = new bool[crawlerCount];
-        crawlerTimeSinceLastFleeing = new float[crawlerCount];
+        crawlerPositions = new Vector3[Settings.crawlerCount];
+        crawlerPositionTargets = new Vector3[Settings.crawlerCount];
+        crawlerSpeeds = new float[Settings.crawlerCount];
+        crawlerRotations = new Quaternion[Settings.crawlerCount];
+        crawlerScales = new Vector3[Settings.crawlerCount];
+        crawlerMatrices = new Matrix4x4[Settings.crawlerCount];
+        crawlerBoolCache = new bool[Settings.crawlerCount];
+        crawlerTimeSinceLastFleeing = new float[Settings.crawlerCount];
 
         Vector3 actorPosition = playerController.transform.position;
-        for (int i = 0; i < crawlerCount; i++)
+        for (int i = 0; i < Settings.crawlerCount; i++)
         {
             InitializeCrawler(i, actorPosition);
         }
@@ -145,15 +123,15 @@ public class CrawlerManager : MonoBehaviour
         {
             case MovementState.Crouching:
             {
-                target = FloatRange.Lerp(fleeingRadiusStatic, flamePower);
+                target = FloatRange.Lerp(Settings.fleeingRadiusStatic, flamePower);
             } break;
             case MovementState.Walking:
             {
-                target = FloatRange.Lerp(fleeingRadiusWalking, flamePower);
+                target = FloatRange.Lerp(Settings.fleeingRadiusWalking, flamePower);
             } break;
             case MovementState.Running:
             {
-                target = FloatRange.Lerp(fleeingRadiusRunning, flamePower);
+                target = FloatRange.Lerp(Settings.fleeingRadiusRunning, flamePower);
             } break;
         }
 
@@ -166,7 +144,7 @@ public class CrawlerManager : MonoBehaviour
 
         if (radiusTransitionT < 1f)
         {
-            radiusTransitionT = Mathf.Min(1f, radiusTransitionT + Time.deltaTime / fleeingRadiusTransitionDuration);
+            radiusTransitionT = Mathf.Min(1f, radiusTransitionT + Time.deltaTime / Settings.fleeingRadiusTransitionDuration);
             fleeingRadius = Mathf.Lerp(fleeingRadiusFrom, fleeingRadiusTo, Easing.OutCirc(radiusTransitionT));
         }
     }
@@ -175,13 +153,13 @@ public class CrawlerManager : MonoBehaviour
     {
         Array.Fill(crawlerBoolCache, false);
         Vector3 actorPosition = playerController.transform.position;
-        kdTreeQuery.Radius(kdTree, actorPosition, despawnRadius, kdTreeResults);
+        kdTreeQuery.Radius(kdTree, actorPosition, Settings.despawnRadius, kdTreeResults);
         for (int i = 0; i < kdTreeResults.Count; i++)
         {
             int crawlerIndex = kdTreeResults[i];
             crawlerBoolCache[crawlerIndex] = true;
         }
-        for (int i = 0; i < crawlerCount; i++)
+        for (int i = 0; i < Settings.crawlerCount; i++)
         {
             if (crawlerBoolCache[i] == false)
             {
@@ -214,7 +192,7 @@ public class CrawlerManager : MonoBehaviour
         foreach (int crawlerIndex in kdTreeResults)
         {
             float timeSinceLastFleeingCrawler = currentTime - crawlerTimeSinceLastFleeing[crawlerIndex];
-            if (!(timeSinceLastFleeingCrawler >= fleeingCooldown)) 
+            if (!(timeSinceLastFleeingCrawler >= Settings.fleeingCooldown)) 
                 continue;
 
             ref Vector3 crawlerPosition = ref crawlerPositions[crawlerIndex];
@@ -225,7 +203,7 @@ public class CrawlerManager : MonoBehaviour
 
             SetCrawlerFleeSpeed(crawlerIndex);
             crawlerTimeSinceLastFleeing[crawlerIndex] = currentTime;
-            crawlerPositionTargets[crawlerIndex] = NavMeshUtil.PickNewTarget_AwayFromPosition(crawlerPosition, actorPosition, fleeingDistance);
+            crawlerPositionTargets[crawlerIndex] = NavMeshUtil.PickNewTarget_AwayFromPosition(crawlerPosition, actorPosition, Settings.fleeingDistance);
         }
     }
 
@@ -243,9 +221,9 @@ public class CrawlerManager : MonoBehaviour
         using var ProfilerMarker = ProfilerMarker_UpdateCrawlerPositions.Auto();
 
         float dt = Time.deltaTime;
-        float sqrThreshold = arriveThreshold * arriveThreshold;
+        float sqrThreshold = Settings.arriveThreshold * Settings.arriveThreshold;
 
-        for (int crawlerIndex = 0; crawlerIndex < crawlerCount; crawlerIndex++)
+        for (int crawlerIndex = 0; crawlerIndex < Settings.crawlerCount; crawlerIndex++)
         {
             Vector3 toTarget = crawlerPositionTargets[crawlerIndex] - crawlerPositions[crawlerIndex];
 
@@ -253,7 +231,7 @@ public class CrawlerManager : MonoBehaviour
             {
                 SetCrawlerWalkSpeed(crawlerIndex);
                 toTarget = crawlerPositionTargets[crawlerIndex] - crawlerPositions[crawlerIndex];
-                crawlerPositionTargets[crawlerIndex] = NavMeshUtil.PickNewTarget_RandomInCircle(crawlerPositions[crawlerIndex], wanderRadius);
+                crawlerPositionTargets[crawlerIndex] = NavMeshUtil.PickNewTarget_RandomInCircle(crawlerPositions[crawlerIndex], Settings.wanderRadius);
             }
 
             crawlerPositions[crawlerIndex] = Vector3.MoveTowards(crawlerPositions[crawlerIndex], crawlerPositionTargets[crawlerIndex], crawlerSpeeds[crawlerIndex] * dt);
@@ -262,7 +240,7 @@ public class CrawlerManager : MonoBehaviour
             if (flatDirection.sqrMagnitude > 0.0001f)
             {
                 Quaternion desired = Quaternion.LookRotation(flatDirection);
-                crawlerRotations[crawlerIndex] = Quaternion.RotateTowards(crawlerRotations[crawlerIndex], desired, turnSpeed * dt);
+                crawlerRotations[crawlerIndex] = Quaternion.RotateTowards(crawlerRotations[crawlerIndex], desired, Settings.turnSpeed * dt);
             }
 
             FillMatrixFromIndex(crawlerIndex);
@@ -273,9 +251,9 @@ public class CrawlerManager : MonoBehaviour
     {
         UpdateCrawlerPositions();
 
-        for (int i = 0; i < crawlerCount; i += MAX_INSTANCE_COUNT_BY_GPU_CALL)
+        for (int i = 0; i < Settings.crawlerCount; i += MAX_INSTANCE_COUNT_BY_GPU_CALL)
         {
-            int instanceCount = Mathf.Min(MAX_INSTANCE_COUNT_BY_GPU_CALL, crawlerCount - i);
+            int instanceCount = Mathf.Min(MAX_INSTANCE_COUNT_BY_GPU_CALL, Settings.crawlerCount - i);
             int startInstanceIndex = i;
             Graphics.RenderMeshInstanced(renderParams, mesh, 0, crawlerMatrices, instanceCount, startInstanceIndex);
         }

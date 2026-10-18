@@ -12,20 +12,14 @@ public class CameraController : MonoBehaviour
     [Range(0.1f, 5f)]
     private float mouseSensitivity = 0.5f;
 
-    [SerializeField]
-    [Range(0f, 90f)]
-    private float maxBottomVerticalAngle = 45f;
-
-    [SerializeField]
-    [Range(0f, 90f)]
-    private float maxTopVerticalAngle = 85f;
+    // Tuning values, read from the camera section of GameSettings
+    private CameraSettings Settings => GameSettings.Instance.camera;
 
     //[SerializeField]
     //private float crouchCameraHeight = 0.5f;
 
     //[SerializeField]
     //private float crouchEasingDuration = 0.5f;
-
 
     // Internal variables
     private float yaw = 0f;
@@ -89,7 +83,7 @@ public class CameraController : MonoBehaviour
         }
 
         // Clamp pitch between lookAngle
-        pitch = Mathf.Clamp(pitch, -maxTopVerticalAngle, maxBottomVerticalAngle);
+        pitch = Mathf.Clamp(pitch, -Settings.maxTopVerticalAngle, Settings.maxBottomVerticalAngle);
         // Keep yaw in a small range to avoid float precision loss over time
         yaw = Mathf.Repeat(yaw, 360f);
     }
