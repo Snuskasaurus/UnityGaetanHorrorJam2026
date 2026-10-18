@@ -20,6 +20,15 @@ MonoBehaviour:
   arriveThreshold: 0.05
   minWalkSpeed: 2
   maxWalkSpeed: 3
+  fleeingRadiusStatic:
+    min: 0
+    max: 0.5
+  fleeingRadiusWalking:
+    min: 2
+    max: 3
+  fleeingRadiusRunning:
+    min: 4
+    max: 8
   fleeingDistance: 10
   minFleeingSpeed: 4
   maxFleeingSpeed: 5
