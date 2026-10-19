@@ -1,0 +1,20 @@
+POILU FANTÔME — texture PS1
+
+Poilu_Fantome_UV_image_1024_RGBA.png : atlas correspondant au cadrage de la texture fournie dans la demande.
+Poilu_Fantome_UV_image_256_RGBA.png : version native principale, pixels visibles et détails du visage conservés.
+Poilu_Fantome_UV_image_128_RGBA.png : variante avec des pixels encore plus gros.
+Poilu_Fantome_Blend_1024_RGBA.png et Poilu_Fantome_Blend_256_RGBA.png : mêmes couleurs, réinscrites dans les coordonnées UV du Monstre.blend fourni.
+Les fichiers GrosPixels sont des agrandissements sans lissage de la variante 128 x 128.
+Monstre_Poilu_Fantome_PS1.blend : copie du Monstre.blend actuel avec matériau et transparence configurés ; géométrie, UV et armature conservés.
+
+Style : uniforme de fantassin français de la Première Guerre mondiale en bleu horizon, cuir brun usé, tissu déchiré, boue et peau spectrale. Texture principale native 256 x 256, palette de 64 couleurs, agrandissement sans lissage. Variante native 128 x 128, palette de 48 couleurs.
+Repères historiques : la capote bleu horizon et les bandes molletières sont documentées par le Musée de l'Armée :
+https://www.musee-armee.fr/fileadmin/user_upload/Documents/Support-Visite-Fiches-Objets/Fiches-1914-1918/MA_fiche-uniformes-14-18-primaire.pdf
+
+TRANSPARENCE RÉELLE : les PNG sont RGBA. L'opacité médiane du corps est d'environ 84 %, avec quelques pixels plus effacés aux bords. Le fond hors îlots est transparent.
+Dans le moteur de jeu, le shader doit lire le canal Alpha de la texture et le matériau doit utiliser un mode Transparent pour afficher l'effet. Le simple chargement de l'image sur un matériau opaque masque la transparence.
+Dans la copie Blender, Alpha est déjà branché. Les faces arrière sont transparentes pour éviter d'accumuler l'opacité de deux parois du mesh. Une faible émission garde la silhouette spectrale lisible. Les bandes du fond d'aperçu permettent de voir la transparence ; ce fond est un objet de contrôle séparé.
+
+La texture ne peint aucun cheveu. L'objet de cheveux du modèle reste séparé.
+
+Création visuelle : outil intégré imagegen, prompt complet dans generation_prompt.txt. Préparation technique : export pixel sans lissage, palette réduite, conservation de l'alpha généré avec réglage de son intensité et débord de couleur aux bords UV. Aucun fichier original n'a été remplacé.
