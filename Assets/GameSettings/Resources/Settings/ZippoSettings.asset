@@ -17,5 +17,5 @@ MonoBehaviour:
   startFlamePower: 0.6
   fleeingPower: 0.8
   scrollStep: 0.1
-  consumptionPerSecond: 5
+  consumptionPerSecond: 0
   maxRessource: 100

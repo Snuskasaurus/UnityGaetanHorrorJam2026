@@ -23,3 +23,4 @@ MonoBehaviour:
   interact: {fileID: 11400000, guid: 034c121fc1044d0ea473245a335db03c, type: 2}
   door: {fileID: 11400000, guid: 57a6d4c2cda441adb8ba67a546df380b, type: 2}
   menu: {fileID: 11400000, guid: c90df694050e43be84c3c2dcf937fd00, type: 2}
+  gameFlow: {fileID: 11400000, guid: 32a86c6fab199a243a300c80fec993b2, type: 2}
