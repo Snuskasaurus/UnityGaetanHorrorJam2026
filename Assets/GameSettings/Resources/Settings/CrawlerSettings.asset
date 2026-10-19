@@ -29,6 +29,7 @@ MonoBehaviour:
   fleeingRadiusRunning:
     min: 4
     max: 8
+  fleeingViewAngle: 180
   fleeingDistance: 3
   minFleeingSpeed: 4
   maxFleeingSpeed: 5

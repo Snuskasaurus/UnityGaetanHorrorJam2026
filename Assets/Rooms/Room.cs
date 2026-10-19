@@ -114,7 +114,7 @@ public class Room : MonoBehaviour
 
         if (!NavMeshUtil.PickNewTarget_RandomInBox(origin, halfX, halfZ, height, out var targetPositionLocalSpace))
         {
-            Debug.LogError("Failed to pick random position inside room");
+            Debug.LogWarning("Failed to pick random position inside room");
         }
         return boxCollider.gameObject.transform.TransformPoint(targetPositionLocalSpace);
     }

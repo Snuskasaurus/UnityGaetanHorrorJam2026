@@ -148,7 +148,7 @@ public class CrawlerManager : MonoBehaviour
     }
 
     static readonly ProfilerMarker ProfilerMarker_QueryExitKDTree = new ProfilerMarker("QueryExitKDTree");
-    private void QueryExitKDTree(Vector3 Origin)
+    private void QueryExitKDTreeQuery(Vector3 Origin)
     {
         using var ProfilerMarker = ProfilerMarker_QueryExitKDTree.Auto();
 
@@ -295,7 +295,7 @@ public class CrawlerManager : MonoBehaviour
 
         float currentTime = Time.unscaledTime;
 
-        QueryExitKDTree(actorPosition);
+        QueryExitKDTreeQuery(actorPosition);
         QueryKdTree_Radius(actorPosition);
 
         foreach (int crawlerIndex in crawlerKDTreeResults)
