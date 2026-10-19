@@ -1,0 +1,1055 @@
+{
+  "units": "metres",
+  "grid_metres": 0.1,
+  "rotation_degrees": 90,
+  "modules": [
+    {
+      "name": "Couloir_C",
+      "source": "Couloir_C",
+      "bounds_blender": [
+        [
+          -0.800000011920929,
+          2.799999952316284
+        ],
+        [
+          -0.8000010251998901,
+          2.799999952316284
+        ],
+        [
+          0.0,
+          2.5999999046325684
+        ]
+      ],
+      "sockets": [
+        {
+          "name": "Accroche_N",
+          "position_blender": [
+            0,
+            2.8,
+            0
+          ],
+          "direction_blender": [
+            0,
+            1,
+            0
+          ],
+          "group": "passage"
+        },
+        {
+          "name": "Accroche_E",
+          "position_blender": [
+            2.8,
+            0,
+            0
+          ],
+          "direction_blender": [
+            1,
+            0,
+            0
+          ],
+          "group": "passage"
+        }
+      ],
+      "vertices": 69,
+      "polygons": 55
+    },
+    {
+      "name": "Couloir_I_DoublePorte",
+      "source": "Couloir I_DoublePorte.002",
+      "bounds_blender": [
+        [
+          -0.800000011920929,
+          0.800000011920929
+        ],
+        [
+          -1.0,
+          1.0
+        ],
+        [
+          0.0,
+          2.5999999046325684
+        ]
+      ],
+      "sockets": [
+        {
+          "name": "Accroche_N",
+          "position_blender": [
+            0,
+            1,
+            0
+          ],
+          "direction_blender": [
+            0,
+            1,
+            0
+          ],
+          "group": "passage"
+        },
+        {
+          "name": "Accroche_S",
+          "position_blender": [
+            0,
+            -1,
+            0
+          ],
+          "direction_blender": [
+            0,
+            -1,
+            0
+          ],
+          "group": "passage"
+        }
+      ],
+      "vertices": 35,
+      "polygons": 18
+    },
+    {
+      "name": "Couloir_I_Porte",
+      "source": "Couloir I_Porte",
+      "bounds_blender": [
+        [
+          -0.800000011920929,
+          0.800000011920929
+        ],
+        [
+          -1.0,
+          1.0
+        ],
+        [
+          0.0,
+          2.5999999046325684
+        ]
+      ],
+      "sockets": [
+        {
+          "name": "Accroche_N",
+          "position_blender": [
+            0,
+            1,
+            0
+          ],
+          "direction_blender": [
+            0,
+            1,
+            0
+          ],
+          "group": "passage"
+        },
+        {
+          "name": "Accroche_S",
+          "position_blender": [
+            0,
+            -1,
+            0
+          ],
+          "direction_blender": [
+            0,
+            -1,
+            0
+          ],
+          "group": "passage"
+        }
+      ],
+      "vertices": 31,
+      "polygons": 18
+    },
+    {
+      "name": "Bunker_Mur",
+      "source": "Bunker_Mur",
+      "bounds_blender": [
+        [
+          -1.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.800000011920929
+        ],
+        [
+          0.0,
+          2.5999999046325684
+        ]
+      ],
+      "sockets": [
+        {
+          "name": "Accroche_E",
+          "position_blender": [
+            1,
+            0.4,
+            0
+          ],
+          "direction_blender": [
+            1,
+            0,
+            0
+          ],
+          "group": "bunker"
+        },
+        {
+          "name": "Accroche_O",
+          "position_blender": [
+            -1,
+            0.4,
+            0
+          ],
+          "direction_blender": [
+            -1,
+            0,
+            0
+          ],
+          "group": "bunker"
+        },
+        {
+          "name": "Accroche_Sol",
+          "position_blender": [
+            0,
+            0,
+            0
+          ],
+          "direction_blender": [
+            0,
+            -1,
+            0
+          ],
+          "group": "sol"
+        }
+      ],
+      "vertices": 15,
+      "polygons": 8
+    },
+    {
+      "name": "Bunker_Coin",
+      "source": "Bunker_Coin",
+      "bounds_blender": [
+        [
+          -0.800000011920929,
+          0.0
+        ],
+        [
+          0.0,
+          0.800000011920929
+        ],
+        [
+          0.0,
+          2.5999999046325684
+        ]
+      ],
+      "sockets": [
+        {
+          "name": "Accroche_E",
+          "position_blender": [
+            0,
+            0.4,
+            0
+          ],
+          "direction_blender": [
+            1,
+            0,
+            0
+          ],
+          "group": "bunker"
+        },
+        {
+          "name": "Accroche_S",
+          "position_blender": [
+            -0.4,
+            0,
+            0
+          ],
+          "direction_blender": [
+            0,
+            -1,
+            0
+          ],
+          "group": "bunker"
+        }
+      ],
+      "vertices": 11,
+      "polygons": 6
+    },
+    {
+      "name": "Bunker_Porte",
+      "source": "Bunker_Porte",
+      "bounds_blender": [
+        [
+          -1.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.800000011920929
+        ],
+        [
+          0.0,
+          2.5999999046325684
+        ]
+      ],
+      "sockets": [
+        {
+          "name": "Accroche_E",
+          "position_blender": [
+            1,
+            0.4,
+            0
+          ],
+          "direction_blender": [
+            1,
+            0,
+            0
+          ],
+          "group": "bunker"
+        },
+        {
+          "name": "Accroche_O",
+          "position_blender": [
+            -1,
+            0.4,
+            0
+          ],
+          "direction_blender": [
+            -1,
+            0,
+            0
+          ],
+          "group": "bunker"
+        },
+        {
+          "name": "Accroche_Sol",
+          "position_blender": [
+            0,
+            0,
+            0
+          ],
+          "direction_blender": [
+            0,
+            -1,
+            0
+          ],
+          "group": "sol"
+        }
+      ],
+      "vertices": 19,
+      "polygons": 8
+    },
+    {
+      "name": "Bunker_Sol",
+      "source": "Bunker_Sol",
+      "bounds_blender": [
+        [
+          -1.0,
+          1.0
+        ],
+        [
+          -0.7999979853630066,
+          0.800000011920929
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "sockets": [
+        {
+          "name": "Accroche_N",
+          "position_blender": [
+            0,
+            0.8,
+            0
+          ],
+          "direction_blender": [
+            0,
+            1,
+            0
+          ],
+          "group": "bunker"
+        },
+        {
+          "name": "Accroche_S",
+          "position_blender": [
+            0,
+            -0.8,
+            0
+          ],
+          "direction_blender": [
+            0,
+            -1,
+            0
+          ],
+          "group": "bunker"
+        },
+        {
+          "name": "Accroche_E",
+          "position_blender": [
+            1,
+            0,
+            0
+          ],
+          "direction_blender": [
+            1,
+            0,
+            0
+          ],
+          "group": "bunker"
+        },
+        {
+          "name": "Accroche_O",
+          "position_blender": [
+            -1,
+            0,
+            0
+          ],
+          "direction_blender": [
+            -1,
+            0,
+            0
+          ],
+          "group": "bunker"
+        }
+      ],
+      "vertices": 9,
+      "polygons": 4
+    },
+    {
+      "name": "Couloir_T",
+      "source": "Couloir_T",
+      "bounds_blender": [
+        [
+          -2.799999952316284,
+          2.799999952316284
+        ],
+        [
+          -0.800000011920929,
+          2.799999952316284
+        ],
+        [
+          0.0,
+          2.5999999046325684
+        ]
+      ],
+      "sockets": [
+        {
+          "name": "Accroche_N",
+          "position_blender": [
+            0,
+            2.8,
+            0
+          ],
+          "direction_blender": [
+            0,
+            1,
+            0
+          ],
+          "group": "passage"
+        },
+        {
+          "name": "Accroche_E",
+          "position_blender": [
+            2.8,
+            0,
+            0
+          ],
+          "direction_blender": [
+            1,
+            0,
+            0
+          ],
+          "group": "passage"
+        },
+        {
+          "name": "Accroche_O",
+          "position_blender": [
+            -2.8,
+            0,
+            0
+          ],
+          "direction_blender": [
+            -1,
+            0,
+            0
+          ],
+          "group": "passage"
+        }
+      ],
+      "vertices": 79,
+      "polygons": 70
+    },
+    {
+      "name": "Couloir_Porte",
+      "source": "Couloir_Porte",
+      "bounds_blender": [
+        [
+          -0.800000011920929,
+          0.800000011920929
+        ],
+        [
+          -0.04882200062274933,
+          0.0
+        ],
+        [
+          0.0,
+          2.5999999046325684
+        ]
+      ],
+      "sockets": [
+        {
+          "name": "Accroche_Centre",
+          "position_blender": [
+            0,
+            0,
+            0
+          ],
+          "direction_blender": [
+            0,
+            -1,
+            0
+          ],
+          "group": "bouchon"
+        }
+      ],
+      "vertices": 24,
+      "polygons": 16
+    },
+    {
+      "name": "Couloir_Mur",
+      "source": "Couloir_Mur",
+      "bounds_blender": [
+        [
+          -0.800000011920929,
+          0.800000011920929
+        ],
+        [
+          -0.08436399698257446,
+          0.0
+        ],
+        [
+          0.0,
+          2.5999999046325684
+        ]
+      ],
+      "sockets": [
+        {
+          "name": "Accroche_Centre",
+          "position_blender": [
+            0,
+            0,
+            0
+          ],
+          "direction_blender": [
+            0,
+            -1,
+            0
+          ],
+          "group": "bouchon"
+        }
+      ],
+      "vertices": 16,
+      "polygons": 2
+    },
+    {
+      "name": "Couloir_X",
+      "source": "Couloir_X",
+      "bounds_blender": [
+        [
+          -2.799999952316284,
+          2.799999952316284
+        ],
+        [
+          -2.799999952316284,
+          2.799999952316284
+        ],
+        [
+          0.0,
+          2.5999999046325684
+        ]
+      ],
+      "sockets": [
+        {
+          "name": "Accroche_N",
+          "position_blender": [
+            0,
+            2.8,
+            0
+          ],
+          "direction_blender": [
+            0,
+            1,
+            0
+          ],
+          "group": "passage"
+        },
+        {
+          "name": "Accroche_S",
+          "position_blender": [
+            0,
+            -2.8,
+            0
+          ],
+          "direction_blender": [
+            0,
+            -1,
+            0
+          ],
+          "group": "passage"
+        },
+        {
+          "name": "Accroche_E",
+          "position_blender": [
+            2.8,
+            0,
+            0
+          ],
+          "direction_blender": [
+            1,
+            0,
+            0
+          ],
+          "group": "passage"
+        },
+        {
+          "name": "Accroche_O",
+          "position_blender": [
+            -2.8,
+            0,
+            0
+          ],
+          "direction_blender": [
+            -1,
+            0,
+            0
+          ],
+          "group": "passage"
+        }
+      ],
+      "vertices": 104,
+      "polygons": 92
+    },
+    {
+      "name": "Couloir_C_Porte",
+      "source": "Couloir_C_Porte",
+      "bounds_blender": [
+        [
+          -0.800000011920929,
+          2.799999952316284
+        ],
+        [
+          -0.8000010251998901,
+          2.799999952316284
+        ],
+        [
+          0.0,
+          2.5999999046325684
+        ]
+      ],
+      "sockets": [
+        {
+          "name": "Accroche_N",
+          "position_blender": [
+            0,
+            2.8,
+            0
+          ],
+          "direction_blender": [
+            0,
+            1,
+            0
+          ],
+          "group": "passage"
+        },
+        {
+          "name": "Accroche_E",
+          "position_blender": [
+            2.8,
+            0,
+            0
+          ],
+          "direction_blender": [
+            1,
+            0,
+            0
+          ],
+          "group": "passage"
+        }
+      ],
+      "vertices": 112,
+      "polygons": 95
+    },
+    {
+      "name": "Couloir_I",
+      "source": "Couloir_I",
+      "bounds_blender": [
+        [
+          -0.800000011920929,
+          0.800000011920929
+        ],
+        [
+          -1.0,
+          1.0
+        ],
+        [
+          0.0,
+          2.5999999046325684
+        ]
+      ],
+      "sockets": [
+        {
+          "name": "Accroche_N",
+          "position_blender": [
+            0,
+            1,
+            0
+          ],
+          "direction_blender": [
+            0,
+            1,
+            0
+          ],
+          "group": "passage"
+        },
+        {
+          "name": "Accroche_S",
+          "position_blender": [
+            0,
+            -1,
+            0
+          ],
+          "direction_blender": [
+            0,
+            -1,
+            0
+          ],
+          "group": "passage"
+        }
+      ],
+      "vertices": 24,
+      "polygons": 16
+    },
+    {
+      "name": "Tranche_C",
+      "source": "Tranché C",
+      "bounds_blender": [
+        [
+          -1.6589959859848022,
+          4.800000190734863
+        ],
+        [
+          -1.6589959859848022,
+          4.800000190734863
+        ],
+        [
+          0.0,
+          2.0384109020233154
+        ]
+      ],
+      "sockets": [
+        {
+          "name": "Accroche_N",
+          "position_blender": [
+            0,
+            4.8,
+            0
+          ],
+          "direction_blender": [
+            0,
+            1,
+            0
+          ],
+          "group": "passage"
+        },
+        {
+          "name": "Accroche_E",
+          "position_blender": [
+            4.8,
+            0,
+            0
+          ],
+          "direction_blender": [
+            1,
+            0,
+            0
+          ],
+          "group": "passage"
+        }
+      ],
+      "vertices": 43,
+      "polygons": 26
+    },
+    {
+      "name": "Tranche_T",
+      "source": "Tranché T",
+      "bounds_blender": [
+        [
+          -4.800000190734863,
+          4.800000190734863
+        ],
+        [
+          -1.6589959859848022,
+          4.800000190734863
+        ],
+        [
+          0.0,
+          2.0384109020233154
+        ]
+      ],
+      "sockets": [
+        {
+          "name": "Accroche_N",
+          "position_blender": [
+            0,
+            4.8,
+            0
+          ],
+          "direction_blender": [
+            0,
+            1,
+            0
+          ],
+          "group": "passage"
+        },
+        {
+          "name": "Accroche_E",
+          "position_blender": [
+            4.8,
+            0,
+            0
+          ],
+          "direction_blender": [
+            1,
+            0,
+            0
+          ],
+          "group": "passage"
+        },
+        {
+          "name": "Accroche_O",
+          "position_blender": [
+            -4.8,
+            0,
+            0
+          ],
+          "direction_blender": [
+            -1,
+            0,
+            0
+          ],
+          "group": "passage"
+        }
+      ],
+      "vertices": 69,
+      "polygons": 42
+    },
+    {
+      "name": "Tranche_I",
+      "source": "Tranché I",
+      "bounds_blender": [
+        [
+          -1.6589959859848022,
+          1.6589959859848022
+        ],
+        [
+          -1.5,
+          1.5
+        ],
+        [
+          0.0,
+          2.0384109020233154
+        ]
+      ],
+      "sockets": [
+        {
+          "name": "Accroche_N",
+          "position_blender": [
+            0,
+            1.5,
+            0
+          ],
+          "direction_blender": [
+            0,
+            1,
+            0
+          ],
+          "group": "passage"
+        },
+        {
+          "name": "Accroche_S",
+          "position_blender": [
+            0,
+            -1.5,
+            0
+          ],
+          "direction_blender": [
+            0,
+            -1,
+            0
+          ],
+          "group": "passage"
+        }
+      ],
+      "vertices": 22,
+      "polygons": 10
+    },
+    {
+      "name": "Tranche_X",
+      "source": "Tranché X",
+      "bounds_blender": [
+        [
+          -4.800000190734863,
+          4.800000190734863
+        ],
+        [
+          -4.800000190734863,
+          4.800000190734863
+        ],
+        [
+          0.0,
+          2.0384109020233154
+        ]
+      ],
+      "sockets": [
+        {
+          "name": "Accroche_N",
+          "position_blender": [
+            0,
+            4.8,
+            0
+          ],
+          "direction_blender": [
+            0,
+            1,
+            0
+          ],
+          "group": "passage"
+        },
+        {
+          "name": "Accroche_S",
+          "position_blender": [
+            0,
+            -4.8,
+            0
+          ],
+          "direction_blender": [
+            0,
+            -1,
+            0
+          ],
+          "group": "passage"
+        },
+        {
+          "name": "Accroche_E",
+          "position_blender": [
+            4.8,
+            0,
+            0
+          ],
+          "direction_blender": [
+            1,
+            0,
+            0
+          ],
+          "group": "passage"
+        },
+        {
+          "name": "Accroche_O",
+          "position_blender": [
+            -4.8,
+            0,
+            0
+          ],
+          "direction_blender": [
+            -1,
+            0,
+            0
+          ],
+          "group": "passage"
+        }
+      ],
+      "vertices": 89,
+      "polygons": 52
+    },
+    {
+      "name": "Tranche_I_Porte",
+      "source": "Tranché I Porte",
+      "bounds_blender": [
+        [
+          -1.6589959859848022,
+          1.6589959859848022
+        ],
+        [
+          -1.5,
+          1.5
+        ],
+        [
+          0.0,
+          2.0384109020233154
+        ]
+      ],
+      "sockets": [
+        {
+          "name": "Accroche_N",
+          "position_blender": [
+            0,
+            1.5,
+            0
+          ],
+          "direction_blender": [
+            0,
+            1,
+            0
+          ],
+          "group": "passage"
+        },
+        {
+          "name": "Accroche_S",
+          "position_blender": [
+            0,
+            -1.5,
+            0
+          ],
+          "direction_blender": [
+            0,
+            -1,
+            0
+          ],
+          "group": "passage"
+        }
+      ],
+      "vertices": 49,
+      "polygons": 36
+    },
+    {
+      "name": "Tranche_CulSac",
+      "source": "Tranché CulSac",
+      "bounds_blender": [
+        [
+          -1.6589959859848022,
+          1.6589959859848022
+        ],
+        [
+          -1.5,
+          1.5
+        ],
+        [
+          0.0,
+          2.0384109020233154
+        ]
+      ],
+      "sockets": [
+        {
+          "name": "Accroche_N",
+          "position_blender": [
+            0,
+            1.5,
+            0
+          ],
+          "direction_blender": [
+            0,
+            1,
+            0
+          ],
+          "group": "passage"
+        }
+      ],
+      "vertices": 24,
+      "polygons": 14
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+ASSETS MAP — MODULES ALIGNÉS POUR UNITY
+
+Les 19 modules corrigés sont déjà dans :
+Assets/Rooms/Map_Aligne/Prefabs
+
+Ouvre Assets/Rooms/Map_Aligne/Exemple_Alignement.unity dans la vue Scene
+pour voir des tranchées, des couloirs et des murs de bunker assemblés,
+ainsi qu'un catalogue de toutes les pièces.
+
+PLACEMENT
+- Utilise les prefabs du dossier Map_Aligne/Prefabs.
+- Garde Scale à (1, 1, 1), Position Y à 0 et les rotations Y par pas de 90°.
+- Règle le déplacement de la grille Unity sur 0,1 m.
+- Les enfants Accroche_N/S/E/O indiquent les raccords. N = +Z, S = -Z,
+  E = +X, O = -X. Fais coïncider deux accroches face à face.
+- La grille de 0,1 m sert au positionnement : les pièces ont différentes
+  longueurs, donc chaque pièce ne correspond pas à une case de 0,1 m.
+
+DISTANCES, DU PIVOT JUSQU'AU RACCORD
+Tranche_I et Tranche_I_Porte : 1,5 m de chaque côté, longueur totale 3 m.
+Tranche_C, Tranche_T, Tranche_X : 4,8 m dans chaque direction ouverte.
+Tranche_CulSac : ouverture au nord, à 1,5 m ; fond fermé au sud.
+Couloir_I, Couloir_I_Porte, Couloir_I_DoublePorte : 1 m, longueur 2 m.
+Couloir_C, Couloir_C_Porte, Couloir_T, Couloir_X : 2,8 m par branche.
+Couloir_Mur et Couloir_Porte : Accroche_Centre sur le plan du bouchon.
+Bunker_Mur et Bunker_Porte : longueur 2 m, bande de sol de 0,8 m.
+Bunker_Coin : angle de 0,8 x 0,8 m, profil compatible avec les murs.
+Bunker_Sol : dalle de 2 x 1,6 m, pivot centré au sol.
+
+EXEMPLES SANS ROTATION
+Couloir_X à (0, 0, 0) + Couloir_I à (0, 0, 3.8) : raccord nord/sud.
+Ajoute ensuite un autre Couloir_I à (0, 0, 5.8).
+Tranche_X à (0, 0, 0) + Tranche_I à (0, 0, 6.3) : raccord nord/sud.
+Ajoute ensuite un autre Tranche_I à (0, 0, 9.3).
+Les nombres décimaux s'écrivent avec un point dans Unity.
+
+Les tranchées gardent leur passage au sol de 2 m ; les couloirs gardent
+leur passage de 1,6 m. Assemble les ouvertures d'une même famille.
+Passer directement d'une tranchée à un couloir nécessite une transition
+de largeur, qui n'existait pas dans le fichier fourni.
+
+CORRECTIONS
+Pivots au sol et rotations/échelles normalisées ; suppression des décalages
+de présentation dans les exports ; longueurs de branches régularisées ;
+bords de tranchée remis dans le même plan ; croisement X recentré ;
+coin de bunker corrigé pour retrouver le profil des murs.
+UV et matériaux conservés, sauf les UV du coin de bunker reconstruit.
+Le maillage vide Couloir I_DoublePorte.001 ne produit pas de module.
+Les prefabs comprennent des MeshColliders et des repères d'accroche.
+
+FICHIERS
+Assets_Map_Unity_Aligne.blend : source corrigée, pièces rangées pour édition.
+FBX/ : un fichier par module, chaque module exporté à l'origine.
+raccords.json : positions exactes des raccords dans Blender (Z vertical).
+Assets_Map_Unity_Aligne.unitypackage : import Unity avec les réglages,
+prefabs, collisions, matériaux et scène d'exemple.
+Ce package utilise les shaders URP déjà installés dans ton projet.
+Sauvegarde_Assets_Map_original.blend : copie du fichier reçu avant correction.
+Le fichier Assets_Map.blend d'origine et les anciens exports restent disponibles.
+
+VÉRIFICATION DANS UNITY 6000.6.5f1
+19 modules : position/rotation zéro, échelle 1, sol à Y=0.
+37 profils de raccord comparés, écart maximal inférieur à 0,001 mm.
+19 raccords assemblés dans la scène d'exemple.
+La scène de travail ouverte n'a pas été modifiée.

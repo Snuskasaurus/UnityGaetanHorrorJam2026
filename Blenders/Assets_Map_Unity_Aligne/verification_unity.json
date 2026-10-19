@@ -1,0 +1,196 @@
+{
+  "summary": {
+    "modules": 19,
+    "profilesChecked": 37,
+    "maxProfileErrorMetres": 8.940697E-08,
+    "assembledConnections": 19,
+    "originalSceneUnchanged": true
+  },
+  "checks": [
+    {
+      "module": "Tranche_C",
+      "socket": "Accroche_E",
+      "errorMetres": 8.195639E-08
+    },
+    {
+      "module": "Tranche_C",
+      "socket": "Accroche_N",
+      "errorMetres": 8.195639E-08
+    },
+    {
+      "module": "Tranche_CulSac",
+      "socket": "Accroche_N",
+      "errorMetres": 8.195639E-08
+    },
+    {
+      "module": "Tranche_I",
+      "socket": "Accroche_N",
+      "errorMetres": 8.195639E-08
+    },
+    {
+      "module": "Tranche_I",
+      "socket": "Accroche_S",
+      "errorMetres": 8.195639E-08
+    },
+    {
+      "module": "Tranche_I_Porte",
+      "socket": "Accroche_N",
+      "errorMetres": 8.195639E-08
+    },
+    {
+      "module": "Tranche_I_Porte",
+      "socket": "Accroche_S",
+      "errorMetres": 8.195639E-08
+    },
+    {
+      "module": "Tranche_T",
+      "socket": "Accroche_E",
+      "errorMetres": 8.195639E-08
+    },
+    {
+      "module": "Tranche_T",
+      "socket": "Accroche_N",
+      "errorMetres": 8.195639E-08
+    },
+    {
+      "module": "Tranche_T",
+      "socket": "Accroche_O",
+      "errorMetres": 8.195639E-08
+    },
+    {
+      "module": "Tranche_X",
+      "socket": "Accroche_E",
+      "errorMetres": 8.195639E-08
+    },
+    {
+      "module": "Tranche_X",
+      "socket": "Accroche_N",
+      "errorMetres": 8.195639E-08
+    },
+    {
+      "module": "Tranche_X",
+      "socket": "Accroche_O",
+      "errorMetres": 8.195639E-08
+    },
+    {
+      "module": "Tranche_X",
+      "socket": "Accroche_S",
+      "errorMetres": 8.195639E-08
+    },
+    {
+      "module": "Couloir_C",
+      "socket": "Accroche_E",
+      "errorMetres": 5.96046448E-08
+    },
+    {
+      "module": "Couloir_C",
+      "socket": "Accroche_N",
+      "errorMetres": 5.96046448E-08
+    },
+    {
+      "module": "Couloir_C_Porte",
+      "socket": "Accroche_E",
+      "errorMetres": 8.940697E-08
+    },
+    {
+      "module": "Couloir_C_Porte",
+      "socket": "Accroche_N",
+      "errorMetres": 5.96046448E-08
+    },
+    {
+      "module": "Couloir_I",
+      "socket": "Accroche_N",
+      "errorMetres": 5.96046448E-08
+    },
+    {
+      "module": "Couloir_I",
+      "socket": "Accroche_S",
+      "errorMetres": 5.96046448E-08
+    },
+    {
+      "module": "Couloir_I_DoublePorte",
+      "socket": "Accroche_N",
+      "errorMetres": 5.96046448E-08
+    },
+    {
+      "module": "Couloir_I_DoublePorte",
+      "socket": "Accroche_S",
+      "errorMetres": 8.940697E-08
+    },
+    {
+      "module": "Couloir_I_Porte",
+      "socket": "Accroche_N",
+      "errorMetres": 5.96046448E-08
+    },
+    {
+      "module": "Couloir_I_Porte",
+      "socket": "Accroche_S",
+      "errorMetres": 8.940697E-08
+    },
+    {
+      "module": "Couloir_T",
+      "socket": "Accroche_E",
+      "errorMetres": 5.96046448E-08
+    },
+    {
+      "module": "Couloir_T",
+      "socket": "Accroche_N",
+      "errorMetres": 5.96046448E-08
+    },
+    {
+      "module": "Couloir_T",
+      "socket": "Accroche_O",
+      "errorMetres": 5.96046448E-08
+    },
+    {
+      "module": "Couloir_X",
+      "socket": "Accroche_E",
+      "errorMetres": 5.96046448E-08
+    },
+    {
+      "module": "Couloir_X",
+      "socket": "Accroche_N",
+      "errorMetres": 5.96046448E-08
+    },
+    {
+      "module": "Couloir_X",
+      "socket": "Accroche_O",
+      "errorMetres": 5.96046448E-08
+    },
+    {
+      "module": "Couloir_X",
+      "socket": "Accroche_S",
+      "errorMetres": 5.96046448E-08
+    },
+    {
+      "module": "Bunker_Mur",
+      "socket": "Accroche_E",
+      "errorMetres": 5.96046448E-08
+    },
+    {
+      "module": "Bunker_Mur",
+      "socket": "Accroche_O",
+      "errorMetres": 8.940697E-08
+    },
+    {
+      "module": "Bunker_Porte",
+      "socket": "Accroche_E",
+      "errorMetres": 5.96046448E-08
+    },
+    {
+      "module": "Bunker_Porte",
+      "socket": "Accroche_O",
+      "errorMetres": 8.940697E-08
+    },
+    {
+      "module": "Bunker_Coin",
+      "socket": "Accroche_E",
+      "errorMetres": 5.96046448E-08
+    },
+    {
+      "module": "Bunker_Coin",
+      "socket": "Accroche_S",
+      "errorMetres": 8.940697E-08
+    }
+  ]
+}
