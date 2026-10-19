@@ -20,12 +20,16 @@ public class CrawlerSettings : ScriptableObject
     public FloatRange fleeingRadiusStatic = new FloatRange(1.0f, 1.0f);
     public FloatRange fleeingRadiusWalking = new FloatRange(4.0f, 4.0f);
     public FloatRange fleeingRadiusRunning = new FloatRange(10.0f, 10.0f);
+    [Range(0.0f, 360.0f)] public float fleeingViewAngle = 180f;
 
-    public float fleeingDistance = 10.0f;
+    public float fleeingDistance = 3.0f;
     public float minFleeingSpeed = 2.8f;
     public float maxFleeingSpeed = 3.1f;
     public float fleeingRadiusTransitionDuration = 0.4f;
     public float fleeingCooldown = 1.0f;
+
+    [Header("Exit")]
+    public float MaxDistanceToExit = 3.0f;
 
     [Header("Graphic")]
     public float scaleFactor = 0.1f;

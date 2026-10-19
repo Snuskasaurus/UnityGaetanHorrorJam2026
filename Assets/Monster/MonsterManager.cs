@@ -505,7 +505,10 @@ public class MonsterManager : MonoBehaviour
         {
             targetPosition = room.GetRandomPositionInsideRoom();
         }
-        blackboard.targetPosition = NavMeshUtil.GetClosestPointInNavMesh_Small(targetPosition);
+        if (!NavMeshUtil.GetClosestPointInNavMesh_Small(targetPosition, out blackboard.targetPosition))
+        {
+            Debug.LogError("Failed ot find new target for monster");
+        }
         monsterNavMeshAgent.SetDestination(blackboard.targetPosition);
     }
 
@@ -518,7 +521,10 @@ public class MonsterManager : MonoBehaviour
         {
             targetPosition = escapeZone.transform.position;
         }
-        blackboard.targetPosition = NavMeshUtil.GetClosestPointInNavMesh_Small(targetPosition);
+        if (!NavMeshUtil.GetClosestPointInNavMesh_Small(targetPosition, out blackboard.targetPosition))
+        {
+            Debug.LogError("Failed ot find new target for monster");
+        }
         monsterNavMeshAgent.SetDestination(blackboard.targetPosition);
     }
 
@@ -527,7 +533,10 @@ public class MonsterManager : MonoBehaviour
         blackboard.lastSoundHeardPrecision = math.clamp(blackboard.lastSoundHeardPrecision, 0, 1);
         float radius = math.lerp(Settings.maxRadiusToSound, Settings.minRadiusToSound, blackboard.lastSoundHeardPrecision);
         Vector3 soundPosition = blackboard.lastSoundHeardPosition;
-        blackboard.targetPosition = NavMeshUtil.PickNewTarget_RandomInCircle(soundPosition, radius);
+        if (!NavMeshUtil.PickNewTarget_RandomInCircle(soundPosition, radius, out blackboard.targetPosition))
+        {
+            Debug.LogError("Failed ot find new target for monster");
+        }
         monsterNavMeshAgent.SetDestination(blackboard.targetPosition);
     }
 

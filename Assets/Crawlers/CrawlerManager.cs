@@ -9,9 +9,10 @@ using UnityEngine.Rendering;
 using UnityEngine.UIElements.Experimental;
 using Random = UnityEngine.Random;
 
-    
 public class CrawlerManager : MonoBehaviour
 {
+    private static CrawlerManager INSTANCE;
+
     struct TargetRequest
     {
         int Index;
@@ -34,7 +35,8 @@ public class CrawlerManager : MonoBehaviour
     float fleeingRadiusFrom = 0.0f;
     float fleeingRadiusTo = 0.0f;
     float radiusTransitionT = 1.0f;
-    private float fleeingRadius = 0;
+    private float fleeingRadius = 0.0f;
+    private float fleeingViewDot = 0.0f;
 
     Vector3[] crawlerPositions;
     Vector3[] crawlerPositionTargets;
@@ -47,11 +49,26 @@ public class CrawlerManager : MonoBehaviour
     bool[] crawlerBoolCache;
     float[] crawlerTimeSinceLastFleeing;
 
-    KDTree kdTree;
-    KDQuery kdTreeQuery = new KDQuery();
-    List<int> kdTreeResults = new List<int>();
+    KDTree crawlerKDTree;
+    KDQuery crawlerKDTreeQuery = new KDQuery();
+    List<int> crawlerKDTreeResults = new List<int>();
+
+    List<Vector3> crawlerExitPositions = new List<Vector3>();
+
+    KDTree exitKDTree;
+    KDQuery exitKDTreeQuery = new KDQuery();
+    List<int> exitKDTreeResults = new List<int>();
 
     private int drawCallCount = 0;
+
+    /// ----------------------------------------------------------------------------------------------------------------
+    ///  PUBLIC FUNCTIONS
+    /// ----------------------------------------------------------------------------------------------------------------
+
+    public static void RegisterCrawlerExitPosition(Vector3 position)
+    {
+        INSTANCE.crawlerExitPositions.Add(position);
+    }
 
     /// ----------------------------------------------------------------------------------------------------------------
     ///  UNITY FUNCTIONS
@@ -59,7 +76,10 @@ public class CrawlerManager : MonoBehaviour
 
     private void Awake()
     {
+        INSTANCE = this;
+
         Settings = GameSettings.Crawler;
+        fleeingViewDot = math.cos(math.radians(Settings.fleeingViewAngle * 0.5f));
 
         playerController = Common.FindTypeInScene<PlayerController>();
         zippoController = Common.FindTypeInScene<ZippoController>();
@@ -85,7 +105,7 @@ public class CrawlerManager : MonoBehaviour
             InitializeCrawler(i, actorPosition);
         }
 
-        kdTree = new KDTree(crawlerPositions, MAX_INSTANCE_COUNT_BY_KD_TREE);
+        crawlerKDTree = new KDTree(crawlerPositions, MAX_INSTANCE_COUNT_BY_KD_TREE);
     }
 
     void Start()
@@ -96,6 +116,7 @@ public class CrawlerManager : MonoBehaviour
 
     private void FixedUpdate()
     {
+        CreateExitKDTreeOnce();
         ReplaceFarCrawlers();
         UpdateFleeingRadius();
         RebuildKDTree();
@@ -111,6 +132,29 @@ public class CrawlerManager : MonoBehaviour
     /// ----------------------------------------------------------------------------------------------------------------
     ///  PRIVATE FUNCTIONS
     /// ----------------------------------------------------------------------------------------------------------------
+
+    private void CreateExitKDTreeOnce()
+    {
+        if (exitKDTree != null || crawlerExitPositions.Count == 0)
+            return;
+
+        Vector3[] crawlerExitPositionsArray = new Vector3[crawlerExitPositions.Count];
+        for (int i = 0; i < crawlerExitPositions.Count; i++)
+        {
+            crawlerExitPositionsArray[i] = crawlerExitPositions[i];
+        }
+        exitKDTree = new KDTree(crawlerExitPositionsArray, crawlerExitPositions.Count);
+        exitKDTree.Rebuild();
+    }
+
+    static readonly ProfilerMarker ProfilerMarker_QueryExitKDTree = new ProfilerMarker("QueryExitKDTree");
+    private void QueryExitKDTree(Vector3 Origin)
+    {
+        using var ProfilerMarker = ProfilerMarker_QueryExitKDTree.Auto();
+
+        exitKDTreeResults.Clear();
+        exitKDTreeQuery.Radius(exitKDTree, Origin, Settings.MaxDistanceToExit, exitKDTreeResults);
+    }
 
     private void HandleDrawCalls()
     {
@@ -141,20 +185,24 @@ public class CrawlerManager : MonoBehaviour
     {
         Vector2 RandomPositionInRadius = Random.insideUnitCircle * Settings.spawnRadius;
         Vector3 randomPosition = origin + new Vector3(RandomPositionInRadius.x, 0.0f, RandomPositionInRadius.y);
-        crawlerPositions[crawlerIndex] = NavMeshUtil.GetClosestPointInNavMesh_Big(randomPosition);
+        if (!NavMeshUtil.GetClosestPointInNavMesh_Big(randomPosition, out crawlerPositions[crawlerIndex]))
+        {
+            Debug.LogWarning("Failed to find crawler initializing position");
+        }
         crawlerPositionTargets[crawlerIndex] = crawlerPositions[crawlerIndex];
         SetCrawlerWalkSpeed(crawlerIndex);
         crawlerRotations[crawlerIndex] = Quaternion.identity;
         crawlerScales[crawlerIndex] = Vector3.one * Settings.scaleFactor;
+        crawlerTimeSinceLastFleeing[crawlerIndex] = Settings.fleeingCooldown;
     }
 
     private void RebuildKDTree()
     {
-        for(int i = 0; i < kdTree.Count; i++) 
+        for(int i = 0; i < crawlerKDTree.Count; i++) 
         {
-            kdTree.Points[i] = crawlerPositions[i];
+            crawlerKDTree.Points[i] = crawlerPositions[i];
         }
-        kdTree.Rebuild();
+        crawlerKDTree.Rebuild();
     }
 
     private void UpdateFleeingRadius()
@@ -182,12 +230,12 @@ public class CrawlerManager : MonoBehaviour
         {
             fleeingRadiusFrom = fleeingRadius;
             fleeingRadiusTo = target;
-            radiusTransitionT = 0f;
+            radiusTransitionT = 0.0f;
         }
 
-        if (radiusTransitionT < 1f)
+        if (radiusTransitionT < 1.0f)
         {
-            radiusTransitionT = Mathf.Min(1f, radiusTransitionT + Time.deltaTime / Settings.fleeingRadiusTransitionDuration);
+            radiusTransitionT = Mathf.Min(1.0f, radiusTransitionT + Time.deltaTime / Settings.fleeingRadiusTransitionDuration);
             fleeingRadius = Mathf.Lerp(fleeingRadiusFrom, fleeingRadiusTo, Easing.OutCirc(radiusTransitionT));
         }
     }
@@ -196,10 +244,11 @@ public class CrawlerManager : MonoBehaviour
     {
         Array.Fill(crawlerBoolCache, false);
         Vector3 actorPosition = playerController.transform.position;
-        kdTreeQuery.Radius(kdTree, actorPosition, Settings.despawnRadius, kdTreeResults);
-        for (int i = 0; i < kdTreeResults.Count; i++)
+        crawlerKDTreeResults.Clear();
+        crawlerKDTreeQuery.Radius(crawlerKDTree, actorPosition, Settings.despawnRadius, crawlerKDTreeResults);
+        for (int i = 0; i < crawlerKDTreeResults.Count; i++)
         {
-            int crawlerIndex = kdTreeResults[i];
+            int crawlerIndex = crawlerKDTreeResults[i];
             crawlerBoolCache[crawlerIndex] = true;
         }
         for (int i = 0; i < Settings.crawlerCount; i++)
@@ -216,8 +265,23 @@ public class CrawlerManager : MonoBehaviour
     {
         using var ProfilerMarker = ProfilerMarker_QueryKdTree_Radius.Auto();
 
-        kdTreeResults.Clear();
-        kdTreeQuery.Radius(kdTree, Origin, fleeingRadius, kdTreeResults);
+        crawlerKDTreeResults.Clear();
+        crawlerKDTreeQuery.Radius(crawlerKDTree, Origin, fleeingRadius, crawlerKDTreeResults);
+    }
+
+    private bool TryFindCrawlerExitPosition(out Vector3 result)
+    {
+        int exitInRangeCount = exitKDTreeResults.Count;
+        if (exitInRangeCount == 0)
+        {
+            result = Vector3.zero;
+            return false;
+        }
+
+        int RandomExitResultIndex = Random.Range(0,  exitInRangeCount);
+        int crawlerExitIndex = exitKDTreeResults[RandomExitResultIndex];
+        result = crawlerExitPositions[crawlerExitIndex];
+        return true;
     }
 
     static readonly ProfilerMarker ProfilerMarker_HandleFleeingCrawlers = new ProfilerMarker("HandleFleeingCrawlers");
@@ -226,27 +290,51 @@ public class CrawlerManager : MonoBehaviour
         using var ProfilerMarker = ProfilerMarker_HandleFleeingCrawlers.Auto();
 
         Vector3 actorPosition = playerController.transform.position;
+        Vector3 actorForward = playerController.transform.forward;
         float sqrFleeingRadius = fleeingRadius * fleeingRadius;
 
         float currentTime = Time.unscaledTime;
 
+        QueryExitKDTree(actorPosition);
         QueryKdTree_Radius(actorPosition);
 
-        foreach (int crawlerIndex in kdTreeResults)
+        foreach (int crawlerIndex in crawlerKDTreeResults)
         {
             float timeSinceLastFleeingCrawler = currentTime - crawlerTimeSinceLastFleeing[crawlerIndex];
             if (!(timeSinceLastFleeingCrawler >= Settings.fleeingCooldown)) 
                 continue;
 
             ref Vector3 crawlerPosition = ref crawlerPositions[crawlerIndex];
-            float sqrDistance = (crawlerPosition - actorPosition).sqrMagnitude;
+            Vector3 actorToCrawler = crawlerPosition - actorPosition;
+            float sqrDistance = actorToCrawler.sqrMagnitude;
             float randomPercentage = Random.Range(0.2f, 1.0f);
             if (sqrDistance > sqrFleeingRadius * randomPercentage)
                 continue;
 
-            SetCrawlerFleeSpeed(crawlerIndex);
-            crawlerTimeSinceLastFleeing[crawlerIndex] = currentTime;
-            crawlerPositionTargets[crawlerIndex] = NavMeshUtil.PickNewTarget_AwayFromPosition(crawlerPosition, actorPosition, Settings.fleeingDistance);
+            Vector3 flat = actorToCrawler; flat.y = 0f;
+            Vector3 actorToCrawlerNormalized = flat.normalized;
+            actorToCrawlerNormalized.y = 0.0f;
+            actorForward.y = 0.0f;
+            if (Vector3.Dot(actorForward.normalized, actorToCrawlerNormalized) < fleeingViewDot)
+                continue;
+
+            bool hasFoundTarget = true;
+            Vector3 awayVector = actorToCrawlerNormalized;
+            Vector3 targetCandidate = crawlerPosition + awayVector * Settings.fleeingDistance;
+            Vector3 NewTarget;
+            if (!NavMeshUtil.GetClosestPointInNavMesh_Small(targetCandidate, out NewTarget))
+            { 
+                if (!TryFindCrawlerExitPosition(out NewTarget))
+                {
+                    hasFoundTarget = false;
+                }
+            }
+            if (hasFoundTarget)
+            {
+                SetCrawlerFleeSpeed(crawlerIndex);
+                crawlerTimeSinceLastFleeing[crawlerIndex] = currentTime;
+                crawlerPositionTargets[crawlerIndex] = NewTarget;
+            }
         }
     }
 
@@ -265,8 +353,11 @@ public class CrawlerManager : MonoBehaviour
             if (toTarget.sqrMagnitude <= sqrThreshold)
             {
                 SetCrawlerWalkSpeed(crawlerIndex);
+                if (!NavMeshUtil.PickNewTarget_RandomInCircle(crawlerPositions[crawlerIndex], Settings.wanderRadius, out crawlerPositionTargets[crawlerIndex]))
+                {
+                    Debug.LogError("Failed to find random new crawler target position");
+                }
                 toTarget = crawlerPositionTargets[crawlerIndex] - crawlerPositions[crawlerIndex];
-                crawlerPositionTargets[crawlerIndex] = NavMeshUtil.PickNewTarget_RandomInCircle(crawlerPositions[crawlerIndex], Settings.wanderRadius);
             }
 
             crawlerPositions[crawlerIndex] = Vector3.MoveTowards(crawlerPositions[crawlerIndex], crawlerPositionTargets[crawlerIndex], crawlerSpeeds[crawlerIndex] * dt);

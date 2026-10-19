@@ -29,9 +29,10 @@ MonoBehaviour:
   fleeingRadiusRunning:
     min: 4
     max: 8
-  fleeingDistance: 10
+  fleeingDistance: 3
   minFleeingSpeed: 4
   maxFleeingSpeed: 5
   fleeingRadiusTransitionDuration: 0.4
   fleeingCooldown: 1
+  MaxDistanceToExit: 3
   scaleFactor: 8

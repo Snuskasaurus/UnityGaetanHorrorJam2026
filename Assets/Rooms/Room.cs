@@ -112,7 +112,10 @@ public class Room : MonoBehaviour
         float halfZ = boxCollider.size.y / 2.0f; // Julien Rogel (17-10-2026): Thanks
         float height = origin.y;
 
-        Vector3 targetPositionLocalSpace = NavMeshUtil.PickNewTarget_RandomInBox(origin, halfX, halfZ, height);;
+        if (!NavMeshUtil.PickNewTarget_RandomInBox(origin, halfX, halfZ, height, out var targetPositionLocalSpace))
+        {
+            Debug.LogError("Failed to pick random position inside room");
+        }
         return boxCollider.gameObject.transform.TransformPoint(targetPositionLocalSpace);
     }
 
