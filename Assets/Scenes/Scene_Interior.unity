@@ -2861,6 +2861,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 26580730}
     m_Modifications:
     - target: {fileID: 1997985201858607061, guid: 2526d0baebb1f6742999b2362646913a, type: 3}
+      propertyPath: mesh
+      value: 
+      objectReference: {fileID: 680470266113572073, guid: 72c129353dbd5564ba3a7f9841ef6591, type: 3}
+    - target: {fileID: 1997985201858607061, guid: 2526d0baebb1f6742999b2362646913a, type: 3}
+      propertyPath: material
+      value: 
+      objectReference: {fileID: 2100000, guid: 1e788f16c70c4c04086a751cf19517f5, type: 2}
+    - target: {fileID: 1997985201858607061, guid: 2526d0baebb1f6742999b2362646913a, type: 3}
       propertyPath: FirstPersonController
       value: 
       objectReference: {fileID: 0}
