@@ -67,3 +67,4 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 51b28059fb2a45ef8c671dcf5e8e81e5, type: 3}
   - {fileID: 8300000, guid: 69ab3f2dd8bd4300a9445bf4bbb495b8, type: 3}
   - {fileID: 8300000, guid: 56e350b13f49460087d5d2354d334688, type: 3}
+  rainLoop: {fileID: 8300000, guid: ed17a87ef7f143b785917232c1d5d3ce, type: 3}

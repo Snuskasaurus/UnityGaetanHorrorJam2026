@@ -1,0 +1,3 @@
+rain_loop.ogg : "Winter rain in oak forest loop" by FxProSound (Pixabay Content License, free for commercial use, no attribution required)
+                https://pixabay.com/sound-effects/nature-winter-rain-in-oak-forest-loop-185672/
+                Re-looped with a 2 s crossfade (no gap at the loop point), +11 dB with a limiter, converted to OGG.

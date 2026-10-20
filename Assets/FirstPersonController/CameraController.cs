@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerController))]
@@ -31,7 +31,8 @@ public class CameraController : MonoBehaviour
     // Internal variables
     private float yaw = 0f;
     private float pitch = 0f;
-    private float trauma = 0f;
+    private readonly List<ActiveShake> activeShakes = new List<ActiveShake>();
+    private float shakeIntensity = 0f;
     private float headBobWeight = 0f;
     private Vector3 cameraBaseLocalPosition;
     //private float postureTransitionProgress = 1f;
@@ -63,7 +64,7 @@ public class CameraController : MonoBehaviour
     void Update()
     {
         CameraRotation();
-        trauma = Mathf.MoveTowards(trauma, 0f, Settings.traumaDecay * Time.deltaTime);
+        shakeIntensity = UpdateShakes();
     }
 
     // The camera is oriented every frame so the mouse look stays instant
@@ -105,27 +106,52 @@ public class CameraController : MonoBehaviour
         yaw = Mathf.Repeat(yaw, 360f);
     }
 
-    // Adds a shake, from 0 to 1 (0.2 small hit, 0.6 big scare). One parameter so it can be wired on UnityEvents.
-    public void AddTrauma(float amount)
+    // Adds a shake with the default duration of the settings, from 0 to 1 (0.2 small hit, 0.6 big scare).
+    // One parameter so it can be wired on UnityEvents.
+    public void AddTrauma(float magnitude)
     {
-        trauma = Mathf.Clamp01(trauma + amount);
+        ShakeCamera(Settings.defaultShakeDuration, magnitude);
     }
 
-    // The duration comes from the trauma decay of the settings, the magnitude is the trauma added
+    // Adds a shake that fades from its magnitude to 0 over the duration, several shakes add up
     public void ShakeCamera(float duration, float magnitude)
     {
-        AddTrauma(magnitude);
+        if (duration <= 0f || magnitude <= 0f)
+        {
+            return;
+        }
+        activeShakes.Add(new ActiveShake { magnitude = magnitude, duration = duration });
     }
 
-    // Smooth noise on each axis, scaled by trauma to the power of the exponent
+    // Ages the active shakes and returns their total intensity, from 0 to 1
+    private float UpdateShakes()
+    {
+        float total = 0f;
+        for (int i = activeShakes.Count - 1; i >= 0; i--)
+        {
+            ActiveShake shake = activeShakes[i];
+            shake.elapsed += Time.deltaTime;
+            if (shake.elapsed >= shake.duration)
+            {
+                activeShakes.RemoveAt(i);
+                continue;
+            }
+
+            total += shake.magnitude * (1f - shake.elapsed / shake.duration);
+            activeShakes[i] = shake;
+        }
+        return Mathf.Clamp01(total);
+    }
+
+    // Smooth noise on each axis, scaled by the shake intensity to the power of the exponent
     private Vector3 ComputeShakeAngles()
     {
-        if (trauma <= 0f)
+        if (shakeIntensity <= 0f)
         {
             return Vector3.zero;
         }
 
-        float shake = Mathf.Pow(trauma, Settings.traumaExponent);
+        float shake = Mathf.Pow(shakeIntensity, Settings.traumaExponent);
         float time = Time.time * Settings.shakeFrequency;
 
         // A different seed per axis, otherwise pitch, yaw and roll would move together
@@ -164,5 +190,12 @@ public class CameraController : MonoBehaviour
             Mathf.Sin(angle) * Settings.headBobHorizontalAmplitude,
             -(1f - Mathf.Cos(angle * 2f)) * 0.5f * Settings.headBobVerticalAmplitude,
             0f) * headBobWeight;
+    }
+
+    private struct ActiveShake
+    {
+        public float magnitude;
+        public float duration;
+        public float elapsed;
     }
 }

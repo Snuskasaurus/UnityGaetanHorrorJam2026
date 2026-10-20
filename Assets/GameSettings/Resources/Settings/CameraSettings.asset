@@ -15,7 +15,7 @@ MonoBehaviour:
   maxBottomVerticalAngle: 45
   maxTopVerticalAngle: 85
   maxShakeAngles: {x: 3, y: 3, z: 5}
-  traumaDecay: 0.8
+  defaultShakeDuration: 0.75
   traumaExponent: 2
   shakeFrequency: 18
   headBobVerticalAmplitude: 0.03

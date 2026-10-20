@@ -14,7 +14,7 @@ public class CameraSettings : ScriptableObject
     [Header("Shake")]
     public Vector3 maxShakeAngles = new Vector3(3f, 3f, 5f);  // pitch, yaw, roll in degrees at full trauma
 
-    public float traumaDecay = 0.8f;  // trauma lost per second
+    public float defaultShakeDuration = 0.75f;  // seconds, used by AddTrauma
 
     [Range(1f, 3f)]
     public float traumaExponent = 2f;  // 2 = squared, 3 = cubed
