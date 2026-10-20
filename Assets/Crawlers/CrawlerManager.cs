@@ -46,7 +46,7 @@ public class CrawlerManager : MonoBehaviour
     Matrix4x4[] crawlerMatrices;
     RenderParams renderParams;
 
-    bool[] crawlerBoolCache;
+    bool[] crawlerSpawned;
     float[] crawlerTimeSinceLastFleeing;
 
     KDTree crawlerKDTree;
@@ -96,7 +96,7 @@ public class CrawlerManager : MonoBehaviour
         crawlerRotations = new Quaternion[Settings.crawlerCount];
         crawlerScales = new Vector3[Settings.crawlerCount];
         crawlerMatrices = new Matrix4x4[Settings.crawlerCount];
-        crawlerBoolCache = new bool[Settings.crawlerCount];
+        crawlerSpawned = new bool[Settings.crawlerCount];
         crawlerTimeSinceLastFleeing = new float[Settings.crawlerCount];
 
         Vector3 actorPosition = playerController.transform.position;
@@ -242,18 +242,18 @@ public class CrawlerManager : MonoBehaviour
 
     private void ReplaceFarCrawlers()
     {
-        Array.Fill(crawlerBoolCache, false);
+        Array.Fill(crawlerSpawned, false);
         Vector3 actorPosition = playerController.transform.position;
         crawlerKDTreeResults.Clear();
         crawlerKDTreeQuery.Radius(crawlerKDTree, actorPosition, Settings.despawnRadius, crawlerKDTreeResults);
         for (int i = 0; i < crawlerKDTreeResults.Count; i++)
         {
             int crawlerIndex = crawlerKDTreeResults[i];
-            crawlerBoolCache[crawlerIndex] = true;
+            crawlerSpawned[crawlerIndex] = true;
         }
         for (int i = 0; i < Settings.crawlerCount; i++)
         {
-            if (crawlerBoolCache[i] == false)
+            if (crawlerSpawned[i] == false)
             {
                 InitializeCrawler(i, actorPosition);
             }
