@@ -4406,7 +4406,7 @@ Transform:
   m_GameObject: {fileID: 488872163}
   serializedVersion: 2
   m_LocalRotation: {x: 0.5, y: -0.5, z: 0.49999982, w: 0.50000024}
-  m_LocalPosition: {x: 24.288, y: 1.155, z: 24.593}
+  m_LocalPosition: {x: 24.288, y: 0.861, z: 24.593}
   m_LocalScale: {x: 0.10900464, y: 0.17799, z: 0.17799}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5960,6 +5960,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: fd9b543d466f132468c09d39967f3ddf, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 78c9fab6ce403a649bef55a75c33788b, type: 2}
     - target: {fileID: 919132149155446097, guid: fd9b543d466f132468c09d39967f3ddf, type: 3}
       propertyPath: m_Name
       value: porte_fin
