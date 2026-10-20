@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79fee549fcde4a18a9966364a9c736f5, type: 3}
+  m_Name: AmbienceSettings
+  m_EditorClassIdentifier: Assembly-CSharp::AmbienceSettings
+  outdoorSkyColor: {r: 0.043, g: 0.063, b: 0.094, a: 1}
+  outdoorEquatorColor: {r: 0.025, g: 0.035, b: 0.05, a: 1}
+  outdoorGroundColor: {r: 0.005, g: 0.005, b: 0.008, a: 1}
+  outdoorFogColor: {r: 0.02, g: 0.028, b: 0.04, a: 1}
+  interiorAmbientColor: {r: 0.0142, g: 0.0015, b: 0.0006, a: 1}
+  interiorFogColor: {r: 0.0, g: 0.0, b: 0.0, a: 1}
+  transitionTime: 0.8

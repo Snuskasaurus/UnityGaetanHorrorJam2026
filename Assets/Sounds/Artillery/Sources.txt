@@ -1,0 +1,10 @@
+Pixabay Content License (free for commercial use, no attribution required):
+- artillery_whistle_000..003 : "Incoming mortar 1", "2", "3", "4" by Zagge28 (Freesound)
+    https://pixabay.com/sound-effects/film-special-effects-incoming-mortar-1-104653/ (and -2-86032, -3-86033, -4-104654)
+    Whistles only (no explosion in the recordings), trimmed, faded, normalized to -3 dB.
+- artillery_explosion_000 : "Distant Explosion" by ecfike (Freesound)
+    https://pixabay.com/sound-effects/film-special-effects-distant-explosion-90743/
+- artillery_explosion_001 : "Distant Explosion" by Mozfoo (Freesound)
+    https://pixabay.com/sound-effects/film-special-effects-distant-explosion-47562/
+    Explosions trimmed to start on the blast, long exponential fade out, normalized.
+Not used: "distant explosion" by 1piemanpie (slow build-up, no sharp blast).
