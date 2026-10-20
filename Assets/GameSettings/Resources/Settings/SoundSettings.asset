@@ -68,3 +68,14 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 69ab3f2dd8bd4300a9445bf4bbb495b8, type: 3}
   - {fileID: 8300000, guid: 56e350b13f49460087d5d2354d334688, type: 3}
   rainLoop: {fileID: 8300000, guid: ed17a87ef7f143b785917232c1d5d3ce, type: 3}
+  crawlerSwarmLoop: {fileID: 8300000, guid: 99bab11b40e345ca802c1c69f909cf72, type: 3}
+  crawlerScurrySounds:
+  - {fileID: 8300000, guid: 056d2ff9710d46a0a7fa4d9dc6476b6b, type: 3}
+  - {fileID: 8300000, guid: aa7672c53a3f400b94131f483e890b60, type: 3}
+  - {fileID: 8300000, guid: 40d276b9903340f0be6e0e794e3c83f4, type: 3}
+  crawlerChitterSounds:
+  - {fileID: 8300000, guid: a807b80c2fa741299fb3018d3968e7ae, type: 3}
+  - {fileID: 8300000, guid: 57386ba3962e4787a84479b736a380df, type: 3}
+  - {fileID: 8300000, guid: ee30f4ccf98942558e4bfe77e4b7b772, type: 3}
+  - {fileID: 8300000, guid: 48b12fd02e6f46feb8238b8f3babe40d, type: 3}
+  - {fileID: 8300000, guid: cc6eface73c846849b4c4d5abb2f3799, type: 3}

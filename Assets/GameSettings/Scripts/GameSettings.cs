@@ -46,6 +46,12 @@ public class GameSettings : ScriptableObject
     public static SoundSettings Sound => Instance.sound;
     public SoundSettings sound;
 
+    public static AmbienceSettings Ambience => Instance.ambience;
+    public AmbienceSettings ambience;
+
+    public static ArtillerySettings Artillery => Instance.artillery;
+    public ArtillerySettings artillery;
+
     /// ----------------------------------------------------------------------------------------------------------------
     /// ----------------------------------------------------------------------------------------------------------------
     /// ----------------------------------------------------------------------------------------------------------------

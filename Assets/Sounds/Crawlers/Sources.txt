@@ -1,0 +1,14 @@
+Pixabay Content License (free for commercial use, no attribution required):
+- crawler_swarm_loop.ogg : "BS _Swarm of roaches.wav" by szczur_banshee (Freesound)
+    https://pixabay.com/sound-effects/nature-bs-swarm-of-roacheswav-14442/
+    Re-looped with a 2 s crossfade, +12 dB with a limiter.
+- crawler_scurry_*.ogg   : "Medium Bug Crawling Quickly Sound Effect" by u_xu8o84gxds
+    https://pixabay.com/sound-effects/medium-bug-crawling-quickly-sound-effect-449530/
+    The 3 bursts of the recording, cut and normalized.
+- crawler_click_*.ogg    : "insectoid monster clicking" by LucasDuff (Freesound)
+    https://pixabay.com/sound-effects/film-special-effects-insectoid-monster-clicking-98623/
+    Pairs of clicks cut from the recording and normalized.
+- crawler_swarm_maggots_loop.ogg : "d0 Maggots" by dav0r (Freesound)
+    https://pixabay.com/sound-effects/film-special-effects-d0-maggots-17258/
+    Band-limited 350 Hz - 5.5 kHz with +4 dB at 3 kHz (to stand out from the rain), light compression,
+    re-looped with a 3 s crossfade. Used as the swarm loop (crawler_swarm_loop.ogg is the previous one, kept as an alternative).

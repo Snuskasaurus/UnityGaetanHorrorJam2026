@@ -26,6 +26,13 @@ public class SoundController : MonoBehaviour
     private AudioReverbFilter interiorReverb;
     private float shelterBlend;  // 0 = outdoor, 1 = sheltered
 
+    // Lets other sounds make room in the mix, for example the crawler swarm in the dark
+    public float RainVolumeMultiplier
+    {
+        get;
+        set;
+    } = 1f;
+
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
@@ -229,7 +236,7 @@ public class SoundController : MonoBehaviour
     // Volume and low-pass cutoff between the outdoor and the sheltered rain
     private void ApplyRainBlend()
     {
-        rainSource.volume = Mathf.Lerp(Settings.rainVolume, Settings.shelteredRainVolume, shelterBlend);
+        rainSource.volume = Mathf.Lerp(Settings.rainVolume, Settings.shelteredRainVolume, shelterBlend) * RainVolumeMultiplier;
 
         // The cutoff is blended on a logarithmic scale, the ear perceives frequencies that way
         float outdoorLog = Mathf.Log(Mathf.Max(10f, Settings.outdoorRainCutoff));

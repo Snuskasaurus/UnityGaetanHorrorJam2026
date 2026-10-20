@@ -67,6 +67,55 @@ public class SoundSettings : ScriptableObject
 
     [Range(0f, 0.1f)]
     public float reverbDelay = 0.015f;  // seconds
+
+    // Crawler sounds, driven by the zippo light: the darker it is, the closer and louder the swarm.
+    // The light goes from 0 (zippo off) to 1 (flame at full power).
+    [Header("Crawlers")]
+    public AudioClip crawlerSwarmLoop;  // continuous crawling, played in loop
+
+    public AnimationCurve swarmVolumeByLight = AnimationCurve.Linear(0f, 0.85f, 1f, 0.05f);
+
+    // The swarm comes from a direction that slowly drifts around the player, so it does not blend with the rain
+    [Range(0f, 1f)]
+    public float swarmSpatialBlend = 0.7f;  // 0 = everywhere like the rain, 1 = fully placed
+
+    public float swarmDistance = 4f;  // meters from the player
+
+    public float swarmDriftSpeed = 0.05f;  // how fast the swarm direction turns around the player
+
+    [Range(0f, 1f)]
+    public float swarmSwellDepth = 0.35f;  // how much the swarm volume breathes, 0 = steady
+
+    public float swarmSwellSpeed = 0.3f;
+
+    [Range(0f, 1f)]
+    public float rainDuckInDark = 0.6f;  // rain volume multiplier in the dark, so the swarm stands out
+
+    // Second swarm layer, only heard in the dark: it comes from the other side of the player
+    public AudioClip crawlerDarkSwarmLoop;
+
+    public AnimationCurve darkSwarmVolumeByLight = new AnimationCurve(
+        new Keyframe(0f, 0.7f, 0f, -2.5f),
+        new Keyframe(0.4f, 0f, 0f, 0f));
+
+    public AudioClip[] crawlerScurrySounds;  // the swarm running away when the light grows
+
+    [Range(0f, 1f)]
+    public float scurryLightIncrease = 0.25f;  // light gained at once needed to make the swarm run away
+
+    [Range(0f, 1f)]
+    public float scurryVolume = 0.8f;
+
+    public AudioClip[] crawlerChitterSounds;  // short clicks played around the player
+
+    public AnimationCurve chitterIntervalByLight = AnimationCurve.Linear(0f, 0.8f, 1f, 6f);  // seconds between two clicks
+
+    public AnimationCurve chitterDistanceByLight = AnimationCurve.Linear(0f, 1.5f, 1f, 8f);  // meters from the player
+
+    [Range(0f, 1f)]
+    public float chitterVolume = 0.6f;
+
+    public float crawlerLightSmoothing = 3f;  // how fast the swarm reacts to a light change
 }
 
 [System.Serializable]
