@@ -46,9 +46,22 @@ public class MonsterManager : MonoBehaviour
     ///  PUBLIC FUNCTIONS
     /// ----------------------------------------------------------------------------------------------------------------
 
-    public static void SendSoundToMonsterHearing(Vector3 soundPosition, float soundVolume) => INSTANCE.SendSoundToMonsterHearing_internal(soundPosition, soundVolume);
+    // Both do nothing when the scene has no monster, so the player sounds and interactions work everywhere
+    public static void SendSoundToMonsterHearing(Vector3 soundPosition, float soundVolume)
+    {
+        if (INSTANCE != null)
+        {
+            INSTANCE.SendSoundToMonsterHearing_internal(soundPosition, soundVolume);
+        }
+    }
 
-    public static void TryToFearMonster() => INSTANCE.TryToFearMonster_Internal();
+    public static void TryToFearMonster()
+    {
+        if (INSTANCE != null)
+        {
+            INSTANCE.TryToFearMonster_Internal();
+        }
+    }
 
     /// ----------------------------------------------------------------------------------------------------------------
     ///  UNITY FUNCTIONS

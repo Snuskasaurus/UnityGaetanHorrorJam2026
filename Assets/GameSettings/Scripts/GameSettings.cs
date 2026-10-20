@@ -43,6 +43,9 @@ public class GameSettings : ScriptableObject
     public static GameFlowSettings GameFlow => Instance.gameFlow;
     public GameFlowSettings gameFlow;
 
+    public static SoundSettings Sound => Instance.sound;
+    public SoundSettings sound;
+
     /// ----------------------------------------------------------------------------------------------------------------
     /// ----------------------------------------------------------------------------------------------------------------
     /// ----------------------------------------------------------------------------------------------------------------

@@ -13,11 +13,19 @@ namespace Assets.CommonScripts
         public PlayerController playerController;
         public ZippoController zippoController;
         public AudioSource audioSource;
+        public SoundController soundController;
+
+        private static GameManager instance;
 
         public UnityEvent OnStartLose;
         public UnityEvent OnCancelLose;
         public UnityEvent OnLose;
         public UnityEvent OnWin;
+
+        void Awake()
+        {
+            instance = this;
+        }
 
         // Use this for initialization
         void Start()
@@ -25,6 +33,7 @@ namespace Assets.CommonScripts
             playerController = Common.FindTypeInScene<PlayerController>();
             zippoController = playerController.GetComponent<ZippoController>();
             audioSource = playerController.GetComponent<AudioSource>();
+            soundController = playerController.GetComponent<SoundController>();
             timeBeforeLose = GameSettings.GameFlow.TimeBeforeLose;
         }
 
@@ -52,6 +61,24 @@ namespace Assets.CommonScripts
                     isLoosing = false;
                     OnCancelLose.Invoke();
                 }
+            }
+        }
+
+        // Plays a sound on the player from any script, the monster does not hear it
+        public static void PlaySound(AudioClip clip)
+        {
+            if (instance != null && instance.soundController != null)
+            {
+                instance.soundController.PlaySound(clip);
+            }
+        }
+
+        // Plays a sound on the player from any script, the monster hears it with the given loudness
+        public static void PlaySound(AudioClip clip, float volume, float monsterLoudness)
+        {
+            if (instance != null && instance.soundController != null)
+            {
+                instance.soundController.PlaySound(clip, volume, monsterLoudness);
             }
         }
 

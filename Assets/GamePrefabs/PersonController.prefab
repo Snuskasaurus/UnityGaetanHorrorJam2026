@@ -3739,6 +3739,7 @@ GameObject:
   - component: {fileID: 1934177061492016537}
   - component: {fileID: 3115470457590564180}
   - component: {fileID: 1788257955720344360}
+  - component: {fileID: 5209844616470864002}
   m_Layer: 3
   m_Name: PersonController
   m_TagString: Player
@@ -3883,19 +3884,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Assets.FirstPersonController.PlayerManager
   OnPostureChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   OnMovementStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -3916,6 +3905,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Assets.FirstPersonController.CameraController
   invertCamera: 0
   mouseSensitivity: 0.5
+  enableCameraShake: 1
+  enableHeadBob: 1
 --- !u!114 &1934177061492016537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3928,6 +3919,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a99be13a53f401f47a753ad496675830, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets.FirstPersonController.MovementController
+  OnStep:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &3115470457590564180
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3973,9 +3967,9 @@ MonoBehaviour:
   OnLightAttemptFailed:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1788257955720344360}
-        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
-        m_MethodName: set_resource
+      - m_Target: {fileID: 5209844616470864002}
+        m_TargetAssemblyTypeName: SoundController, Assembly-CSharp
+        m_MethodName: PlayResource
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 8300000, guid: 6883cfeff25fe884eb96f021b2daa9b5, type: 3}
@@ -3985,24 +3979,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1788257955720344360}
-        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   OnFlameLit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1788257955720344360}
-        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
-        m_MethodName: PlayOneShot
+      - m_Target: {fileID: 5209844616470864002}
+        m_TargetAssemblyTypeName: SoundController, Assembly-CSharp
+        m_MethodName: PlaySound
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 8300000, guid: 2b3794c2379b94744a91029ad7cfc6eb, type: 3}
@@ -4069,9 +4051,9 @@ MonoBehaviour:
   OnZippoEquipped:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1788257955720344360}
-        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
-        m_MethodName: PlayOneShot
+      - m_Target: {fileID: 5209844616470864002}
+        m_TargetAssemblyTypeName: SoundController, Assembly-CSharp
+        m_MethodName: PlaySound
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 8300000, guid: 49a63bc5145460148b4318207aa0f003, type: 3}
@@ -4181,6 +4163,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5209844616470864002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4384303418514471492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c86a9166c9bc4bacbe7ee083b3633d78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SoundController
 --- !u!1 &4546829797849069984
 GameObject:
   m_ObjectHideFlags: 0

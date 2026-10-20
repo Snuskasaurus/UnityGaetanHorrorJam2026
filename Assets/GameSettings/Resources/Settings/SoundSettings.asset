@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27d1da45036142c690c206380d23edbd, type: 3}
+  m_Name: SoundSettings
+  m_EditorClassIdentifier: Assembly-CSharp::SoundSettings
+  defaultSurface: 4
+  defaultFootsteps:
+  - {fileID: 8300000, guid: a326291e826342319ea9d980c626af08, type: 3}
+  - {fileID: 8300000, guid: 4763b0c6dbad43399efe601e7a59a214, type: 3}
+  - {fileID: 8300000, guid: 04fda4d6d0614e659e1be9abe92a0c49, type: 3}
+  - {fileID: 8300000, guid: b8eb2c0b84b0439e9bc7896878d9a70c, type: 3}
+  - {fileID: 8300000, guid: 344df232925542bf98ddb06f744b6586, type: 3}
+  - {fileID: 8300000, guid: b678ad1b98ea473597c9531f7bcf46e3, type: 3}
+  - {fileID: 8300000, guid: 6b02a4e8871142e8a228c0909cd93933, type: 3}
+  - {fileID: 8300000, guid: 9e0b56004535449d9742038a338bfdf9, type: 3}
+  surfaceFootsteps:
+  - surface: 4
+    clips:
+    - {fileID: 8300000, guid: a326291e826342319ea9d980c626af08, type: 3}
+    - {fileID: 8300000, guid: 4763b0c6dbad43399efe601e7a59a214, type: 3}
+    - {fileID: 8300000, guid: 04fda4d6d0614e659e1be9abe92a0c49, type: 3}
+    - {fileID: 8300000, guid: b8eb2c0b84b0439e9bc7896878d9a70c, type: 3}
+    - {fileID: 8300000, guid: 344df232925542bf98ddb06f744b6586, type: 3}
+    - {fileID: 8300000, guid: b678ad1b98ea473597c9531f7bcf46e3, type: 3}
+    - {fileID: 8300000, guid: 6b02a4e8871142e8a228c0909cd93933, type: 3}
+    - {fileID: 8300000, guid: 9e0b56004535449d9742038a338bfdf9, type: 3}
+  - surface: 1
+    clips:
+    - {fileID: 8300000, guid: 460202469dca45908e129929b3b0bf4b, type: 3}
+    - {fileID: 8300000, guid: 31dbb9bdc2ee4b1595db3b2243a6ed24, type: 3}
+    - {fileID: 8300000, guid: 20143332c9d2491f94f219dbab7be5a9, type: 3}
+    - {fileID: 8300000, guid: 096479c1273a4f6b9985ff1009323b16, type: 3}
+    - {fileID: 8300000, guid: 2fb2b40a0efc432cadad5cff879a3c80, type: 3}
+  - surface: 0
+    clips:
+    - {fileID: 8300000, guid: ecf4ac810b534c73bb8322e351ea3092, type: 3}
+    - {fileID: 8300000, guid: 5c86ec941a8545b58ed9b380b7e94bed, type: 3}
+    - {fileID: 8300000, guid: 7ea9608d2fcb48009cf02e8ba9b803af, type: 3}
+    - {fileID: 8300000, guid: 4ba025c4ebbf4d9097b708f10557c422, type: 3}
+    - {fileID: 8300000, guid: dae2a1ac883447109b575c45428c47ac, type: 3}
+  - surface: 2
+    clips:
+    - {fileID: 8300000, guid: e7a1ca74c765455aa7c2e5c5f0c211fd, type: 3}
+    - {fileID: 8300000, guid: 9f31542029ab4752a83f1069c1ddb9fc, type: 3}
+    - {fileID: 8300000, guid: 346eb69adb1f4be0b7459e2bf989cfaa, type: 3}
+    - {fileID: 8300000, guid: 895ae8a6af834d1eaeea80514472e632, type: 3}
+    - {fileID: 8300000, guid: 71cc68ca86734a1dad681f34e516d8f3, type: 3}
+  - surface: 3
+    clips:
+    - {fileID: 8300000, guid: fe2235aa0387450697c05c642b980e21, type: 3}
+    - {fileID: 8300000, guid: 360c4ac9c09b4c809bb5455e7a4f85b6, type: 3}
+    - {fileID: 8300000, guid: decf8faac7b04cda9565f9ef356deeb9, type: 3}
+    - {fileID: 8300000, guid: 1619c481296543a1bf69cdcad3e8f6b2, type: 3}
+    - {fileID: 8300000, guid: ffd8f029af744853808d277b3947eb8c, type: 3}
+  landingSounds:
+  - {fileID: 8300000, guid: e262cfe968ac42d59fe9fd07652d21fb, type: 3}
+  - {fileID: 8300000, guid: 8cfac49e9180484b89e1146ed3cdaeeb, type: 3}
+  - {fileID: 8300000, guid: 51b28059fb2a45ef8c671dcf5e8e81e5, type: 3}
+  - {fileID: 8300000, guid: 69ab3f2dd8bd4300a9445bf4bbb495b8, type: 3}
+  - {fileID: 8300000, guid: 56e350b13f49460087d5d2354d334688, type: 3}

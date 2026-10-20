@@ -45,7 +45,7 @@ Material:
     - _PixelSize_1: 5
     - _PosterizeInSRGB: 1
     - _SatSteps: 4
-    - _SaturationSteps: 3
+    - _SaturationSteps: 64
     - _Strength: 0
     - _hue_steps: 12
     - _lightness_steps: 300

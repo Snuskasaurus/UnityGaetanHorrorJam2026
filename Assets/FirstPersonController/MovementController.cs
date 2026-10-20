@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody), typeof(PlayerController))]
 public class MovementController : MonoBehaviour
@@ -10,6 +11,20 @@ public class MovementController : MonoBehaviour
     // Tuning values, read from the movement settings of GameSettings
     private MovementSettings Settings => GameSettings.Movement;
 
+    // Speed the player is moving at along the ground (m/s), smoothed by the acceleration curves
+    public float CurrentSpeed
+    {
+        get;
+        private set;
+    }
+
+    // CurrentSpeed relative to the max speed of the current movement state, from 0 to 1
+    public float NormalizedSpeed
+    {
+        get;
+        private set;
+    }
+
     private void OnEnable()
     {
         rigidBody = GetComponent<Rigidbody>();
@@ -17,6 +32,22 @@ public class MovementController : MonoBehaviour
         rigidBody.freezeRotation = true;
         // Gravity is applied manually so the player does not slide on slopes when standing still
         rigidBody.useGravity = false;
+    }
+
+    // Position in the cycle of two steps (left then right), from 0 to 1, a step lands at 0.25 and 0.75
+    public float StepPhase
+    {
+        get;
+        private set;
+    }
+
+    // Raised each time a foot lands on the ground
+    public UnityEvent OnStep;
+
+    // The step rhythm is updated every frame so the head bob that follows it stays smooth
+    void Update()
+    {
+        UpdateSteps();
     }
 
     void FixedUpdate()
@@ -40,6 +71,10 @@ public class MovementController : MonoBehaviour
         Vector3 planar = Vector3.ProjectOnPlane(velocity, planeNormal);
         Vector3 newPlanar = ComputePlanarVelocity(planar, target, maxSpeed);
         rigidBody.AddForce(newPlanar - planar, ForceMode.VelocityChange);
+
+        // The wanted speed is smooth, the real one drops when the player is blocked by a wall: keep the lowest
+        CurrentSpeed = Mathf.Min(newPlanar.magnitude, planar.magnitude + Settings.acceleration * Time.fixedDeltaTime);
+        NormalizedSpeed = maxSpeed > 0f ? Mathf.Clamp01(CurrentSpeed / maxSpeed) : 0f;
     }
 
     private float GetCurrentMaxSpeed()
@@ -122,5 +157,28 @@ public class MovementController : MonoBehaviour
         Vector3 newLateral = Vector3.MoveTowards(lateral, Vector3.zero, Settings.lateralGrip * Time.fixedDeltaTime);
 
         return direction * newAlong + newLateral;
+    }
+
+    // The phase advances with the distance walked, a step is raised each time it crosses a landing point
+    private void UpdateSteps()
+    {
+        float previousPhase = StepPhase;
+        StepPhase = Mathf.Repeat(StepPhase + CurrentSpeed * Time.deltaTime / (2f * Settings.stepLength), 1f);
+
+        bool isStepping = playerManager.IsGrounded && CurrentSpeed >= Settings.minStepSpeed;
+        if (isStepping && (HasCrossed(previousPhase, StepPhase, 0.25f) || HasCrossed(previousPhase, StepPhase, 0.75f)))
+        {
+            OnStep.Invoke();
+        }
+    }
+
+    // True when the phase went past the mark, the phase wraps from 1 back to 0
+    private static bool HasCrossed(float from, float to, float mark)
+    {
+        if (from <= to)
+        {
+            return from < mark && to >= mark;
+        }
+        return from < mark || to >= mark;
     }
 }

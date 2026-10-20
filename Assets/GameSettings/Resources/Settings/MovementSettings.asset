@@ -68,3 +68,5 @@ MonoBehaviour:
   crouchSpeed: 1.125
   maxSlopeAngle: 45
   groundStickForce: 5
+  stepLength: 1.25
+  minStepSpeed: 0.3

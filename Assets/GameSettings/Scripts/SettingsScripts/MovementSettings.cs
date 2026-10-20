@@ -35,4 +35,9 @@ public class MovementSettings : ScriptableObject
     public float maxSlopeAngle = 45f;
 
     public float groundStickForce = 5f;
+
+    [Header("Steps")]
+    public float stepLength = 1.25f;  // meters walked between two steps, the head bob and the footsteps follow it
+
+    public float minStepSpeed = 0.3f;  // below this speed (m/s) no footstep is played
 }
