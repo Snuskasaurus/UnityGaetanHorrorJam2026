@@ -27638,20 +27638,40 @@ PrefabInstance:
       value: NavMeshmanager
       objectReference: {fileID: 0}
     - target: {fileID: 2930358933660988697, guid: b74b97d4563179343b2b73494a28e86a, type: 3}
+      propertyPath: m_Size.x
+      value: 116.21316
+      objectReference: {fileID: 0}
+    - target: {fileID: 2930358933660988697, guid: b74b97d4563179343b2b73494a28e86a, type: 3}
+      propertyPath: m_Size.z
+      value: 99.37144
+      objectReference: {fileID: 0}
+    - target: {fileID: 2930358933660988697, guid: b74b97d4563179343b2b73494a28e86a, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2930358933660988697, guid: b74b97d4563179343b2b73494a28e86a, type: 3}
+      propertyPath: m_Center.x
+      value: -31.012066
+      objectReference: {fileID: 0}
+    - target: {fileID: 2930358933660988697, guid: b74b97d4563179343b2b73494a28e86a, type: 3}
+      propertyPath: m_Center.z
+      value: 20.849834
       objectReference: {fileID: 0}
     - target: {fileID: 2930358933660988697, guid: b74b97d4563179343b2b73494a28e86a, type: 3}
       propertyPath: m_NavMeshData
       value: 
       objectReference: {fileID: 23800000, guid: 2cf186f6e50b21e45a3c2f41b1689ece, type: 2}
+    - target: {fileID: 2930358933660988697, guid: b74b97d4563179343b2b73494a28e86a, type: 3}
+      propertyPath: m_CollectObjects
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4799073352386745487, guid: b74b97d4563179343b2b73494a28e86a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4799073352386745487, guid: b74b97d4563179343b2b73494a28e86a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.18
       objectReference: {fileID: 0}
     - target: {fileID: 4799073352386745487, guid: b74b97d4563179343b2b73494a28e86a, type: 3}
       propertyPath: m_LocalPosition.z
