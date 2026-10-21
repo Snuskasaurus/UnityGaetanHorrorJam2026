@@ -119,7 +119,7 @@ public class CrawlerManager : MonoBehaviour
         CreateExitKDTreeOnce();
         ReplaceFarCrawlers();
         UpdateFleeingRadius();
-        RebuildKDTree();
+        RebuildCrawlerKDTree();
         HandleFleeingCrawlers();
     }
 
@@ -156,8 +156,11 @@ public class CrawlerManager : MonoBehaviour
         exitKDTreeQuery.Radius(exitKDTree, Origin, Settings.MaxDistanceToExit, exitKDTreeResults);
     }
 
+    static readonly ProfilerMarker ProfilerMarker_HandleDrawCalls = new ProfilerMarker("HandleDrawCalls");
     private void HandleDrawCalls()
     {
+        using var ProfilerMarker = ProfilerMarker_HandleDrawCalls.Auto();
+
         for (int drawCallIndex = 0; drawCallIndex < drawCallCount; drawCallIndex++)
         {
             int startInstanceIndex = drawCallIndex * MAX_INSTANCE_COUNT_BY_GPU_CALL;
@@ -196,8 +199,11 @@ public class CrawlerManager : MonoBehaviour
         crawlerTimeSinceLastFleeing[crawlerIndex] = Settings.fleeingCooldown;
     }
 
-    private void RebuildKDTree()
+    static readonly ProfilerMarker ProfilerMarker_RebuildCrawlerKDTree = new ProfilerMarker("RebuildCrawlerKDTree");
+    private void RebuildCrawlerKDTree()
     {
+        using var ProfilerMarker = ProfilerMarker_RebuildCrawlerKDTree.Auto();
+
         for(int i = 0; i < crawlerKDTree.Count; i++) 
         {
             crawlerKDTree.Points[i] = crawlerPositions[i];
@@ -205,8 +211,11 @@ public class CrawlerManager : MonoBehaviour
         crawlerKDTree.Rebuild();
     }
 
+    static readonly ProfilerMarker ProfilerMarker_UpdateFleeingRadius = new ProfilerMarker("UpdateFleeingRadius");
     private void UpdateFleeingRadius()
     {
+        using var ProfilerMarker = ProfilerMarker_UpdateFleeingRadius.Auto();
+
         float flamePower = zippoController.flamePower;
 
         float target = 0.0f;
@@ -240,8 +249,11 @@ public class CrawlerManager : MonoBehaviour
         }
     }
 
+    static readonly ProfilerMarker ProfilerMarker_ReplaceFarCrawlers = new ProfilerMarker("ReplaceFarCrawlers");
     private void ReplaceFarCrawlers()
     {
+        using var ProfilerMarker = ProfilerMarker_ReplaceFarCrawlers.Auto();
+
         Array.Fill(crawlerSpawned, false);
         Vector3 actorPosition = playerController.transform.position;
         crawlerKDTreeResults.Clear();
