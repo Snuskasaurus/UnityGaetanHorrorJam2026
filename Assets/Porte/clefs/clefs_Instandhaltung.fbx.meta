@@ -1,9 +1,19 @@
 fileFormatVersion: 2
-guid: 5888ac27570cea64aa284811d3ed4998
+guid: 3af45606f4685de42acbd57d02775740
 ModelImporter:
   serializedVersion: 24600
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: "Mat\xE9riau.001"
+    second: {fileID: 2100000, guid: aec66f1f1b996b04c92ddc7b4819d822, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: etiquette
+    second: {fileID: 2100000, guid: 9abe58f9ee9c08248ac4d80ca29c9afb, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
