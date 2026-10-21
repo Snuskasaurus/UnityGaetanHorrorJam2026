@@ -31,19 +31,14 @@ namespace DataStructures.ViliWonka.KDTree {
 
     public partial class KDQuery {
 
-        // Closest point on the XZ plane, the height of the position is ignored
         public void ClosestPoint(KDTree tree, Vector3 queryPosition, List<int> resultIndices, List<float> resultDistances = null) {
-            ClosestPoint(tree, KDTree.ToXZ(queryPosition), resultIndices, resultDistances);
-        }
-
-        public void ClosestPoint(KDTree tree, Vector2 queryPosition, List<int> resultIndices, List<float> resultDistances = null) {
 
             Reset();
 
-            Vector2[] points = tree.Points2D;
+            Vector3[] points = tree.Points;
             int[] permutation = tree.Permutation;
 
-            if (tree.Count == 0) {
+            if (points.Length == 0) {
                 return;
             }
 
@@ -54,7 +49,7 @@ namespace DataStructures.ViliWonka.KDTree {
 
             var rootNode = tree.RootNode;
 
-            Vector2 rootClosestPoint = rootNode.bounds.ClosestPoint(queryPosition);
+            Vector3 rootClosestPoint = rootNode.bounds.ClosestPoint(queryPosition);
 
             PushToHeap(rootNode, rootClosestPoint, queryPosition);
 
@@ -64,7 +59,7 @@ namespace DataStructures.ViliWonka.KDTree {
             int partitionAxis;
             float partitionCoord;
 
-            Vector2 tempClosestPoint;
+            Vector3 tempClosestPoint;
 
             // searching
             while(minHeap.Count > 0) {
@@ -83,13 +78,15 @@ namespace DataStructures.ViliWonka.KDTree {
 
                     tempClosestPoint = queryNode.tempClosestPoint;
 
-                    if((KDTree.GetAxis(tempClosestPoint, partitionAxis) - partitionCoord) < 0) {
+                    if((tempClosestPoint[partitionAxis] - partitionCoord) < 0) {
 
                         // we already know we are on the side of negative bound/node,
                         // so we don't need to test for distance
+                        // push to stack for later querying
+
                         PushToHeap(node.negativeChild, tempClosestPoint, queryPosition);
                         // project the tempClosestPoint to other bound
-                        KDTree.SetAxis(ref tempClosestPoint, partitionAxis, partitionCoord);
+                        tempClosestPoint[partitionAxis] = partitionCoord;
 
                         if(node.positiveChild.Count != 0) {
 
@@ -101,11 +98,13 @@ namespace DataStructures.ViliWonka.KDTree {
 
                         // we already know we are on the side of positive bound/node,
                         // so we don't need to test for distance
+                        // push to stack for later querying
+
                         PushToHeap(node.positiveChild, tempClosestPoint, queryPosition);
                         // project the tempClosestPoint to other bound
-                        KDTree.SetAxis(ref tempClosestPoint, partitionAxis, partitionCoord);
+                        tempClosestPoint[partitionAxis] = partitionCoord;
 
-                        if(node.negativeChild.Count != 0) {
+                        if(node.positiveChild.Count != 0) {
 
                             PushToHeap(node.negativeChild, tempClosestPoint, queryPosition);
                         }
@@ -120,7 +119,7 @@ namespace DataStructures.ViliWonka.KDTree {
 
                         int index = permutation[i];
 
-                        sqrDist = KDTree.SqrDistance(points[index], queryPosition);
+                        sqrDist = Vector3.SqrMagnitude(points[index] - queryPosition);
 
                         if(sqrDist <= SSR) {
 

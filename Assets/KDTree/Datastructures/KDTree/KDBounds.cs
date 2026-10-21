@@ -22,48 +22,51 @@ SOFTWARE.
 */
 
 using UnityEngine;
+using UnityEditor;
 
 namespace DataStructures.ViliWonka.KDTree {
 
-    // 2D bounds on the ground plane: x = world X, y = world Z
     public struct KDBounds {
 
-        public Vector2 min;
-        public Vector2 max;
+        public Vector3 min;
+        public Vector3 max;
 
-        public Vector2 size {
+        public Vector3 size {
 
             get {
                 return max - min;
             }
         }
 
-        // returns unity bounds, flat on the XZ plane
+        // returns unity bounds
         public Bounds Bounds {
 
             get {
-                Vector2 center = (min + max) / 2;
-                Vector2 extent = max - min;
                 return new Bounds(
-                    new Vector3(center.x, 0f, center.y),
-                    new Vector3(extent.x, 0f, extent.y)
+                    (min + max) / 2,
+                    (max - min)
                 );
             }
         }
 
-
-        public Vector2 ClosestPoint(Vector2 point) {
+        
+        public Vector3 ClosestPoint(Vector3 point) {
 
             // X axis
             if(point.x < min.x) point.x = min.x;
-            else
+            else 
             if(point.x > max.x) point.x = max.x;
-
-            // Y axis (world Z)
+            
+            // Y axis
             if(point.y < min.y) point.y = min.y;
-            else
+            else 
             if(point.y > max.y) point.y = max.y;
-
+            
+            // Z axis
+            if(point.z < min.z) point.z = min.z;
+            else 
+            if(point.z > max.z) point.z = max.z;
+            
             return point;
         }
     }
