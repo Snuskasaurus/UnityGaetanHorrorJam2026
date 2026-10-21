@@ -1,0 +1,127 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &1335505427396980738
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: f77c88e19026d8042a374828a494c03b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -43.869255
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f77c88e19026d8042a374828a494c03b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.863
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f77c88e19026d8042a374828a494c03b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2.1465971
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f77c88e19026d8042a374828a494c03b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071067
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f77c88e19026d8042a374828a494c03b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f77c88e19026d8042a374828a494c03b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f77c88e19026d8042a374828a494c03b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f77c88e19026d8042a374828a494c03b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f77c88e19026d8042a374828a494c03b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f77c88e19026d8042a374828a494c03b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f77c88e19026d8042a374828a494c03b, type: 3}
+      propertyPath: m_Name
+      value: Feuille
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f77c88e19026d8042a374828a494c03b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2633707270438204117}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f77c88e19026d8042a374828a494c03b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5579656961935340922}
+  m_SourcePrefab: {fileID: 100100000, guid: f77c88e19026d8042a374828a494c03b, type: 3}
+--- !u!1 &2182489682973510995 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: f77c88e19026d8042a374828a494c03b, type: 3}
+  m_PrefabInstance: {fileID: 1335505427396980738}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2633707270438204117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2182489682973510995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43f20caa5bc252846a90124330a38851, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Note_Lisible
+  cameraJoueur: {fileID: 0}
+  distanceLecture: 3
+  texteInteraction: '[E] Lire la note'
+  imageParchemin: {fileID: 2800000, guid: 80d2813c41361cd4fa3a5650d4947480, type: 3}
+  titreNote: Journal du soldat
+  contenuNote: 
+  policePixel: {fileID: 12800000, guid: 5e901a30013be3d4093880f0b1c471f9, type: 3}
+  couleurTexte: {r: 0, g: 0, b: 0, a: 1}
+  tailleTitre: 30
+  tailleContenu: 18
+  tailleTexteInteraction: 18
+  largeurImageEcran: 0.38
+  hauteurImageEcran: 0.82
+  margeGauche: 0.15
+  margeDroite: 0.15
+  margeHaut: 0.13
+  margeBas: 0.16
+  decalageTitreY: 0
+  decalageContenuY: 10
+  reductionResolution: 12
+  intensiteFlou: 3
+  sonPrendreNote: {fileID: 0}
+  sonReposerNote: {fileID: 0}
+  volumeSons: 1
+--- !u!65 &5579656961935340922
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2182489682973510995}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.020708691, y: 0.021152746, z: 0.14793485}
+  m_Center: {x: 0.00010659965, y: 0.0005360445, z: -0.0090304855}
