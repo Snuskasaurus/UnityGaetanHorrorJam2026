@@ -2,6 +2,14 @@
 
 Ce fichier guide Claude Code lorsqu'il travaille dans ce dépôt. Réponds et travaille **en français**.
 
+## Notes de game design (à lire à chaque session)
+
+Les intentions de design de la jam (thème, boucle de jeu, mécaniques du zippo, entité, fins, structure des niveaux)
+sont dans `Docs/GameDesign.md`. Ce fichier est importé ci-dessous et fait foi pour toute question de gameplay :
+s'y référer avant de proposer une mécanique ou une modification de la boucle de jeu.
+
+@Docs/GameDesign.md
+
 ## Le projet
 
 Jeu d'horreur à la première personne réalisé en équipe pour une game jam (Horror Jam 2026).
