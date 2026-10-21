@@ -17,5 +17,11 @@ MonoBehaviour:
   outdoorGroundColor: {r: 0.005, g: 0.005, b: 0.008, a: 1}
   outdoorFogColor: {r: 0.02, g: 0.028, b: 0.04, a: 1}
   interiorAmbientColor: {r: 0.0142, g: 0.0015, b: 0.0006, a: 1}
-  interiorFogColor: {r: 0.0, g: 0.0, b: 0.0, a: 1}
+  interiorFogColor: {r: 0, g: 0, b: 0, a: 1}
+  fogEnabled: 1
+  fogMode: 3
+  outdoorFogDensity: 0.05
+  interiorFogDensity: 0.2
+  outdoorReflectionIntensity: 0
+  interiorReflectionIntensity: 0
   transitionTime: 0.8

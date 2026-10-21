@@ -6104,6 +6104,7 @@ GameObject:
   - component: {fileID: 1788257955720344360}
   - component: {fileID: 5209844616470864002}
   - component: {fileID: 1363878003581411180}
+  - component: {fileID: 257134277932382513}
   m_Layer: 3
   m_Name: PersonController
   m_TagString: Player
@@ -6552,6 +6553,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fc80a15cf9243baa88b2233d871d905, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CrawlerSoundController
+--- !u!114 &257134277932382513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4384303418514471492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be2a52ac68f42639dbdafecdaef28d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AmbientController
 --- !u!1 &4546829797849069984
 GameObject:
   m_ObjectHideFlags: 0
@@ -7831,6 +7844,15 @@ MonoBehaviour:
   burnStart: 0.8
   projectorLoop: {fileID: 0}
   maxVolume: 0.8
+  cameraController: {fileID: 0}
+  startShakeMagnitude: 0.35
+  startShakeDuration: 0.3
+  trembleMagnitude: 0.15
+  trembleInterval: 0.1
+  jumpShakeMagnitude: 0.4
+  jumpShakeDuration: 0.2
+  burnShakeMagnitude: 0.8
+  burnShakeDuration: 1
   onBurnedOut:
     m_PersistentCalls:
       m_Calls: []

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
 // Ambient light and fog of an outdoor level: a dim night gradient outside, almost black inside the InteriorVolumes.
+// The fog is enabled and dosed here too: a light fog outside, a dense one inside, both from the AmbienceSettings.
 // Put it once in the scenes that need it (outdoor levels), not on the player: indoor scenes keep their own ambience.
 public class AmbientController : MonoBehaviour
 {
@@ -49,5 +50,14 @@ public class AmbientController : MonoBehaviour
         RenderSettings.ambientEquatorColor = Color.Lerp(Settings.outdoorEquatorColor, Settings.interiorAmbientColor, interiorBlend);
         RenderSettings.ambientGroundColor = Color.Lerp(Settings.outdoorGroundColor, Settings.interiorAmbientColor, interiorBlend);
         RenderSettings.fogColor = Color.Lerp(Settings.outdoorFogColor, Settings.interiorFogColor, interiorBlend);
+
+        // The density follows the same blend as the colors, so entering a shelter thickens the fog smoothly.
+        // Only the exponential modes use the density, a Linear mode keeps the start and end distances of the scene.
+        RenderSettings.fog = Settings.fogEnabled;
+        RenderSettings.fogMode = Settings.fogMode;
+        RenderSettings.fogDensity = Mathf.Lerp(Settings.outdoorFogDensity, Settings.interiorFogDensity, interiorBlend);
+
+        // Strength of the skybox reflections, lowered when the sky shows too much on the smooth surfaces
+        RenderSettings.reflectionIntensity = Mathf.Lerp(Settings.outdoorReflectionIntensity, Settings.interiorReflectionIntensity, interiorBlend);
     }
 }
