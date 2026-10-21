@@ -60299,6 +60299,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 6885417103394686267, guid: e90069787e337d1419afdd72cfef9a3f, type: 3}
+      propertyPath: nomCle
+      value: Cle_Labo
+      objectReference: {fileID: 0}
+    - target: {fileID: 6885417103394686267, guid: e90069787e337d1419afdd72cfef9a3f, type: 3}
       propertyPath: cameraJoueur
       value: 
       objectReference: {fileID: 2053162772}

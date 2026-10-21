@@ -16,7 +16,7 @@ MonoBehaviour:
   - "Sucer sont cousin es l\xE9gal !"
   - Si juvabien juvamine !
   - 'fumer tue, peter pue '
-  nomSceneJeu: Scene_Interior
+  nomSceneJeu: Scene_LVL_1
   dureeFondu: 1
   attenteSecurite: 5
   dureeCourseMinimale: 3
