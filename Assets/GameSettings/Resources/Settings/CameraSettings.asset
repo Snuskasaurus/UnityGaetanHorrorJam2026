@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 638c00b1b0e84865b49348c01d3d0dcb, type: 3}
   m_Name: CameraSettings
   m_EditorClassIdentifier: Assembly-CSharp::CameraSettings
-  maxBottomVerticalAngle: 45
+  maxBottomVerticalAngle: 85
   maxTopVerticalAngle: 85
   maxShakeAngles: {x: 3, y: 3, z: 5}
   defaultShakeDuration: 0.75
