@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fef7a7cf53a487982ce685dc0484d6f, type: 3}
   m_Name: CrawlerSettings
   m_EditorClassIdentifier: Assembly-CSharp::CrawlerSettings
-  crawlerCount: 9000
+  crawlerCount: 5000
   spawnRadius: 10
   despawnRadius: 20
   turnSpeed: 360

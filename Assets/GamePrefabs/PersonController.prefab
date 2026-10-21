@@ -5857,6 +5857,18 @@ MonoBehaviour:
   upwardSpeed: 1.5
   sidewaysSpeed: 0.8
   maxDroplets: 1000
+--- !u!114 &8595766069667856500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3470220992621412210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07f518ec7eb240c791e4d806810ac5eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RainInteriorMask
 --- !u!1 &3481102695503192129
 GameObject:
   m_ObjectHideFlags: 0
@@ -6440,7 +6452,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
+  MinDistance: 3.324772
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
@@ -6528,6 +6540,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c86a9166c9bc4bacbe7ee083b3633d78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoundController
+--- !u!114 &1363878003581411180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4384303418514471492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fc80a15cf9243baa88b2233d871d905, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CrawlerSoundController
 --- !u!1 &4546829797849069984
 GameObject:
   m_ObjectHideFlags: 0
@@ -7655,6 +7679,7 @@ GameObject:
   - component: {fileID: 7163183404399561143}
   - component: {fileID: 5045238707477661802}
   - component: {fileID: 28485687759698463}
+  - component: {fileID: 8013165900113640642}
   m_Layer: 3
   m_Name: GameCamera
   m_TagString: MainCamera
@@ -7782,6 +7807,38 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &8013165900113640642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8177869873366683326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a96b224fd05abc6408dea883e08e9762, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FilmGlitchController
+  lookHeight: 1.6
+  maxAngle: 40
+  occluders:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  effectRange: 5
+  timeToBurn: 3
+  recoverySpeed: 0.6
+  instantAmount: 0.35
+  burnStart: 0.8
+  projectorLoop: {fileID: 0}
+  maxVolume: 0.8
+  onBurnedOut:
+    m_PersistentCalls:
+      m_Calls: []
+  debugMonster: {fileID: 0}
+  debugGaze: 0
+  debugExposure: 0
+  debugBlockedBy: 
+  debugForceGlitch: -1
 --- !u!1 &8197851205330447918
 GameObject:
   m_ObjectHideFlags: 0
@@ -8115,27 +8172,3 @@ Transform:
   - {fileID: 4850877593346998338}
   m_Father: {fileID: 8729855399442555612}
   m_LocalEulerAnglesHint: {x: -88.08878, y: 0.13112739, z: 4.0158343}
---- !u!114 &8595766069667856500
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3470220992621412210}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07f518ec7eb240c791e4d806810ac5eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RainInteriorMask
---- !u!114 &1363878003581411180
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4384303418514471492}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fc80a15cf9243baa88b2233d871d905, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CrawlerSoundController

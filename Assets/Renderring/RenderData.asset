@@ -1,5 +1,25 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-1894659537926894900
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b00045f12942b46c698459096c89274e, type: 3}
+  m_Name: FilmGlitch
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.FullScreenPassRendererFeature
+  m_Active: 1
+  injectionPoint: 600
+  fetchColorBuffer: 1
+  requirements: -1
+  passMaterial: {fileID: 2100000, guid: c7da791396ce9ee468c7b22992d50f2f, type: 2}
+  passIndex: 0
+  bindDepthStencilAttachment: 0
+  m_Version: 1
 --- !u!114 &-440010737550069391
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -48,7 +68,8 @@ MonoBehaviour:
   - {fileID: 7833122117494664109}
   - {fileID: 8418035320523349915}
   - {fileID: -440010737550069391}
-  m_RendererFeatureMap: ad6b866f10d7b46c9b5f7cfa85ded2747171f8c290c4e4f9l
+  - {fileID: -1894659537926894900}
+  m_RendererFeatureMap: ad6b866f10d7b46c9b5f7cfa85ded2747171f8c290c4e4f9ccca8f4730d1b4e5l
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   m_AssetVersion: 3
