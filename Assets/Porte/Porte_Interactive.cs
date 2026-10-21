@@ -23,11 +23,13 @@ public class PorteInteractive : MonoBehaviour
     public GameObject objetApresDeverrouillage;
 
     [Header("INTERACTION E")]
-    public string texteDeverrouillage = "[E] Deverrouiller la porte";
+    public string texteDeverrouillage =
+        "[E] Deverrouiller la porte";
 
     [Header("SONS")]
     public AudioClip sonPorteBloquee;
     public AudioClip sonOuverture;
+    public AudioClip sonDeverrouillage;
 
     [Range(0f, 1f)]
     public float volumeSons = 1f;
@@ -51,7 +53,10 @@ public class PorteInteractive : MonoBehaviour
     {
         if (modelePorte == null)
         {
-            Debug.LogError("Aucun modele de porte assigne !");
+            Debug.LogError(
+                "Aucun modele de porte assigne !",
+                this
+            );
             enabled = false;
             return;
         }
@@ -61,18 +66,21 @@ public class PorteInteractive : MonoBehaviour
 
         deverrouillePendantPartie = false;
 
-        // Preparer l'objet purement graphique.
+        // L'objet affiche apres deverrouillage
+        // doit rester uniquement graphique.
         if (objetApresDeverrouillage != null)
         {
-            Transform visuel = objetApresDeverrouillage.transform;
+            Transform visuel =
+                objetApresDeverrouillage.transform;
 
             if (visuel == modelePorte ||
                 modelePorte.IsChildOf(visuel))
             {
                 Debug.LogError(
-                    "Le visuel ne doit pas etre la porte ni son parent.",
+                    "Le visuel ne doit pas etre la porte ou son parent.",
                     this
                 );
+
                 objetApresDeverrouillage = null;
             }
             else
@@ -86,7 +94,7 @@ public class PorteInteractive : MonoBehaviour
             }
         }
 
-        // Colliders uniquement pour la vraie porte.
+        // Colliders de la vraie porte uniquement.
         AjouterColliders(modelePorte);
 
         rb = modelePorte.GetComponent<Rigidbody>();
@@ -106,7 +114,10 @@ public class PorteInteractive : MonoBehaviour
         charniere = modelePorte.GetComponent<HingeJoint>();
 
         if (charniere == null)
-            charniere = modelePorte.gameObject.AddComponent<HingeJoint>();
+        {
+            charniere =
+                modelePorte.gameObject.AddComponent<HingeJoint>();
+        }
 
         charniere.connectedBody = null;
         charniere.anchor = Vector3.zero;
@@ -118,6 +129,7 @@ public class PorteInteractive : MonoBehaviour
         charniere.connectedAnchor = modelePorte.position;
 
         JointLimits limites = charniere.limits;
+
         limites.min = Settings.angleMinimum;
         limites.max = Settings.angleMaximum;
 
@@ -125,6 +137,7 @@ public class PorteInteractive : MonoBehaviour
         charniere.useLimits = true;
 
         JointSpring ressort = charniere.spring;
+
         ressort.spring = Settings.force;
         ressort.damper = Settings.amortissement;
         ressort.targetPosition = 0f;
@@ -142,7 +155,6 @@ public class PorteInteractive : MonoBehaviour
         {
             peutDeverrouiller = false;
 
-            // Il faut viser la porte et posseder la bonne cle.
             if (porteBloquee &&
                 !deverrouillePendantPartie &&
                 ViseCettePorte())
@@ -195,7 +207,8 @@ public class PorteInteractive : MonoBehaviour
         if (!ViseCettePorte())
             return;
 
-        // Porte verrouillee : son uniquement.
+        // La porte reste bloquee tant que
+        // le joueur ne l'a pas deverrouillee avec E.
         if (porteBloquee && !deverrouillePendantPartie)
         {
             JouerSon(sonPorteBloquee);
@@ -275,11 +288,16 @@ public class PorteInteractive : MonoBehaviour
         deverrouillePendantPartie = true;
 
         rb.isKinematic = false;
+
         rb.collisionDetectionMode =
             CollisionDetectionMode.ContinuousDynamic;
+
         rb.WakeUp();
 
-        // Affichage du modele 3D sans physique.
+        // NOUVEAU : son de la cle dans la serrure.
+        JouerSon(sonDeverrouillage);
+
+        // Afficher le modele 3D decoratif.
         if (objetApresDeverrouillage != null)
         {
             RendreObjetPurementVisuel(
@@ -292,27 +310,24 @@ public class PorteInteractive : MonoBehaviour
         peutDeverrouiller = false;
 
         Debug.Log(
-            "Porte deverrouillee : " + nomCleNecessaire,
+            "Porte deverrouillee avec : " + nomCleNecessaire,
             this
         );
     }
 
-    // Retire toute collision au modele graphique.
     void RendreObjetPurementVisuel(GameObject objet)
     {
         if (objet == null)
             return;
 
-        // Aucun collider sur le visuel ni ses enfants.
+        // Desactiver les colliders existants.
         Collider[] colliders =
             objet.GetComponentsInChildren<Collider>(true);
 
         foreach (Collider col in colliders)
-        {
             col.enabled = false;
-        }
 
-        // Aucun Rigidbody actif sur le visuel.
+        // Desactiver la physique des Rigidbody du visuel.
         Rigidbody[] corps =
             objet.GetComponentsInChildren<Rigidbody>(true);
 
@@ -323,7 +338,6 @@ public class PorteInteractive : MonoBehaviour
         }
     }
 
-    // Ajoute des colliders seulement sur la vraie porte.
     void AjouterColliders(Transform racine)
     {
         MeshFilter[] meshes =
@@ -331,7 +345,8 @@ public class PorteInteractive : MonoBehaviour
 
         foreach (MeshFilter mesh in meshes)
         {
-            // Exclure le modele decoratif.
+            // Ne jamais creer de collider sur le
+            // modele graphique de deverrouillage.
             if (objetApresDeverrouillage != null)
             {
                 Transform visuel =
@@ -414,7 +429,10 @@ public class PorteInteractive : MonoBehaviour
             sourceAudio = GetComponent<AudioSource>();
 
             if (sourceAudio == null)
-                sourceAudio = gameObject.AddComponent<AudioSource>();
+            {
+                sourceAudio =
+                    gameObject.AddComponent<AudioSource>();
+            }
 
             sourceAudio.playOnAwake = false;
             sourceAudio.spatialBlend = 1f;

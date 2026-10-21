@@ -479,5 +479,6 @@ MonoBehaviour:
   texteDeverrouillage: '[E] Deverrouiller la porte'
   sonPorteBloquee: {fileID: 8300000, guid: 0b6a84e947998714ca3922d3a20b115b, type: 3}
   sonOuverture: {fileID: 8300000, guid: d6c9bd6e1ea163a40aed3f32b66b3822, type: 3}
+  sonDeverrouillage: {fileID: 8300000, guid: cf9a214912d48b94b95c63058cae3177, type: 3}
   volumeSons: 1
   sourceAudio: {fileID: 1895442237637210133}
