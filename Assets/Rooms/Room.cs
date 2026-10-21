@@ -109,7 +109,7 @@ public class Room : MonoBehaviour
     {
         Vector3 origin = boxCollider.center;
         float halfX = boxCollider.size.x / 2.0f;
-        float halfZ = boxCollider.size.y / 2.0f; // Julien Rogel (17-10-2026): Thanks
+        float halfZ = boxCollider.size.y / 2.0f;
         float height = origin.y;
 
         if (!NavMeshUtil.PickNewTarget_RandomInBox(origin, halfX, halfZ, height, out var targetPositionLocalSpace))
