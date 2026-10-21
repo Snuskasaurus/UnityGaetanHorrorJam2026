@@ -74,20 +74,20 @@ namespace DataStructures.ViliWonka.KDTree {
             return node;
         }
 
-        protected void PushToQueue(KDNode node, Vector3 tempClosestPoint) {
+        protected void PushToQueue(KDNode node, Vector2 tempClosestPoint) {
 
             var queryNode = PushGetQueue();
             queryNode.node = node;
             queryNode.tempClosestPoint = tempClosestPoint;
         }
 
-        protected void PushToHeap(KDNode node, Vector3 tempClosestPoint, Vector3 queryPosition) {
+        protected void PushToHeap(KDNode node, Vector2 tempClosestPoint, Vector2 queryPosition) {
 
             var queryNode = PushGetQueue();
             queryNode.node = node;
             queryNode.tempClosestPoint = tempClosestPoint;
 
-            float sqrDist = Vector3.SqrMagnitude(tempClosestPoint - queryPosition);
+            float sqrDist = KDTree.SqrDistance(tempClosestPoint, queryPosition);
             queryNode.distance = sqrDist;
             minHeap.PushObj(queryNode, sqrDist);
         }

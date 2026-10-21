@@ -23,17 +23,21 @@ SOFTWARE.
 
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 namespace DataStructures.ViliWonka.KDTree {
 
     public partial class KDQuery {
 
+        // Interval on the XZ plane, the heights of min and max are ignored
         public void Interval(KDTree tree, Vector3 min, Vector3 max, List<int> resultIndices) {
+            Interval(tree, KDTree.ToXZ(min), KDTree.ToXZ(max), resultIndices);
+        }
+
+        public void Interval(KDTree tree, Vector2 min, Vector2 max, List<int> resultIndices) {
 
             Reset();
 
-            Vector3[] points = tree.Points;
+            Vector2[] points = tree.Points2D;
             int[] permutation = tree.Permutation;
 
             var rootNode = tree.RootNode;
@@ -60,23 +64,19 @@ namespace DataStructures.ViliWonka.KDTree {
                     int partitionAxis = node.partitionAxis;
                     float partitionCoord = node.partitionCoordinate;
 
-                    Vector3 tempClosestPoint = queryNode.tempClosestPoint;
+                    Vector2 tempClosestPoint = queryNode.tempClosestPoint;
 
-                    if((tempClosestPoint[partitionAxis] - partitionCoord) < 0) {
+                    if((KDTree.GetAxis(tempClosestPoint, partitionAxis) - partitionCoord) < 0) {
 
                         // we already know we are inside negative bound/node,
                         // so we don't need to test for distance
-                        // push to stack for later querying
-
-                        // tempClosestPoint is inside negative side
-                        // assign it to negativeChild
                         PushToQueue(node.negativeChild, tempClosestPoint);
 
-                        tempClosestPoint[partitionAxis] = partitionCoord;
+                        KDTree.SetAxis(ref tempClosestPoint, partitionAxis, partitionCoord);
 
                         // testing other side
                         if(node.positiveChild.Count != 0
-                        && tempClosestPoint[partitionAxis] <= max[partitionAxis]) {
+                        && partitionCoord <= KDTree.GetAxis(max, partitionAxis)) {
 
                             PushToQueue(node.positiveChild, tempClosestPoint);
                         }
@@ -85,18 +85,14 @@ namespace DataStructures.ViliWonka.KDTree {
 
                         // we already know we are inside positive bound/node,
                         // so we don't need to test for distance
-                        // push to stack for later querying
-
-                        // tempClosestPoint is inside positive side
-                        // assign it to positiveChild
                         PushToQueue(node.positiveChild, tempClosestPoint);
 
                         // project the tempClosestPoint to other bound
-                        tempClosestPoint[partitionAxis] = partitionCoord;
+                        KDTree.SetAxis(ref tempClosestPoint, partitionAxis, partitionCoord);
 
                         // testing other side
                         if(node.negativeChild.Count != 0
-                        && tempClosestPoint[partitionAxis] >= min[partitionAxis]) {
+                        && partitionCoord >= KDTree.GetAxis(min, partitionAxis)) {
 
                             PushToQueue(node.negativeChild, tempClosestPoint);
                         }
@@ -107,13 +103,11 @@ namespace DataStructures.ViliWonka.KDTree {
                     // LEAF
 
                     // testing if node bounds are inside the query interval
-                    if(node.bounds.min[0] >= min[0]
-                    && node.bounds.min[1] >= min[1]
-                    && node.bounds.min[2] >= min[2]
+                    if(node.bounds.min.x >= min.x
+                    && node.bounds.min.y >= min.y
 
-                    && node.bounds.max[0] <= max[0]
-                    && node.bounds.max[1] <= max[1]
-                    && node.bounds.max[2] <= max[2]) {
+                    && node.bounds.max.x <= max.x
+                    && node.bounds.max.y <= max.y) {
 
                         for(int i = node.start; i < node.end; i++) {
 
@@ -128,15 +122,13 @@ namespace DataStructures.ViliWonka.KDTree {
 
                             int index = permutation[i];
 
-                            Vector3 v = points[index];
+                            Vector2 v = points[index];
 
-                            if(v[0] >= min[0]
-                            && v[1] >= min[1]
-                            && v[2] >= min[2]
+                            if(v.x >= min.x
+                            && v.y >= min.y
 
-                            && v[0] <= max[0]
-                            && v[1] <= max[1]
-                            && v[2] <= max[2]) {
+                            && v.x <= max.x
+                            && v.y <= max.y) {
 
                                 resultIndices.Add(index);
                             }
