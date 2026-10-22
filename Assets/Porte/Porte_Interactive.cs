@@ -36,6 +36,18 @@ public class PorteInteractive : MonoBehaviour
 
     public AudioSource sourceAudio;
 
+    [Header("HUD - MAINS")]
+    public Texture2D imageMainOuverte;
+    public Texture2D imageMainFermee;
+
+    [Range(16f, 256f)]
+    public float tailleMainHUD = 64f;
+
+    public Vector2 decalageMainHUD = Vector2.zero;
+
+    [Header("HUD - AFFICHAGE")]
+    public bool afficherMainSurPorteBloquee = true;
+
     private DoorSettings Settings => GameSettings.Door;
 
     private Rigidbody rb;
@@ -45,6 +57,8 @@ public class PorteInteractive : MonoBehaviour
     private bool deverrouillePendantPartie;
     private bool cameraEtaitActive;
     private bool peutDeverrouiller;
+
+    private bool joueurVisePorte;
 
     private float angleCible;
     private float sensInteraction;
@@ -66,8 +80,6 @@ public class PorteInteractive : MonoBehaviour
 
         deverrouillePendantPartie = false;
 
-        // L'objet affiche apres deverrouillage
-        // doit rester uniquement graphique.
         if (objetApresDeverrouillage != null)
         {
             Transform visuel =
@@ -94,7 +106,6 @@ public class PorteInteractive : MonoBehaviour
             }
         }
 
-        // Colliders de la vraie porte uniquement.
         AjouterColliders(modelePorte);
 
         rb = modelePorte.GetComponent<Rigidbody>();
@@ -148,16 +159,26 @@ public class PorteInteractive : MonoBehaviour
 
     void Update()
     {
+        joueurVisePorte = false;
+
         if (cameraJoueur == null || charniere == null)
+            return;
+
+        // Ne pas afficher les mains quand le jeu
+        // est en pause, par exemple pendant la
+        // lecture d'une note.
+        if (Time.timeScale == 0f)
             return;
 
         if (!interaction)
         {
+            joueurVisePorte = ViseCettePorte();
+
             peutDeverrouiller = false;
 
             if (porteBloquee &&
                 !deverrouillePendantPartie &&
-                ViseCettePorte())
+                joueurVisePorte)
             {
                 peutDeverrouiller =
                     Key_Scripte.PossedeCle(nomCleNecessaire);
@@ -172,6 +193,9 @@ public class PorteInteractive : MonoBehaviour
             return;
         }
 
+        // Pendant que le joueur tient la porte,
+        // on conserve l'image de main fermee.
+        joueurVisePorte = true;
         peutDeverrouiller = false;
 
         if (!ClicMaintenu())
@@ -207,8 +231,6 @@ public class PorteInteractive : MonoBehaviour
         if (!ViseCettePorte())
             return;
 
-        // La porte reste bloquee tant que
-        // le joueur ne l'a pas deverrouillee avec E.
         if (porteBloquee && !deverrouillePendantPartie)
         {
             JouerSon(sonPorteBloquee);
@@ -294,10 +316,8 @@ public class PorteInteractive : MonoBehaviour
 
         rb.WakeUp();
 
-        // NOUVEAU : son de la cle dans la serrure.
         JouerSon(sonDeverrouillage);
 
-        // Afficher le modele 3D decoratif.
         if (objetApresDeverrouillage != null)
         {
             RendreObjetPurementVisuel(
@@ -320,14 +340,12 @@ public class PorteInteractive : MonoBehaviour
         if (objet == null)
             return;
 
-        // Desactiver les colliders existants.
         Collider[] colliders =
             objet.GetComponentsInChildren<Collider>(true);
 
         foreach (Collider col in colliders)
             col.enabled = false;
 
-        // Desactiver la physique des Rigidbody du visuel.
         Rigidbody[] corps =
             objet.GetComponentsInChildren<Rigidbody>(true);
 
@@ -345,8 +363,7 @@ public class PorteInteractive : MonoBehaviour
 
         foreach (MeshFilter mesh in meshes)
         {
-            // Ne jamais creer de collider sur le
-            // modele graphique de deverrouillage.
+            // Ignorer l'objet purement graphique.
             if (objetApresDeverrouillage != null)
             {
                 Transform visuel =
@@ -391,15 +408,90 @@ public class PorteInteractive : MonoBehaviour
 
     void OnDisable()
     {
+        joueurVisePorte = false;
+        peutDeverrouiller = false;
+
         if (interaction && charniere != null)
             Relacher();
     }
 
     void OnGUI()
     {
-        if (!peutDeverrouiller || interaction)
+        if (Time.timeScale == 0f)
             return;
 
+        DessinerMainHUD();
+
+        if (peutDeverrouiller && !interaction)
+            DessinerTexteDeverrouillage();
+    }
+
+    void DessinerMainHUD()
+    {
+        if (!joueurVisePorte && !interaction)
+            return;
+
+        if (porteBloquee &&
+            !deverrouillePendantPartie &&
+            !afficherMainSurPorteBloquee)
+        {
+            return;
+        }
+
+        // Main fermee lorsque le clic est maintenu.
+        // Fonctionne meme si la porte est bloquee.
+        Texture2D image = ClicMaintenu()
+            ? imageMainFermee
+            : imageMainOuverte;
+
+        if (image == null)
+            return;
+
+        // Respecter les proportions des images.
+        float rapport = (float)image.width / image.height;
+
+        float largeurImage;
+        float hauteurImage;
+
+        if (rapport >= 1f)
+        {
+            largeurImage = tailleMainHUD;
+            hauteurImage = tailleMainHUD / rapport;
+        }
+        else
+        {
+            hauteurImage = tailleMainHUD;
+            largeurImage = tailleMainHUD * rapport;
+        }
+
+        Rect position = new Rect(
+            (Screen.width - largeurImage) / 2f +
+                decalageMainHUD.x,
+            (Screen.height - hauteurImage) / 2f +
+                decalageMainHUD.y,
+            largeurImage,
+            hauteurImage
+        );
+
+        Color ancienneCouleur = GUI.color;
+        int ancienneProfondeur = GUI.depth;
+
+        GUI.depth = -100;
+        GUI.color = Color.white;
+
+        GUI.DrawTexture(
+            position,
+            image,
+            ScaleMode.StretchToFill,
+            true
+        );
+
+        GUI.color = ancienneCouleur;
+        GUI.depth = ancienneProfondeur;
+    }
+
+    void DessinerTexteDeverrouillage()
+    {
         GUIStyle style = new GUIStyle(GUI.skin.label);
 
         style.alignment = TextAnchor.MiddleCenter;
