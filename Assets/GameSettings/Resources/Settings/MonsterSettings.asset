@@ -13,10 +13,28 @@ MonoBehaviour:
   m_Name: MonsterSettings
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSettings
   DefaultBehaviour: 1
-  radiusTargetReached: 1
+  radiusTargetReached: 2
   MovementSpeedDefault: 1
   MovementSpeedChasing: 3
   MovementSpeedFleeing: 6
+  MovementSpeedRunningToDoor: 10
+  chanceToWaitAfterTargetReached: 50
   radiusLoosingPlayer: 7
+  minRadiusToSound: 1
+  maxRadiusToSound: 8
+  minTimeToWait: 0.5
+  maxTimeToWait: 1
+  FleeingRadius: 10
+  MinTimeSpentOffMap: 1
+  MaxTimeSpentOffMap: 3
+  visionSystemEnabled: 1
+  radiusVisibility: 6
+  hearingSystemEnabled: 1
+  hearingThreshold: 0.5
+  soundSnapDistance: 5
+  perfectPrecisionLoudnessRatio: 4
+  fearSystemEnabled: 1
   showDebug: 1
   showDebugRadius: 1
+  showDebugHearing: 1
+  timeShowingAudioEvent: 0.5

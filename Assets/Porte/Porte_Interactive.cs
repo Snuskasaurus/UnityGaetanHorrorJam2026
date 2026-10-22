@@ -7,6 +7,8 @@ using UnityEngine.InputSystem;
 
 public class PorteInteractive : MonoBehaviour
 {
+    [SerializeField] private bool doMonsterSound;
+
     [Header("MODELES 3D")]
     public Transform modelePorte;
     public Transform contourPorte;
@@ -307,6 +309,11 @@ public class PorteInteractive : MonoBehaviour
         if (!Key_Scripte.PossedeCle(nomCleNecessaire))
             return;
 
+        if (doMonsterSound)
+        {
+            MonsterManager.PlaySoundWhenOpeningDoor(transform.position);
+        }
+
         deverrouillePendantPartie = true;
 
         rb.isKinematic = false;
@@ -382,8 +389,7 @@ public class PorteInteractive : MonoBehaviour
             if (mesh.GetComponent<Collider>() != null)
                 continue;
 
-            BoxCollider box =
-                mesh.gameObject.AddComponent<BoxCollider>();
+            BoxCollider box = mesh.gameObject.AddComponent<BoxCollider>();
 
             box.center = mesh.sharedMesh.bounds.center;
             box.size = mesh.sharedMesh.bounds.size;
