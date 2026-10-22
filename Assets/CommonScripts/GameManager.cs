@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 namespace Assets.CommonScripts
 {
@@ -17,9 +18,9 @@ namespace Assets.CommonScripts
 
         private static GameManager instance;
 
-        public UnityEvent OnStartLose;
-        public UnityEvent OnCancelLose;
-        public UnityEvent OnLose;
+        public UnityEvent OnStartLoosing;
+        public UnityEvent OnCancelLoose;
+        public UnityEvent OnLoose;
         public UnityEvent OnWin;
 
         void Awake()
@@ -45,12 +46,12 @@ namespace Assets.CommonScripts
                 timeBeforeLose -= Time.deltaTime;
                 if (!isLoosing)
                 {
-                    OnStartLose.Invoke();
+                    OnStartLoosing.Invoke();
                     isLoosing = true;
                 }
                 if (timeBeforeLose <= 0)
                 {
-                    OnLose.Invoke();
+                    Loose();
                 }
             }
             else if (timeBeforeLose != 0)
@@ -59,7 +60,7 @@ namespace Assets.CommonScripts
                 if (isLoosing)
                 {
                     isLoosing = false;
-                    OnCancelLose.Invoke();
+                    OnCancelLoose.Invoke();
                 }
             }
         }
@@ -89,6 +90,17 @@ namespace Assets.CommonScripts
             {
                 Common.FindTypeInScene<GameManager>().OnWin.Invoke();
             }
+        }
+
+        public static void Loosing()
+        {
+
+        }
+
+        public static void Loose()
+        {
+            instance.OnLoose.Invoke();
+            SceneManager.LoadScene("Scene_Menu", LoadSceneMode.Single);
         }
     }
 }

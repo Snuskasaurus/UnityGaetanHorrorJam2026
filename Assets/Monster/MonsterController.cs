@@ -1,11 +1,14 @@
+using Assets.CommonScripts;
 using System;
 using UnityEngine;
 
-[RequireComponent(typeof(UnityEngine.AI.NavMeshAgent))]
+[RequireComponent(typeof(UnityEngine.AI.NavMeshAgent), typeof(CapsuleCollider))]
 public class MonsterController : MonoBehaviour
 {
     private UnityEngine.AI.NavMeshAgent navMeshAgent;
     private Animator monsterAnimator;
+
+    private CapsuleCollider capsuleCollider;
 
     /// ----------------------------------------------------------------------------------------------------------------
     ///  PUBLIC FUNCTIONS
@@ -19,11 +22,20 @@ public class MonsterController : MonoBehaviour
     {
         navMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         monsterAnimator = GetComponentInChildren<Animator>();
+        capsuleCollider = GetComponent<CapsuleCollider>();
     }
 
     private void Update()
     {
         UpdateAnimations();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Player" && !MonsterManager.IsFleeing)
+        {
+            GameManager.Loose();
+        }
     }
 
     /// ----------------------------------------------------------------------------------------------------------------
