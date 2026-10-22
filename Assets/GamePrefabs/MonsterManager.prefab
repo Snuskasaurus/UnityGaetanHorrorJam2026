@@ -44,10 +44,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3049f5b13c0da4349bfedb8304e3e9ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterManager
-  DefaultBehaviour: 1
-  wanderingRange: 10
-  radiusTargetReached: 1
-  radiusDetectionPlayer: 3
-  radiusLoosingPlayer: 7
-  showDebug: 1
-  showDebugRadius: 1
+  SoundWhenOpeningDoor: {fileID: 8300000, guid: 544a304117ed91c48910e99dd9f7a84f, type: 3}

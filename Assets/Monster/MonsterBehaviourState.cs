@@ -8,6 +8,7 @@ public enum MonsterBehaviourState
     RememberingPlayer,
     Chasing, 
     Fleeing,
+    RunningToDoor,
 
     COUNT
 }

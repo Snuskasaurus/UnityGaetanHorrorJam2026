@@ -7,12 +7,13 @@ public class MonsterSettings : ScriptableObject
     public MonsterBehaviourState DefaultBehaviour = MonsterBehaviourState.Wandering;
 
     [Header("Common")]
-    public float radiusTargetReached = 1.0f;
+    public float radiusTargetReached = 3.0f;
 
     [Header("Movement")]
     public float MovementSpeedDefault = 10.0f;
     public float MovementSpeedChasing = 10.0f;
     public float MovementSpeedFleeing = 10.0f;
+    public float MovementSpeedRunningToDoor = 10.0f;
 
     [Header("State | Wandering")]
     [Range(0, 100)]

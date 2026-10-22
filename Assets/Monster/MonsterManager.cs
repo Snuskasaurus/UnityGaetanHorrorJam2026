@@ -26,6 +26,8 @@ public class MonsterManager : MonoBehaviour
 {
     private static MonsterManager INSTANCE;
 
+    [SerializeField] private AudioClip SoundWhenOpeningDoor;
+
     public static bool IsFleeing => INSTANCE.CurrentMonsterBehaviourState == MonsterBehaviourState.Fleeing;
 
     // Tuning values, read from the MonsterSettings asset of GameSettings
@@ -47,6 +49,13 @@ public class MonsterManager : MonoBehaviour
     /// ----------------------------------------------------------------------------------------------------------------
     ///  PUBLIC FUNCTIONS
     /// ----------------------------------------------------------------------------------------------------------------
+
+    public static void PlaySoundWhenOpeningDoor(Vector3 Position)
+    {
+        INSTANCE.monsterController.gameObject.GetComponent<AudioSource>().PlayOneShot(INSTANCE.SoundWhenOpeningDoor);
+        INSTANCE.blackboard.targetPosition = Position;
+        INSTANCE.ChangeBehaviourState(MonsterBehaviourState.RunningToDoor);
+    }
 
     // Both do nothing when the scene has no monster, so the player sounds and interactions work everywhere
     public static void SendSoundToMonsterHearing(Vector3 soundPosition, float soundVolume)
@@ -160,14 +169,34 @@ public class MonsterManager : MonoBehaviour
     }
 
     /// ----------------------------------------------------------------------------------------------------------------
+    /// RUNNING TO DOOR
+    /// ----------------------------------------------------------------------------------------------------------------
+
+    private void StartState_RunningToDoor()
+    {
+        monsterNavMeshAgent.speed = Settings.MovementSpeedRunningToDoor;
+        monsterNavMeshAgent.SetDestination(blackboard.targetPosition);
+    }
+
+    private void UpdateState_RunningToDoor()
+    {
+        StartChasing_IFN();
+
+        bool hasReachedTargetPosition = HasReachedTargetPosition();
+        if (hasReachedTargetPosition)
+        {
+            monsterNavMeshAgent.ResetPath();
+            ChangeBehaviourState(MonsterBehaviourState.Wandering);
+        }
+    }
+
+    /// ----------------------------------------------------------------------------------------------------------------
     /// CHASING STATE
     /// ----------------------------------------------------------------------------------------------------------------
 
     private void StartState_Chasing()
     {
         UpdateChasingTargetPosition();
-
-        monsterNavMeshAgent.speed = Settings.MovementSpeedChasing;
     }
 
     private void UpdateState_Chasing()
@@ -310,6 +339,10 @@ public class MonsterManager : MonoBehaviour
             {
                 StartState_Fleeing();
             } break;
+            case MonsterBehaviourState.RunningToDoor:
+            {
+                StartState_RunningToDoor();
+            } break;
             default:
             {
                 Debug.Assert((int)MonsterBehaviourState.COUNT == 8);
@@ -352,6 +385,10 @@ public class MonsterManager : MonoBehaviour
             {
                 UpdateState_Fleeing();
             } break;
+            case MonsterBehaviourState.RunningToDoor:
+            {
+                UpdateState_RunningToDoor();
+            } break;
             default:
             {
                 Debug.Assert((int)MonsterBehaviourState.COUNT == 8);
@@ -386,6 +423,20 @@ public class MonsterManager : MonoBehaviour
         }
     }
 
+    private void UpdateSoundInfo(Vector3 soundPosition, float soundPrecision)
+    {
+        if (RequestedMonsterBehaviourState == MonsterBehaviourState.InvestigatingSound)
+        {
+            UpdateTargetToSound_IFN(soundPosition, soundPrecision);
+        }
+        else
+        {
+            blackboard.lastSoundHeardPosition = soundPosition;
+            blackboard.lastSoundHeardPrecision = soundPrecision;
+            ChangeBehaviourState(MonsterBehaviourState.InvestigatingSound);
+        }
+    }
+
     private void SendSoundToMonsterHearing_internal(Vector3 soundPosition, float soundVolume)
     {
         if (Settings.hearingSystemEnabled == false)
@@ -416,16 +467,7 @@ public class MonsterManager : MonoBehaviour
 
         if (soundCanBeHeard)
         {
-            if (RequestedMonsterBehaviourState == MonsterBehaviourState.InvestigatingSound)
-            {
-                UpdateTargetToSound_IFN(soundPosition, soundPrecision);
-            }
-            else
-            {
-                blackboard.lastSoundHeardPosition = soundPosition;
-                blackboard.lastSoundHeardPrecision = soundPrecision;
-                ChangeBehaviourState(MonsterBehaviourState.InvestigatingSound);
-            }
+            UpdateSoundInfo(soundPosition, soundPrecision);
         }
     }
 
