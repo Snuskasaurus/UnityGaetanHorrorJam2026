@@ -26,6 +26,8 @@ public class MonsterManager : MonoBehaviour
 {
     private static MonsterManager INSTANCE;
 
+    public static bool IsFleeing => INSTANCE.CurrentMonsterBehaviourState == MonsterBehaviourState.Fleeing;
+
     // Tuning values, read from the MonsterSettings asset of GameSettings
     private MonsterSettings Settings => GameSettings.Monster;
 
