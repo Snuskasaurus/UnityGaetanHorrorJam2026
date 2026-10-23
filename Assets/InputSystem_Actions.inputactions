@@ -1071,6 +1071,46 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "menu-IG",
+            "id": "4223e436-c0b2-49f7-91e0-45a0d9602ab9",
+            "actions": [
+                {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "6f0fac5d-3088-4caf-826f-0a977ff038c5",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "672926c4-f562-4e6b-8605-fe4e2aa90ebc",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1f5da53e-a1a9-4810-8d6a-d5471d830fc0",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

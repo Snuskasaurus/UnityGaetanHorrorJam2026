@@ -13,7 +13,8 @@ public class MenuPrincipal : MonoBehaviour
     [SerializeField] private Transform cibleQuitter;
 
     [Header("Vitesse du deplacement de la camera")]
-    [SerializeField, Min(0.1f)] private float vitesseCamera = 1f;
+    [SerializeField, Min(0.1f)]
+    private float vitesseCamera = 1f;
 
     [Header("Menu Options")]
     [SerializeField] private GameObject panneauOptions;
@@ -23,10 +24,17 @@ public class MenuPrincipal : MonoBehaviour
     [SerializeField] private CanvasGroup canvasGroupChargement;
     [SerializeField] private TMP_Text texteChargement;
 
+    // ====================================
+    // ASTUCES MODIFIABLES DANS L'INSPECTOR
+    // ====================================
+
     [Header("Astuces de chargement")]
     [SerializeField] private TMP_Text textetip;
 
-    // Tuning values, read from the MenuSettings asset of GameSettings
+    [TextArea(2, 4)]
+    [SerializeField] private string[] astuces;
+
+    // Parametres du menu
     private MenuSettings Settings => GameSettings.Menu;
 
     [Header("Personnage de chargement")]
@@ -46,19 +54,15 @@ public class MenuPrincipal : MonoBehaviour
 
     private void Start()
     {
-        // Afficher la souris dans le menu
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        // Initialisation du panneau de chargement
         canvasGroupChargement.alpha = 0f;
         canvasGroupChargement.blocksRaycasts = true;
         canvasGroupChargement.interactable = false;
 
-        // Recuperer le bouton du panneau
         boutonContinuer = panelChargement.GetComponent<Button>();
 
-        // Ajouter le bouton s'il n'existe pas
         if (boutonContinuer == null)
         {
             boutonContinuer = panelChargement.AddComponent<Button>();
@@ -72,9 +76,10 @@ public class MenuPrincipal : MonoBehaviour
         boutonContinuer.interactable = false;
         boutonContinuer.onClick.AddListener(Continuer);
 
-        // Masquer le panneau au lancement
         panelChargement.SetActive(false);
-        if (panneauOptions != null) panneauOptions.SetActive(false);
+
+        if (panneauOptions != null)
+            panneauOptions.SetActive(false);
     }
 
     // ====================================
@@ -87,7 +92,12 @@ public class MenuPrincipal : MonoBehaviour
         Quaternion rotationDepart = cameraMenu.rotation;
 
         float temps = 0f;
-        float duree = Mathf.Max(0.01f, Settings.dureeDeplacement / Mathf.Max(0.1f, vitesseCamera));
+
+        float duree = Mathf.Max(
+            0.01f,
+            Settings.dureeDeplacement /
+            Mathf.Max(0.1f, vitesseCamera)
+        );
 
         while (temps < duree)
         {
@@ -98,14 +108,12 @@ public class MenuPrincipal : MonoBehaviour
             float progresLisse =
                 Settings.courbeMouvement.Evaluate(progression);
 
-            // Position de la camera
             cameraMenu.position = Vector3.Lerp(
                 positionDepart,
                 destination.position,
                 progresLisse
             );
 
-            // Rotation de la camera
             cameraMenu.rotation = Quaternion.Slerp(
                 rotationDepart,
                 destination.rotation,
@@ -115,7 +123,6 @@ public class MenuPrincipal : MonoBehaviour
             yield return null;
         }
 
-        // Position et rotation exactes
         cameraMenu.position = destination.position;
         cameraMenu.rotation = destination.rotation;
     }
@@ -157,15 +164,19 @@ public class MenuPrincipal : MonoBehaviour
 
     private void AfficherAstuceAleatoire()
     {
-        // Verifier que des astuces existent
-        if (Settings.astuces == null || Settings.astuces.Length == 0)
+        // Les astuces viennent de l'Inspector
+        if (astuces == null ||
+            astuces.Length == 0 ||
+            textetip == null)
+        {
             return;
+        }
 
         // Choisir une astuce au hasard
-        int index = Random.Range(0, Settings.astuces.Length);
+        int index = Random.Range(0, astuces.Length);
 
         // Afficher l'astuce
-        textetip.text = Settings.astuces[index];
+        textetip.text = astuces[index];
     }
 
     // ====================================
@@ -174,7 +185,6 @@ public class MenuPrincipal : MonoBehaviour
 
     public void Jouer()
     {
-        // Eviter plusieurs clics successifs
         if (transitionEnCours)
             return;
 
@@ -183,15 +193,22 @@ public class MenuPrincipal : MonoBehaviour
         StartCoroutine(JouerEtCharger());
     }
 
+    // ====================================
+    // BOUTON OPTIONS
+    // ====================================
+
     public void Options()
     {
-        if (transitionEnCours || panneauOptions == null) return;
+        if (transitionEnCours || panneauOptions == null)
+            return;
+
         panneauOptions.SetActive(true);
     }
 
     public void FermerOptions()
     {
-        if (panneauOptions != null) panneauOptions.SetActive(false);
+        if (panneauOptions != null)
+            panneauOptions.SetActive(false);
     }
 
     // ====================================
@@ -200,7 +217,6 @@ public class MenuPrincipal : MonoBehaviour
 
     public void Quitter()
     {
-        // Eviter plusieurs clics successifs
         if (transitionEnCours)
             return;
 
@@ -215,12 +231,10 @@ public class MenuPrincipal : MonoBehaviour
 
     private IEnumerator QuitterApresAnimation()
     {
-        // Deplacer la camera vers la sortie
         yield return StartCoroutine(
             DeplacerCamera(cibleQuitter)
         );
 
-        // Fermer le jeu apres l'animation
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
@@ -242,13 +256,13 @@ public class MenuPrincipal : MonoBehaviour
         // 2. Placer le personnage a gauche
         personnageCourse.position = pointDepart.position;
 
-        // 3. Afficher le panneau
+        // 3. Afficher le panneau de chargement
         panelChargement.SetActive(true);
 
-        // 4. Choisir une astuce au hasard
+        // 4. Afficher une astuce aleatoire
         AfficherAstuceAleatoire();
 
-        // 5. Fondu progressif au noir
+        // 5. Fondu progressif
         yield return StartCoroutine(
             FonduChargement()
         );
@@ -265,38 +279,36 @@ public class MenuPrincipal : MonoBehaviour
 
     private IEnumerator ChargerNiveau()
     {
-        // Masquer la souris pendant le chargement
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = false;
 
         pretAContinuer = false;
+
         texteChargement.text = "CHARGEMENT...";
 
-        // Verifier que le niveau existe
-        if (!Application.CanStreamedLevelBeLoaded(Settings.nomSceneJeu))
+        // Verifier que la scene existe
+        if (!Application.CanStreamedLevelBeLoaded(
+            Settings.nomSceneJeu))
         {
-            // Debug.LogError("Scene introuvable : " + nomSceneJeu);
-
             texteChargement.text = "ERREUR DE CHARGEMENT";
+
             Cursor.visible = true;
             yield break;
         }
 
-        // Demarrer le chargement asynchrone
+        // Demarrer le chargement
         chargementEnCours =
             SceneManager.LoadSceneAsync(Settings.nomSceneJeu);
 
         if (chargementEnCours == null)
         {
-            // Debug.LogError("Chargement impossible.");
-
             texteChargement.text = "ERREUR DE CHARGEMENT";
-            Cursor.visible = true;
 
+            Cursor.visible = true;
             yield break;
         }
 
-        // Ne pas activer la scene automatiquement
+        // Attendre l'autorisation du joueur
         chargementEnCours.allowSceneActivation = false;
 
         float progressionAffichee = 0f;
@@ -310,19 +322,16 @@ public class MenuPrincipal : MonoBehaviour
 
         while (chargementEnCours.progress < 0.9f)
         {
-            // Progression reelle du chargement
             float progressionReelle = Mathf.Clamp01(
                 chargementEnCours.progress / 0.9f
             );
 
-            // Faire avancer le personnage progressivement
             progressionAffichee = Mathf.MoveTowards(
                 progressionAffichee,
                 progressionReelle,
                 Time.unscaledDeltaTime * vitesseCourse
             );
 
-            // Deplacer le personnage
             personnageCourse.position = Vector3.Lerp(
                 pointDepart.position,
                 pointArrivee.position,
@@ -333,7 +342,7 @@ public class MenuPrincipal : MonoBehaviour
         }
 
         // ====================================
-        // ATTENTE DE SECURITE : 5 SECONDES
+        // ATTENTE DE SECURITE
         // ====================================
 
         float tempsAttente = 0f;
@@ -343,7 +352,6 @@ public class MenuPrincipal : MonoBehaviour
         {
             tempsAttente += Time.unscaledDeltaTime;
 
-            // Terminer la course
             progressionAffichee = Mathf.MoveTowards(
                 progressionAffichee,
                 1f,
@@ -359,7 +367,6 @@ public class MenuPrincipal : MonoBehaviour
             yield return null;
         }
 
-        // Placer le personnage au point d'arrivee
         personnageCourse.position = pointArrivee.position;
 
         // ====================================
@@ -368,13 +375,11 @@ public class MenuPrincipal : MonoBehaviour
 
         texteChargement.text = "CLIQUER POUR CONTINUER";
 
-        // Autoriser le joueur a continuer
         pretAContinuer = true;
 
         canvasGroupChargement.interactable = true;
         boutonContinuer.interactable = true;
 
-        // Faire reapparaitre la souris
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
@@ -385,22 +390,18 @@ public class MenuPrincipal : MonoBehaviour
 
     public void Continuer()
     {
-        // Verifier que le chargement est pret
         if (!pretAContinuer)
             return;
 
         if (chargementEnCours == null)
             return;
 
-        // Bloquer les clics supplementaires
         pretAContinuer = false;
         boutonContinuer.interactable = false;
 
-        // Masquer et verrouiller la souris
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        // Autoriser l'activation du niveau
         chargementEnCours.allowSceneActivation = true;
     }
 }
