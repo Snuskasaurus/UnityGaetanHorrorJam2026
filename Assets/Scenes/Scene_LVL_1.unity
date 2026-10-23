@@ -47662,7 +47662,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 801785107886988838, guid: 26d497051c575744fab5afc5fea23f8e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 16.41
+      value: 16.596
       objectReference: {fileID: 0}
     - target: {fileID: 801785107886988838, guid: 26d497051c575744fab5afc5fea23f8e, type: 3}
       propertyPath: m_LocalPosition.y
@@ -47670,7 +47670,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 801785107886988838, guid: 26d497051c575744fab5afc5fea23f8e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 200.82
+      value: 200.766
       objectReference: {fileID: 0}
     - target: {fileID: 801785107886988838, guid: 26d497051c575744fab5afc5fea23f8e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -63221,7 +63221,7 @@ MonoBehaviour:
   contourPorte: {fileID: 0}
   cameraJoueur: {fileID: 2053162772}
   scriptRotationCamera: {fileID: 1198515601}
-  boxColliderAIgnorer: {fileID: 0}
+  boxColliderAIgnorer: {fileID: 831109609}
   porteBloquee: 1
   nomCleNecessaire: CLE_Maintenance
   objetApresDeverrouillage: {fileID: 0}
