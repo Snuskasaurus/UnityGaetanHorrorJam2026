@@ -34,7 +34,7 @@ MonoBehaviour:
   soundSnapDistance: 5
   perfectPrecisionLoudnessRatio: 4
   fearSystemEnabled: 1
-  showDebug: 1
-  showDebugRadius: 1
-  showDebugHearing: 1
+  showDebug: 0
+  showDebugRadius: 0
+  showDebugHearing: 0
   timeShowingAudioEvent: 0.5

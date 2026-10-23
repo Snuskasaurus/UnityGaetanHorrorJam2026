@@ -1,4 +1,4 @@
-
+﻿
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -11,6 +11,12 @@ public class MenuPrincipal : MonoBehaviour
     [SerializeField] private Transform cameraMenu;
     [SerializeField] private Transform cibleJouer;
     [SerializeField] private Transform cibleQuitter;
+
+    [Header("Vitesse du deplacement de la camera")]
+    [SerializeField, Min(0.1f)] private float vitesseCamera = 1f;
+
+    [Header("Menu Options")]
+    [SerializeField] private GameObject panneauOptions;
 
     [Header("Ecran de chargement")]
     [SerializeField] private GameObject panelChargement;
@@ -68,6 +74,7 @@ public class MenuPrincipal : MonoBehaviour
 
         // Masquer le panneau au lancement
         panelChargement.SetActive(false);
+        if (panneauOptions != null) panneauOptions.SetActive(false);
     }
 
     // ====================================
@@ -80,7 +87,7 @@ public class MenuPrincipal : MonoBehaviour
         Quaternion rotationDepart = cameraMenu.rotation;
 
         float temps = 0f;
-        float duree = Mathf.Max(0.01f, Settings.dureeDeplacement);
+        float duree = Mathf.Max(0.01f, Settings.dureeDeplacement / Mathf.Max(0.1f, vitesseCamera));
 
         while (temps < duree)
         {
@@ -174,6 +181,17 @@ public class MenuPrincipal : MonoBehaviour
         transitionEnCours = true;
 
         StartCoroutine(JouerEtCharger());
+    }
+
+    public void Options()
+    {
+        if (transitionEnCours || panneauOptions == null) return;
+        panneauOptions.SetActive(true);
+    }
+
+    public void FermerOptions()
+    {
+        if (panneauOptions != null) panneauOptions.SetActive(false);
     }
 
     // ====================================

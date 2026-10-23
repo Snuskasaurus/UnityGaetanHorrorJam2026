@@ -1,10 +1,7 @@
 
 using System.Collections.Generic;
 using UnityEngine;
-
-#if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
-#endif
 
 public class Key_Scripte : MonoBehaviour
 {
@@ -15,7 +12,7 @@ public class Key_Scripte : MonoBehaviour
     public bool faireDisparaitre = true;
 
     [Header("AFFICHAGE")]
-    public string texteRamassage = "[E] Ramasser la cle";
+    public string texteRamassage = "Ramasser la cle";
 
     [Header("SON RAMASSAGE")]
     public AudioClip sonRamassageCle;
@@ -27,8 +24,13 @@ public class Key_Scripte : MonoBehaviour
         new HashSet<string>();
 
     private bool visee;
+    private InputAction actionRamassage;
+    private bool avertissementAffiche;
 
-    // Reinitialisation au lancement de chaque session.
+    // ========================================
+    // INITIALISATION
+    // ========================================
+
     [RuntimeInitializeOnLoadMethod(
         RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ReinitialiserCles()
@@ -42,13 +44,95 @@ public class Key_Scripte : MonoBehaviour
                clesRamassees.Contains(nom.Trim());
     }
 
-    void Start()
+    private void Start()
     {
         if (cameraJoueur == null)
             cameraJoueur = Camera.main;
+
+        RecupererActionRamassage();
     }
 
-    void Update()
+    // ========================================
+    // INPUT SYSTEM
+    // ========================================
+
+    private void RecupererActionRamassage()
+    {
+        if (actionRamassage != null)
+            return;
+
+        // Utilise le meme Input System que le joueur
+        // et que le menu Options.
+        InputAction actionLook = InputManager.PlayerLook;
+
+        if (actionLook != null &&
+            actionLook.actionMap != null &&
+            actionLook.actionMap.asset != null)
+        {
+            actionRamassage =
+                actionLook.actionMap.asset.FindAction(
+                    "Player/Interact", false);
+        }
+
+        if (actionRamassage == null && !avertissementAffiche)
+        {
+            Debug.LogWarning(
+                "Key_Scripte : action Player/Interact introuvable !",
+                this
+            );
+
+            avertissementAffiche = true;
+        }
+    }
+
+    private bool ToucheRamassageAppuyee()
+    {
+        if (actionRamassage == null)
+            RecupererActionRamassage();
+
+        return actionRamassage != null &&
+               actionRamassage.enabled &&
+               actionRamassage.WasPressedThisFrame();
+    }
+
+    // ========================================
+    // AFFICHAGE DE LA TOUCHE
+    // ========================================
+
+    private string ObtenirToucheAffichee()
+    {
+        if (actionRamassage == null)
+            RecupererActionRamassage();
+
+        if (actionRamassage == null)
+            return "?";
+
+        // Recherche la touche clavier active,
+        // y compris si elle a ete modifiee.
+        for (int i = 0; i < actionRamassage.bindings.Count; i++)
+        {
+            string chemin =
+                actionRamassage.bindings[i].effectivePath;
+
+            if (string.IsNullOrEmpty(chemin))
+                continue;
+
+            if (chemin.StartsWith(
+                "<Keyboard>/",
+                System.StringComparison.OrdinalIgnoreCase))
+            {
+                return actionRamassage.GetBindingDisplayString(i);
+            }
+        }
+
+        return actionRamassage.GetBindingDisplayString();
+    }
+
+    // ========================================
+    // DETECTION DE LA CLE
+    // ========================================
+
+    private void Update()
     {
         visee = false;
 
@@ -66,18 +150,24 @@ public class Key_Scripte : MonoBehaviour
             distanceRamassage,
             ~0,
             QueryTriggerInteraction.Ignore))
+        {
             return;
+        }
 
         if (hit.collider.GetComponentInParent<Key_Scripte>() != this)
             return;
 
         visee = true;
 
-        if (ToucheEAppuyee())
+        if (ToucheRamassageAppuyee())
             RamasserCle();
     }
 
-    void RamasserCle()
+    // ========================================
+    // RAMASSAGE
+    // ========================================
+
+    private void RamasserCle()
     {
         if (string.IsNullOrWhiteSpace(nomCle))
         {
@@ -95,9 +185,7 @@ public class Key_Scripte : MonoBehaviour
 
         visee = false;
 
-        // Joue le son independamment de l'objet cle.
-        // Cela evite que le son s'arrete lorsque
-        // la cle disparait de la scene.
+        // Jouer le son meme si l'objet disparait.
         if (sonRamassageCle != null)
         {
             Vector3 positionSon = cameraJoueur != null
@@ -117,7 +205,11 @@ public class Key_Scripte : MonoBehaviour
             gameObject.SetActive(false);
     }
 
-    void OnGUI()
+    // ========================================
+    // TEXTE DE RAMASSAGE
+    // ========================================
+
+    private void OnGUI()
     {
         if (!visee)
             return;
@@ -129,6 +221,22 @@ public class Key_Scripte : MonoBehaviour
         style.fontStyle = FontStyle.Bold;
         style.normal.textColor = Color.white;
 
+        string touche = ObtenirToucheAffichee();
+
+        // Supprime une ancienne indication [E]
+        // pour ne pas afficher deux touches.
+        string description = texteRamassage;
+
+        if (description.StartsWith("["))
+        {
+            int fin = description.IndexOf(']');
+
+            if (fin >= 0)
+                description = description.Substring(fin + 1).TrimStart();
+        }
+
+        string texteFinal = "[" + touche + "] " + description;
+
         GUI.Label(
             new Rect(
                 Screen.width / 2f - 160,
@@ -136,20 +244,8 @@ public class Key_Scripte : MonoBehaviour
                 320,
                 45
             ),
-            texteRamassage,
+            texteFinal,
             style
         );
-    }
-
-    bool ToucheEAppuyee()
-    {
-#if ENABLE_INPUT_SYSTEM
-        return Keyboard.current != null &&
-               Keyboard.current.eKey.wasPressedThisFrame;
-#elif ENABLE_LEGACY_INPUT_MANAGER
-        return Input.GetKeyDown(KeyCode.E);
-#else
-        return false;
-#endif
     }
 }

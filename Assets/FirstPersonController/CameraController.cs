@@ -12,6 +12,15 @@ public class CameraController : MonoBehaviour
     [Range(0.1f, 5f)]
     private float mouseSensitivity = 0.5f;
 
+    private const string SensibiliteKey = "Options_SensibiliteSouris";
+    public static float SensibiliteSauvegardee => PlayerPrefs.GetFloat(SensibiliteKey, 0.5f);
+
+    public static void SauverSensibilite(float valeur)
+    {
+        PlayerPrefs.SetFloat(SensibiliteKey, Mathf.Clamp(valeur, 0.1f, 5f));
+        PlayerPrefs.Save();
+    }
+
     // Some players get motion sick with these, they should be options of the menu
     [SerializeField]
     private bool enableCameraShake = true;
@@ -56,6 +65,7 @@ public class CameraController : MonoBehaviour
     {
         //Disable cursor and lock it to the center of the screen
         Cursor.lockState = CursorLockMode.Locked;
+        mouseSensitivity = SensibiliteSauvegardee;
         yaw = transform.eulerAngles.y;
         cameraBaseLocalPosition = playerManager.PlayerCamera.transform.localPosition;
     }
