@@ -1,51 +1,93 @@
+using System;
 using System.Collections.Generic;
+using NUnit.Framework.Constraints;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityPipeline.Microsoft.CodeAnalysis;
 using Random = UnityEngine.Random;
+
+public enum RoomLocation
+{
+    All,
+    Inside,
+    Outside,
+}
 
 public static class RoomManager
 {
     private static List<Room> RoomList = new List<Room>();
+    private static List<Room> RoomListInside = new List<Room>();
+    private static List<Room> RoomListOutside = new List<Room>();
     private static List<int> CacheIndexes = new List<int>();
 
-    public static bool TryGetClosestRoomAtPosition(ref Room room, Vector3 position, float radius)
+
+    private static int GetRoomCount(RoomLocation roomLocation)
     {
+        switch (roomLocation)
+        {
+            case RoomLocation.All: return RoomList.Count;
+            case RoomLocation.Inside: return RoomListInside.Count;
+            case RoomLocation.Outside: return RoomListOutside.Count;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(roomLocation), roomLocation, null);
+        }
+    }
+
+    private static Room GetRoomAtIndex(int index, RoomLocation roomLocation)
+    {
+        switch (roomLocation)
+        {
+            case RoomLocation.All: return RoomList[index];
+            case RoomLocation.Inside: return RoomListInside[index];
+            case RoomLocation.Outside: return RoomListOutside[index];
+            default: throw new ArgumentOutOfRangeException(nameof(roomLocation), roomLocation, null);
+        }
+    }
+
+    public static bool TryGetClosestRoomAtPosition(out Room room, Vector3 position, float radius, RoomLocation roomLocation)
+    {
+        room = GetRoomAtIndex(0, roomLocation);
+
         #if UNITY_EDITOR
         if (!CheckHasRoomRegistered())
+        {
             return false;
+        }
         #endif
 
         float sqrRadius = radius * radius;
 
         float lastSqrDistance = float.MaxValue;
         int lastRoomIndex = -1;
-        for (int i = 0; i < RoomList.Count; i++)
+        int roomCount = GetRoomCount(roomLocation);
+        for (int i = 0; i < roomCount; i++)
         {
-            Room candidateRoom = RoomList[i];
+            Room candidateRoom = GetRoomAtIndex(i, roomLocation);
             if (candidateRoom.RoomIsInSqrRadius(position, sqrRadius, out float sqrDistance))
             {
                 if (sqrDistance < lastSqrDistance)
                 {
                     lastRoomIndex = i;
                     lastSqrDistance = sqrDistance;
+                    room = candidateRoom;
                 }
             }
         }
-
         return true;
     }
 
-    public static bool TryGetRandomRoom(ref Room room, Vector3 position, float avoidanceRadius)
+    public static bool TryGetRandomRoom(ref Room room, Vector3 position, float avoidanceRadius, RoomLocation roomLocation)
     {
         #if UNITY_EDITOR
         if (!CheckHasRoomRegistered())
             return false;
         #endif
 
-        for (int i = 0; i < RoomList.Count; i++)
+        int roomCount = GetRoomCount(roomLocation);
+        for (int i = 0; i < roomCount; i++)
         {
-            Room candidateRoom = RoomList[i];
-
+            Room candidateRoom = GetRoomAtIndex(i, roomLocation);
+        
             bool IsInAvoidanceRadius = candidateRoom.RoomIsInSqrRadius(position, avoidanceRadius, out float sqrDistance);
             if (IsInAvoidanceRadius)
                 continue;
@@ -58,13 +100,13 @@ public static class RoomManager
             return false;
 
         int roomIndex = CacheIndexes[RandomIndex];
-        room = RoomList[roomIndex];
+        room = GetRoomAtIndex(RandomIndex, roomLocation);
         CacheIndexes.Clear();
 
         return true;
     }
 
-    public static bool TryGetRandomRoom(ref Room room)
+    public static bool TryGetRandomRoom(ref Room room, RoomLocation roomLocation)
     {
         #if UNITY_EDITOR
         if (!CheckHasRoomRegistered())
@@ -72,11 +114,12 @@ public static class RoomManager
         #endif
 
         int roomIndex = 0;
-        if (RoomList.Count > 1)
+        int roomCount = GetRoomCount(roomLocation);
+        if (roomCount > 1)
         {
-            roomIndex = Random.Range(0, RoomList.Count);
+            roomIndex = Random.Range(0, roomCount);
         }
-        room = RoomList[roomIndex];
+        room = GetRoomAtIndex(roomIndex, roomLocation);
         return true;
     }
 
@@ -90,20 +133,31 @@ public static class RoomManager
         return true;
     }
 
-    public static void RegisterRoom(Room room)
+    public static void RegisterRoom(Room room, bool isInside)
     {
         RoomList.Add(room);
+        if (isInside)
+        {
+            RoomListInside.Add(room);
+        }
+        else
+        {
+            RoomListOutside.Add(room);
+        }
     }
 
     public static void UnregisterRoom(Room room)
     {
         RoomList.Remove(room);
+        RoomListInside.Remove(room);
+        RoomListOutside.Remove(room);
     }
 }
 
 public class Room : MonoBehaviour
 {
     [SerializeField] private BoxCollider boxCollider;
+    [SerializeField] public bool IsInside = false;
 
     public Vector3 GetRandomPositionInsideRoom()
     {
@@ -158,7 +212,7 @@ public class Room : MonoBehaviour
             Debug.LogError($"Room '{boxCollider.name}' has a non-unit scale: {scale}", boxCollider);
         }
 
-        RoomManager.RegisterRoom(this);
+        RoomManager.RegisterRoom(this, IsInside);
     }
 
     private void OnDisable()

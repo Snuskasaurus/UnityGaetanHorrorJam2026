@@ -41,6 +41,9 @@ public class MonsterManager : MonoBehaviour
     private readonly List<SoundInfo> debugSoundInfosList = new List<SoundInfo>();
     private SoundInfo DebugLastSoundHeard;
 
+    private RoomLocation playerRoomLocation;
+    private Room playerRoom;
+
     // References
     private PlayerController playerController;
     private MonsterController monsterController;
@@ -100,11 +103,12 @@ public class MonsterManager : MonoBehaviour
 
     private void Update()
     {
+        UpdatePlayerRoomLocation();
+
         DispatchStateUpdate(CurrentMonsterBehaviourState);
 
         if (CurrentMonsterBehaviourState != RequestedMonsterBehaviourState)
         {
-            // DispatchMonsterBehaviourState_Stop(CurrentMonsterBehaviourState); // Julien Rogel (11-10-2026): Not needed ?
             DispatchBehaviourStart(RequestedMonsterBehaviourState);
             CurrentMonsterBehaviourState = RequestedMonsterBehaviourState;
         }
@@ -558,7 +562,7 @@ public class MonsterManager : MonoBehaviour
     {
         Vector3 targetPosition = Vector3.zero;
         Room room = null;
-        if (RoomManager.TryGetRandomRoom(ref room))
+        if (RoomManager.TryGetRandomRoom(ref room, playerRoomLocation))
         {
             targetPosition = room.GetRandomPositionInsideRoom();
         }
@@ -608,6 +612,19 @@ public class MonsterManager : MonoBehaviour
     {
         blackboard.targetPosition = blackboard.lastPlayerPosition;
         monsterNavMeshAgent.SetDestination(blackboard.targetPosition);
+    }
+
+    private void UpdatePlayerRoomLocation()
+    {
+        if (!RoomManager.TryGetClosestRoomAtPosition(out Room room, playerController.transform.position, 10.0f, RoomLocation.All))
+        {
+            Debug.LogWarning("Failed to find player room");
+        }
+        else
+        {
+            playerRoomLocation = room.IsInside ?  RoomLocation.Inside : RoomLocation.Outside;
+            playerRoom = room;
+        }
     }
 
     /// ----------------------------------------------------------------------------------------------------------------
