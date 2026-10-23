@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &1557374505633850037
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1513792633597007849, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 9.969
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513792633597007849, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.086
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513792633597007849, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 208.671
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513792633597007849, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.6990063
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513792633597007849, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.6990063
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513792633597007849, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.106724866
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513792633597007849, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.106724866
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513792633597007849, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513792633597007849, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513792633597007849, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 17.362
+      objectReference: {fileID: 0}
+    - target: {fileID: 2182489682973510995, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: m_Name
+      value: Feuille-soldat Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 2633707270438204117, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: titreNote
+      value: Derniere note d'un Boche
+      objectReference: {fileID: 0}
+    - target: {fileID: 2633707270438204117, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: contenuNote
+      value: "Ma tr\xE8s ch\xE8re \xE9pouse,\n\nSi cette lettre te parvient, c'est que je ne suis plus de ce monde.\nNous avons trop longtemps tir\xE9 le diable par la queue, et voil\xE0 qu'il vient r\xE9clamer son d\xFB...Que Dieu nous pardonne ce que nous avons fait ici.\n\nNos savants ont donn\xE9 naissance \xE0 une abomination... Un monstre fran\xE7ais, fruit de nos exp\xE9riences maudites. Nous pensions cr\xE9er une arme qui apporterait la victoire \xE0 notre patrie. Mais cette chose ne conna\xEEt ni drapeau, ni patrie, ni piti\xE9. Sa vengeance d\xE9passe d\xE9sormais toutes les querelles entre nos nations.\n\nLe commandant, dans sa folie, a fait encha\xEEner l'unique porte qui nous permettait de quitter les tranch\xE9es. Il nous condamne \xE0 rester ici, face \xE0 cette cr\xE9ature, ou \xE0 tenter notre chance dans le no man's land, sous le feu des mitrailleuses. Depuis des heures, j'entends les cris de mes camarades. Puis ces bruits... Mon Dieu, ces bruits de chair et d'os que l'on d\xE9chire...\n\nIl ne me reste qu'une seule cartouche. J'ai pris ma d\xE9cision. Puisse le Seigneur me pardonner ce dernier p\xE9ch\xE9.\n\nPardonne-moi, mon amour, de ne point tenir ma promesse de revenir aupr\xE8s de toi. Embrasse nos enfants pour moi. Dis-leur que leur p\xE8re les aimait plus que tout au monde.\n\nAdieu, ma bien-aim\xE9e.\n\nTon \xE9poux, pour l'\xE9ternit\xE9."
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: da142a754a607fe448a00569908a49b6, type: 3}

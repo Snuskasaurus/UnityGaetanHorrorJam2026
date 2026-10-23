@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &4871756334361317564
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1513792633597007849, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -65.855
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513792633597007849, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.938
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513792633597007849, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 187.018
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513792633597007849, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.67623556
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513792633597007849, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.67623556
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513792633597007849, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.20665322
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513792633597007849, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.20665322
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513792633597007849, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513792633597007849, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513792633597007849, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 33.986
+      objectReference: {fileID: 0}
+    - target: {fileID: 2182489682973510995, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: m_Name
+      value: Feuille-scientifique Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 2633707270438204117, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: titreNote
+      value: "16/02/1916 J'ai l'honneur de vous rendre compte des fait suivant : Nous avont trouver un cobaye qui r\xE9pond au Ungeheuer-XI ! il en ai a sa 20\xE9me injection avec succes, "
+      objectReference: {fileID: 0}
+    - target: {fileID: 2633707270438204117, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: contenuNote
+      value: "Programme exp\xE9rimental : UNGEHEUER-XI\nLaboratoire militaire imp\xE9rial allemand\n20 octobre 1916\nJ'ai l'honneur de rendre compte des faits suivants :\n\nNous avons enfin trouv\xE9 un sujet compatible avec le s\xE9rum exp\xE9rimental UNGEHEUER-XI.\nLe cobaye, un prisonnier de guerre fran\xE7ais, vient de recevoir sa vingti\xE8me injection avec succ\xE8s.\nContrairement aux pr\xE9c\xE9dents sujets, son organisme ne pr\xE9sente aucun signe de rejet. Les r\xE9sultats d\xE9passent toutes nos esp\xE9rances.\n\n23 octobre 1916\n\nLes transformations physiques du sujet progressent \xE0 une vitesse prodigieuse.\nSa masse musculaire a augment\xE9 de 23 % en l'espace de quelques jours seulement.\nToutefois, un ph\xE9nom\xE8ne impr\xE9vu vient bouleverser nos calculs : sa croissance osseuse semble ne conna\xEEtre aucune limite. Sa taille d\xE9passe d\xE9sormais toutes les proportions humaines ordinaires.\nNous ignorons jusqu'o\xF9 cette transformation peut se poursuivre.\n\n24 octobre 1916\n\nL'ARME ABSOLUE EST ENFIN N\xD4TRE !\nLE REICH TIENDRA SA VICTOIRE !\nQuelle ironie du sort ! Nous \xE9craserons les Fran\xE7ais gr\xE2ce \xE0 l'un des leurs !\nLe sujet poss\xE8de d\xE9sormais une force qui d\xE9passe tout ce que la science pouvait imaginer ! Il ne nous reste qu'un d\xE9tail \xE0 r\xE9soudre... SON AGRESSIVIT\xC9. Le sujet ne r\xE9pond plus aux ordres. Il a tent\xE9 de briser ses entraves \xE0 trois reprises.\n\nMais cela importe peu. RIEN NE SAURAIT D\xC9SORMAIS ARR\xCATER UNGEHEUER-XI !"
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: da142a754a607fe448a00569908a49b6, type: 3}
