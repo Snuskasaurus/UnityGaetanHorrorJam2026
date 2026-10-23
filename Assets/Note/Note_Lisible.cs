@@ -92,6 +92,11 @@ public class Note_Lisible : MonoBehaviour
     private Vector2 scrollTexte;
     private AudioSource audioSource;
 
+#if ENABLE_INPUT_SYSTEM
+    // Meme action que le joueur et le menu Options : Player/Interact.
+    private InputAction actionInteraction;
+#endif
+
     void Start()
     {
         if (cameraJoueur == null)
@@ -106,13 +111,17 @@ public class Note_Lisible : MonoBehaviour
 
         audioSource.playOnAwake = false;
         audioSource.spatialBlend = 0f;
+
+#if ENABLE_INPUT_SYSTEM
+        RecupererActionInteraction();
+#endif
     }
 
     void Update()
     {
         if (lectureActive)
         {
-            if (ToucheE())
+            if (ToucheInteraction())
                 FermerNote();
 
             return;
@@ -123,7 +132,7 @@ public class Note_Lisible : MonoBehaviour
 
         joueurRegarde = RegardeCetteNote();
 
-        if (joueurRegarde && ToucheE())
+        if (joueurRegarde && ToucheInteraction())
             StartCoroutine(OuvrirNote());
     }
 
@@ -333,7 +342,7 @@ public class Note_Lisible : MonoBehaviour
                 400,
                 45
             ),
-            texteInteraction,
+            AfficherToucheDansTexte(texteInteraction),
             style
         );
     }
@@ -483,7 +492,7 @@ public class Note_Lisible : MonoBehaviour
                 largeurEcran,
                 40f
             ),
-            "[E] Fermer la note",
+            AfficherToucheDansTexte("Fermer la note"),
             styleFermer
         );
     }
@@ -502,11 +511,67 @@ public class Note_Lisible : MonoBehaviour
         AudioListener.pause = anciennePause;
     }
 
-    bool ToucheE()
+    // Retrouve l'action deja utilisee par InputManager et MenuOptions.
+#if ENABLE_INPUT_SYSTEM
+    private void RecupererActionInteraction()
+    {
+        if (actionInteraction != null)
+            return;
+
+        InputAction regard = InputManager.PlayerLook;
+        if (regard != null && regard.actionMap != null)
+            actionInteraction = regard.actionMap.FindAction("Interact", false);
+    }
+#endif
+
+    // Affiche la touche clavier effective, meme apres un remappage en jeu.
+    private string NomToucheInteraction()
     {
 #if ENABLE_INPUT_SYSTEM
-        return Keyboard.current != null &&
-               Keyboard.current.eKey.wasPressedThisFrame;
+        RecupererActionInteraction();
+
+        if (actionInteraction == null)
+            return "?";
+
+        for (int i = 0; i < actionInteraction.bindings.Count; i++)
+        {
+            string chemin = actionInteraction.bindings[i].effectivePath;
+            if (!string.IsNullOrEmpty(chemin) &&
+                chemin.StartsWith("<Keyboard>/", System.StringComparison.OrdinalIgnoreCase))
+                return actionInteraction.GetBindingDisplayString(i);
+        }
+
+        return actionInteraction.GetBindingDisplayString();
+#elif ENABLE_LEGACY_INPUT_MANAGER
+        return "E";
+#else
+        return "?";
+#endif
+    }
+
+    // Conserve le libelle personnalise dans l'Inspector, sans garder [E] en dur.
+    private string AfficherToucheDansTexte(string texte)
+    {
+        if (string.IsNullOrEmpty(texte))
+            texte = "Lire la note";
+
+        if (texte.StartsWith("["))
+        {
+            int finTouche = texte.IndexOf(']');
+            if (finTouche >= 0)
+                texte = texte.Substring(finTouche + 1).TrimStart();
+        }
+
+        return "[" + NomToucheInteraction() + "] " + texte;
+    }
+
+    private bool ToucheInteraction()
+    {
+#if ENABLE_INPUT_SYSTEM
+        RecupererActionInteraction();
+        return actionInteraction != null &&
+               actionInteraction.enabled &&
+               actionInteraction.WasPressedThisFrame();
 #elif ENABLE_LEGACY_INPUT_MANAGER
         return Input.GetKeyDown(KeyCode.E);
 #else

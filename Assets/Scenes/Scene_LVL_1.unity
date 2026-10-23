@@ -9562,6 +9562,10 @@ PrefabInstance:
       value: -26
       objectReference: {fileID: 0}
     - target: {fileID: 2633707270438204117, guid: da142a754a607fe448a00569908a49b6, type: 3}
+      propertyPath: texteInteraction
+      value: '[F] Lire la note'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2633707270438204117, guid: da142a754a607fe448a00569908a49b6, type: 3}
       propertyPath: hauteurImageEcran
       value: 0.986
       objectReference: {fileID: 0}
