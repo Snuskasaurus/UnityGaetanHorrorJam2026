@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerController))]
@@ -58,6 +59,8 @@ public class CameraController : MonoBehaviour
         playerManager = GetComponent<PlayerController>();
         rigidBody = GetComponent<Rigidbody>();
         movement = GetComponent<MovementController>();
+
+        mouseSensitivity = SensibiliteSauvegardee;
     }
 
     // Use this for initialization
