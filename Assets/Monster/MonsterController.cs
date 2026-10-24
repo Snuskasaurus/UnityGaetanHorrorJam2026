@@ -10,6 +10,8 @@ public class MonsterController : MonoBehaviour
 
     private CapsuleCollider capsuleCollider;
 
+    public MonsterAudio Audio { get; private set; }
+
     /// ----------------------------------------------------------------------------------------------------------------
     ///  PUBLIC FUNCTIONS
     /// ----------------------------------------------------------------------------------------------------------------
@@ -23,17 +25,26 @@ public class MonsterController : MonoBehaviour
         navMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         monsterAnimator = GetComponentInChildren<Animator>();
         capsuleCollider = GetComponent<CapsuleCollider>();
+
+        // Added automatically on monsters that don't have it yet
+        Audio = GetComponent<MonsterAudio>();
+        if (Audio == null)
+        {
+            Audio = gameObject.AddComponent<MonsterAudio>();
+        }
     }
 
     private void Update()
     {
         UpdateAnimations();
+        UpdateFootsteps();
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player" && !MonsterManager.IsFleeing)
         {
+            Audio.PlayAttack();
             GameManager.Loose();
         }
     }
@@ -48,5 +59,11 @@ public class MonsterController : MonoBehaviour
 
         int animatorSpeedParam = Animator.StringToHash("Speed");
         monsterAnimator.SetFloat(animatorSpeedParam, monsterSpeed);
+    }
+
+    private void UpdateFootsteps()
+    {
+        // Real velocity (not desired) so there are no steps while the agent is blocked
+        Audio.UpdateFootsteps(navMeshAgent.velocity.magnitude, Time.deltaTime);
     }
 }

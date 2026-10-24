@@ -48,6 +48,7 @@ public class MonsterManager : MonoBehaviour
     private PlayerController playerController;
     private MonsterController monsterController;
     private UnityEngine.AI.NavMeshAgent monsterNavMeshAgent;
+    private MonsterAudio monsterAudio;
 
     /// ----------------------------------------------------------------------------------------------------------------
     ///  PUBLIC FUNCTIONS
@@ -55,7 +56,10 @@ public class MonsterManager : MonoBehaviour
 
     public static void PlaySoundWhenOpeningDoor(Vector3 Position)
     {
-        INSTANCE.monsterController.gameObject.GetComponent<AudioSource>().PlayOneShot(INSTANCE.SoundWhenOpeningDoor);
+        if (INSTANCE == null)
+            return;
+
+        INSTANCE.monsterAudio.PlayVoice(INSTANCE.SoundWhenOpeningDoor);
         INSTANCE.blackboard.targetPosition = Position;
         INSTANCE.ChangeBehaviourState(MonsterBehaviourState.RunningToDoor);
     }
@@ -91,6 +95,7 @@ public class MonsterManager : MonoBehaviour
         playerController = Common.FindTypeInScene<PlayerController>();
         monsterController = Common.FindTypeInScene<MonsterController>();
         monsterNavMeshAgent = Common.FindTypeInScene<UnityEngine.AI.NavMeshAgent>();
+        monsterAudio = monsterController.Audio;
 
         ChangeBehaviourState(Settings.DefaultBehaviour);
 
@@ -129,6 +134,9 @@ public class MonsterManager : MonoBehaviour
         UpdateWanderingTargetPosition();
 
         monsterNavMeshAgent.speed = Settings.MovementSpeedDefault;
+
+        monsterAudio.SetBreathing(MonsterBreathing.Calm);
+        monsterAudio.SetAmbientGrowls(true);
     }
 
     private void UpdateState_Wandering()
@@ -160,6 +168,10 @@ public class MonsterManager : MonoBehaviour
         UpdateRememberingPlayerTargetPosition();
 
         monsterNavMeshAgent.speed = Settings.MovementSpeedChasing;
+
+        monsterAudio.PlayLostPlayer();
+        monsterAudio.SetBreathing(MonsterBreathing.Heavy);
+        monsterAudio.SetAmbientGrowls(false);
     }
 
     private void UpdateState_RememberingPlayer()
@@ -180,6 +192,10 @@ public class MonsterManager : MonoBehaviour
     {
         monsterNavMeshAgent.speed = Settings.MovementSpeedRunningToDoor;
         monsterNavMeshAgent.SetDestination(blackboard.targetPosition);
+
+        // The door reaction itself is played by PlaySoundWhenOpeningDoor
+        monsterAudio.SetBreathing(MonsterBreathing.Heavy);
+        monsterAudio.SetAmbientGrowls(false);
     }
 
     private void UpdateState_RunningToDoor()
@@ -201,6 +217,10 @@ public class MonsterManager : MonoBehaviour
     private void StartState_Chasing()
     {
         UpdateChasingTargetPosition();
+
+        monsterAudio.PlaySpotPlayer();
+        monsterAudio.SetBreathing(MonsterBreathing.Heavy);
+        monsterAudio.SetAmbientGrowls(false);
     }
 
     private void UpdateState_Chasing()
@@ -229,6 +249,10 @@ public class MonsterManager : MonoBehaviour
         UpdateFleeingTargetPosition();
 
         monsterNavMeshAgent.speed = Settings.MovementSpeedFleeing;
+
+        monsterAudio.PlayFeared();
+        monsterAudio.SetBreathing(MonsterBreathing.Heavy);
+        monsterAudio.SetAmbientGrowls(false);
     }
 
     private void UpdateState_Fleeing()
@@ -248,6 +272,10 @@ public class MonsterManager : MonoBehaviour
         blackboard.EndDate = Common.GetCurrentDate() + Random.Range(Settings.minTimeToWait, Settings.maxTimeToWait);
 
         monsterNavMeshAgent.speed = Settings.MovementSpeedDefault;
+
+        monsterAudio.PlaySniff();
+        monsterAudio.SetBreathing(MonsterBreathing.Calm);
+        monsterAudio.SetAmbientGrowls(true);
     }
 
     private void UpdateState_Waiting()
@@ -270,6 +298,10 @@ public class MonsterManager : MonoBehaviour
         UpdateInvestigatingSoundTargetPosition();
 
         monsterNavMeshAgent.speed = Settings.MovementSpeedDefault;
+
+        monsterAudio.PlaySoundHeard();
+        monsterAudio.SetBreathing(MonsterBreathing.Calm);
+        monsterAudio.SetAmbientGrowls(false);
     }
 
     private void UpdateState_InvestigatingSound()
@@ -293,6 +325,10 @@ public class MonsterManager : MonoBehaviour
         blackboard.EndDate = Common.GetCurrentDate() + Random.Range(Settings.MinTimeSpentOffMap, Settings.MaxTimeSpentOffMap);
 
         monsterNavMeshAgent.speed = Settings.MovementSpeedDefault;
+
+        // Silent while off the map
+        monsterAudio.SetBreathing(MonsterBreathing.None);
+        monsterAudio.SetAmbientGrowls(false);
     }
 
     private void UpdateState_OffMap()

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6537548266370170693}
   - component: {fileID: 137362116591485434}
   - component: {fileID: 1648745160834892664}
+  - component: {fileID: 9176431816250046791}
   m_Layer: 0
   m_Name: Monster
   m_TagString: Untagged
@@ -199,6 +200,61 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &9176431816250046791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1442702917518248269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0da979f98a51204419315dca2facc2cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterAudio
+  voiceSource: {fileID: 0}
+  breathingSource: {fileID: 0}
+  footstepSource: {fileID: 0}
+  outputMixerGroup: {fileID: 0}
+  headHeight: 1.7
+  minDistance: 1.5
+  maxDistance: 30
+  rolloffMode: 0
+  spotPlayerClips: []
+  lostPlayerClips:
+  - {fileID: 8300000, guid: ea6ab5bf98f45e84ab22d4f8e1798cb8, type: 3}
+  soundHeardClips:
+  - {fileID: 8300000, guid: faf890356d1da714dadaa7032dd4999e, type: 3}
+  - {fileID: 8300000, guid: 60c752a072e409e4487555f69687133e, type: 3}
+  - {fileID: 8300000, guid: 0d2b6497955592c48a487a1dface52e1, type: 3}
+  sniffClips:
+  - {fileID: 8300000, guid: faf890356d1da714dadaa7032dd4999e, type: 3}
+  - {fileID: 8300000, guid: f39a0a7b525f4ca4badf7ed12088d4d1, type: 3}
+  - {fileID: 8300000, guid: 0d2b6497955592c48a487a1dface52e1, type: 3}
+  fearedClips: []
+  attackClips:
+  - {fileID: 8300000, guid: ea6ab5bf98f45e84ab22d4f8e1798cb8, type: 3}
+  ambientGrowlClips:
+  - {fileID: 8300000, guid: 5d02abd7ab24b154f9f289e81215c644, type: 3}
+  - {fileID: 8300000, guid: 096c5c9e2d769d044948e8dc744cc6fd, type: 3}
+  - {fileID: 8300000, guid: 82104e0393e14704aad2ad3dc4e643f5, type: 3}
+  voiceVolume: 1
+  voicePitchVariation: 0.08
+  minTimeBetweenGrowls: 8
+  maxTimeBetweenGrowls: 20
+  calmBreathingClip: {fileID: 8300000, guid: 17e9c8b9022cea94da5f1b70e952bbcb, type: 3}
+  heavyBreathingClip: {fileID: 8300000, guid: 17e9c8b9022cea94da5f1b70e952bbcb, type: 3}
+  breathingVolume: 0.2
+  walkFootstepClips:
+  - {fileID: 8300000, guid: 67c1732dc8f44aa49bef3b6358d3c1d6, type: 3}
+  runFootstepClips:
+  - {fileID: 8300000, guid: 67c1732dc8f44aa49bef3b6358d3c1d6, type: 3}
+  footstepVolume: 0.8
+  footstepPitchVariation: 0.1
+  runSpeedThreshold: 3
+  walkStrideLength: 1.2
+  runStrideLength: 2
+  minSpeedForFootsteps: 0.2
 --- !u!1 &5531546234719745594
 GameObject:
   m_ObjectHideFlags: 0
